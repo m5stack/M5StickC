@@ -1,0 +1,16 @@
+{
+  "name": "M5StickC",
+  "description": "An ESP32 Arduino board",
+  "keywords": "M5StickC",
+  "authors": {
+    "name": "zhouyang, M5StickC",
+    "url": "http://www.m5stack.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/m5stack/M5StickC.git"
+  },
+  "version": "0.0.1",
+  "framework": "arduino",
+  "platforms": "espressif32"
+}
