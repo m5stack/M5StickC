@@ -1,650 +1,394 @@
-#include <M5Stack.h>
-#include "utility/MPU9250.h"
-#include "WiFi.h"
+#include <Arduino.h>
+#include <Wire.h>
+#include <WiFi.h>
 
-extern const unsigned char gImage_logoM5[];
-extern const unsigned char m5stack_startup_music[];
 
-#ifndef min
-  #define min(a,b) (((a) < (b)) ? (a) : (b))
-#endif
+#include "axp192.h"
+#include "Lcd_Driver.h"
+#include "LCD_Config.h"
+#include "IMU.h"
+#include "rtc.h"
+#include "esp32_rmt.h"
+#include "DHT12.h"
 
-MPU9250 IMU;
+#include <driver/i2s.h>
 
-void startupLogo() {
-    static uint8_t brightness, pre_brightness;
-    uint32_t length = strlen((char*)m5stack_startup_music);
-    M5.Lcd.setBrightness(0);
-    M5.Lcd.pushImage(0, 0, 320, 240, (uint16_t *)gImage_logoM5);
-    for(int i=0; i<length; i++) {
-        dacWrite(SPEAKER_PIN, m5stack_startup_music[i]>>2);
-        delayMicroseconds(40);
-        brightness = (i/157);
-        if(pre_brightness != brightness) {
-            pre_brightness = brightness;
-            M5.Lcd.setBrightness(brightness);
-        }
-    }
 
-    for(int i=255; i>=0; i--) {
-        M5.Lcd.setBrightness(i);
-        if(i<=32) {
-            dacWrite(SPEAKER_PIN, i);
-        }
-        delay(2);
-    }
+#define PIN_CLK  0
+#define PIN_DATA 34
+#define READ_LEN (2 * 1024)
+uint8_t BUFFER[READ_LEN] = {0};
 
-    M5.Lcd.fillScreen(BLACK);
-    delay(800);
-    for(int i=0; i>=100; i++) {
-        M5.Lcd.setBrightness(i);
-        delay(2);
-    }
+AXP192 axp192;
+Rtc  rtc;
+ESP32_RMT rem;
+DHT12 dht12;  
+
+int LED_RI = 9;
+int LED_BUILTIN = 10;
+int BUTTON_HOME = 37;
+int BUTTON_PIN = 39;
+
+
+int IO_1 = 0;
+int IO_2 = 26;
+int IO_3 = 36;
+
+
+
+int16_t accX = 0;
+int16_t accY = 0;
+int16_t accZ = 0;
+
+int16_t gyroX = 0;
+int16_t gyroY = 0;
+int16_t gyroZ = 0;
+uint16_t buffer;
+void reader(void *pvParameters) {
+  while (1){
+	    i2s_read_bytes(I2S_NUM_0, (char*) BUFFER, READ_LEN, (100 / portTICK_RATE_MS));
+      showSignal();
+	    vTaskDelay(100 / portTICK_RATE_MS);
+	}
+}
+void i2sInit()
+{
+   i2s_config_t i2s_config = {
+    //.mode = (i2s_mode_t)(I2S_MODE_MASTER | I2S_MODE_TX| I2S_MODE_RX | I2S_MODE_ADC_BUILT_IN),
+    .mode = (i2s_mode_t)(I2S_MODE_MASTER | I2S_MODE_RX | I2S_MODE_PDM),
+    //.sample_rate =  I2S_SAMPLE_RATE,              // The format of the signal using ADC_BUILT_IN
+    .sample_rate =  44100,
+    .bits_per_sample = I2S_BITS_PER_SAMPLE_16BIT, // is fixed at 12bit, stereo, MSB
+    //.bits_per_sample = I2S_BITS_PER_SAMPLE_8BIT, 
+    //.channel_format = I2S_CHANNEL_FMT_RIGHT_LEFT,
+    //.channel_format = I2S_CHANNEL_FMT_ONLY_RIGHT,
+     .channel_format = I2S_CHANNEL_FMT_ALL_RIGHT,
+      //.channel_format = I2S_CHANNEL_FMT_ALL_LEFT,
+    //.channel_format = I2S_CHANNEL_FMT_ONLY_LEFT,
+/*
+      I2S_CHANNEL_FMT_RIGHT_LEFT = 0x00,
+    I2S_CHANNEL_FMT_ALL_RIGHT,
+    I2S_CHANNEL_FMT_ALL_LEFT,
+    I2S_CHANNEL_FMT_ONLY_RIGHT,
+    I2S_CHANNEL_FMT_ONLY_LEFT,*/
+    //.communication_format = I2S_COMM_FORMAT_I2S_MSB,
+    //I2S_COMM_FORMAT_PCM_SHORT
+    .communication_format = I2S_COMM_FORMAT_I2S,
+    //I2S_COMM_FORMAT_I2S 
+    //.communication_format = I2S_COMM_FORMAT_PCM,
+    .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1,
+    .dma_buf_count = 2,
+    .dma_buf_len = 128,
+   // .use_apll = false,
+    //.tx_desc_auto_clear = false,
+    //.fixed_mclk = 0
+   };
+
+    i2s_pin_config_t pin_config;
+    pin_config.bck_io_num  = I2S_PIN_NO_CHANGE;
+	  pin_config.ws_io_num   = PIN_CLK;
+    pin_config.data_out_num = I2S_PIN_NO_CHANGE;
+	  pin_config.data_in_num = PIN_DATA;
+	
+   //adc_set_i2s_data_source(ADC_I2S_DATA_SRC_IO_SIG);
+   i2s_driver_install(I2S_NUM_0, &i2s_config, 0, NULL);
+   //i2s_set_adc_mode(ADC_UNIT_1, ADC_INPUT);
+   //i2s_adc_enable(I2S_NUM_0);
+   i2s_set_pin(I2S_NUM_0, &pin_config);
+   //i2s_set_clk(I2S_NUM_0, I2S_SAMPLE_RATE, I2S_BITS_PER_SAMPLE_16BIT, I2S_CHANNEL_MONO);
+   i2s_set_clk(I2S_NUM_0, 44100, I2S_BITS_PER_SAMPLE_16BIT, I2S_CHANNEL_MONO);
 }
 
-//TF card test
-void listDir(fs::FS &fs, const char * dirname, uint8_t levels){
-    Serial.printf("Listing directory: %s\n", dirname);
-    M5.Lcd.printf("Listing directory: %s\n", dirname);
-
-    File root = fs.open(dirname);
-    if(!root){
-        Serial.println("Failed to open directory");
-        M5.Lcd.println("Failed to open directory");
-        return;
-    }
-    if(!root.isDirectory()){
-        Serial.println("Not a directory");
-        M5.Lcd.println("Not a directory");
-        return;
-    }
-
-    File file = root.openNextFile();
-    while(file){
-        if(file.isDirectory()){
-            Serial.print("  DIR : ");
-            M5.Lcd.print("  DIR : ");
-            Serial.println(file.name());
-            M5.Lcd.println(file.name());
-            if(levels){
-                listDir(fs, file.name(), levels -1);
-            }
-        } else {
-            Serial.print("  FILE: ");
-            M5.Lcd.print("  FILE: ");
-            Serial.print(file.name());
-            M5.Lcd.print(file.name());
-            Serial.print("  SIZE: ");
-            M5.Lcd.print("  SIZE: ");
-            Serial.println(file.size());
-            M5.Lcd.println(file.size());
-        }
-        file = root.openNextFile();
-    }
+uint16_t oldx[80];
+uint16_t oldy[80];
+void showSignal()
+{
+  int n;
+  int x, y;
+  uint16_t *adcBuffer = (uint16_t *)BUFFER;
+  for (n = 0; n < 80; n++){
+    x = n;
+    y = map(adcBuffer[n], 0, 65535, 120, 140);
+      Gui_DrawPoint(oldx[n], oldy[n],WHITE);
+      Gui_DrawPoint(x,y,BLACK);
+      oldx[n] = x;
+      oldy[n] = y;
+  }
 }
 
-void readFile(fs::FS &fs, const char * path) {
-    Serial.printf("Reading file: %s\n", path);
-    M5.Lcd.printf("Reading file: %s\n", path);
-
-    File file = fs.open(path);
-    if(!file){
-        Serial.println("Failed to open file for reading");
-        M5.Lcd.println("Failed to open file for reading");
-        return;
-    }
-
-    Serial.print("Read from file: ");
-    M5.Lcd.print("Read from file: ");
-    while(file.available()){
-        int ch = file.read();
-        Serial.write(ch);
-        M5.Lcd.write(ch);
-    }
-}
-
-void writeFile(fs::FS &fs, const char * path, const char * message){
-    Serial.printf("Writing file: %s\n", path);
-    M5.Lcd.printf("Writing file: %s\n", path);
-
-    File file = fs.open(path, FILE_WRITE);
-    if(!file){
-        Serial.println("Failed to open file for writing");
-        M5.Lcd.println("Failed to open file for writing");
-        return;
-    }
-    if(file.print(message)){
-        Serial.println("File written");
-        M5.Lcd.println("File written");
-    } else {
-        Serial.println("Write failed");
-        M5.Lcd.println("Write failed");
-    }
-}
-
-void buttons_test() {
-    if(M5.BtnA.wasPressed()) {
-        M5.Lcd.printf("A");
-        Serial.printf("A");
-    }
-    if(M5.BtnB.wasPressed()) {
-        M5.Lcd.printf("B");
-        Serial.printf("B");
-    } 
-    if(M5.BtnC.wasPressed()) {
-        M5.Lcd.printf("C");
-        Serial.printf("C");
-    } 
+void spm_test(){
+  // Initialize the I2S peripheral
+  i2sInit();
+  // Create a task that will read the data
+  xTaskCreatePinnedToCore(reader, "ADC_reader", 2048, NULL, 1, NULL, 1);
 }
 
 void wifi_test() {
     WiFi.mode(WIFI_STA);
     WiFi.disconnect();
-    delay(100);
+    
 
-    Serial.println("scan start");
-    M5.Lcd.println("scan start");
-
+    Lcd_Asc(0,0,"wifi test");
     // WiFi.scanNetworks will return the number of networks found
     int n = WiFi.scanNetworks();
     Serial.println("scan done");
-    M5.Lcd.println("scan done");
+    Lcd_Asc(0,20,"scan done");
+    //M5.Lcd.println("scan done");
     if (n == 0) {
         Serial.println("no networks found");
-        M5.Lcd.println("no networks found");
+        Lcd_Asc(0,40,"no networks");
+        Lcd_Asc(0,60,"found");
+        //Lcd_Asc(0,80,"no networks found");
+        //M5.Lcd.println("no networks found");
     } else {
         Serial.print(n);
-        M5.Lcd.print(n);
+        //M5.Lcd.print(n);
         Serial.println(" networks found");
-        M5.Lcd.println(" networks found");
+        Lcd_Asc(0,40,"networks");
+        Lcd_Asc(0,60,"found");
+        /*
+        //M5.Lcd.println(" networks found");
         for (int i = 0; i < n; ++i) {
             // Print SSID and RSSI for each network found
             Serial.print(i + 1);
-            M5.Lcd.print(i + 1);
+            //M5.Lcd.print(i + 1);
             Serial.print(": ");
-            M5.Lcd.print(": ");
+            //M5.Lcd.print(": ");
             Serial.print(WiFi.SSID(i));
-            M5.Lcd.print(WiFi.SSID(i));
+           // M5.Lcd.print(WiFi.SSID(i));
             Serial.print(" (");
-            M5.Lcd.print(" (");
+            //M5.Lcd.print(" (");
             Serial.print(WiFi.RSSI(i));
-            M5.Lcd.print(WiFi.RSSI(i));
+            //M5.Lcd.print(WiFi.RSSI(i));
             Serial.print(")");
-            M5.Lcd.print(")");
+            //M5.Lcd.print(")");
             Serial.println((WiFi.encryptionType(i) == WIFI_AUTH_OPEN)?" ":"*");
-            M5.Lcd.println((WiFi.encryptionType(i) == WIFI_AUTH_OPEN)?" ":"*");
+            //M5.Lcd.println((WiFi.encryptionType(i) == WIFI_AUTH_OPEN)?" ":"*");
             delay(5);
-        }
+        }*/ 
     }
     Serial.println("");
-    M5.Lcd.println("");
-}
-
-/*
-bool gpio_test_flg = 0;
-void GPIO_test() {
-    // uint8_t gpio_table[] = {23,19,18,3,16,21,2,12,15,26,1,17,22,5,13,0,34};
-    uint8_t gpio_table[] = {12,2,21,16,3,18,19,23,15,0,13,5,22,17,1,26,25};
-    
-    // while(1) 
-    {
-        for (int i = 0; i<=sizeof(gpio_table) / sizeof(gpio_table[0]); i++) {
-            pinMode(gpio_table[i], OUTPUT);
-        }
-        for(int i=0; i<=sizeof(gpio_table)/sizeof(gpio_table[0]); i++) {
-            digitalWrite(gpio_table[i], 1);
-            delay(50);
-            digitalWrite(gpio_table[i], 0);
-            delay(50);
-            digitalWrite(gpio_table[i], 1);
-            delay(50);
-            digitalWrite(gpio_table[i], 0);
-            delay(50);
-        }
-    }
-}
-
-void adc_test() {
-    int count = 10;
-    pinMode(35, INPUT);
-    pinMode(36, INPUT);
-    pinMode(34, INPUT);
-    M5.Lcd.fillScreen(BLACK);
-    while(count--) {
-        M5.Lcd.setCursor(0, 10);
-        M5.Lcd.setTextColor(WHITE, BLACK);
-        M5.Lcd.setTextSize(2);
-        M5.Lcd.printf("ADC35:%d\r\nADC36:%d\r\nADC34:%d\r\n", analogRead(35), analogRead(36), analogRead(34));
-        delay(500);
-    }
-}
-*/
-unsigned long testLines(uint16_t color)
-{
-    unsigned long start, t;
-    int x1, y1, x2, y2,
-        w = M5.Lcd.width(),
-        h = M5.Lcd.height();
-
-    M5.Lcd.fillScreen(TFT_BLACK);
-
-    x1 = y1 = 0;
-    y2 = h - 1;
-    start = micros();
-    for (x2 = 0; x2 < w; x2 += 6)
-        M5.Lcd.drawLine(x1, y1, x2, y2, color);
-    x2 = w - 1;
-    for (y2 = 0; y2 < h; y2 += 6)
-        M5.Lcd.drawLine(x1, y1, x2, y2, color);
-    t = micros() - start; // fillScreen doesn't count against timing
-
-    M5.Lcd.fillScreen(TFT_BLACK);
-
-    x1 = w - 1;
-    y1 = 0;
-    y2 = h - 1;
-    start = micros();
-    for (x2 = 0; x2 < w; x2 += 6)
-        M5.Lcd.drawLine(x1, y1, x2, y2, color);
-    x2 = 0;
-    for (y2 = 0; y2 < h; y2 += 6)
-        M5.Lcd.drawLine(x1, y1, x2, y2, color);
-    t += micros() - start;
-
-    M5.Lcd.fillScreen(TFT_BLACK);
-
-    x1 = 0;
-    y1 = h - 1;
-    y2 = 0;
-    start = micros();
-    for (x2 = 0; x2 < w; x2 += 6)
-        M5.Lcd.drawLine(x1, y1, x2, y2, color);
-    x2 = w - 1;
-    for (y2 = 0; y2 < h; y2 += 6)
-        M5.Lcd.drawLine(x1, y1, x2, y2, color);
-    t += micros() - start;
-
-    M5.Lcd.fillScreen(TFT_BLACK);
-
-    x1 = w - 1;
-    y1 = h - 1;
-    y2 = 0;
-    start = micros();
-    for (x2 = 0; x2 < w; x2 += 6)
-        M5.Lcd.drawLine(x1, y1, x2, y2, color);
-    x2 = 0;
-    for (y2 = 0; y2 < h; y2 += 6)
-        M5.Lcd.drawLine(x1, y1, x2, y2, color);
-
-    return micros() - start;
-}
-
-unsigned long testFastLines(uint16_t color1, uint16_t color2)
-{
-    unsigned long start;
-    int x, y, w = M5.Lcd.width(), h = M5.Lcd.height();
-
-    M5.Lcd.fillScreen(TFT_BLACK);
-    start = micros();
-    for (y = 0; y < h; y += 5)
-        M5.Lcd.drawFastHLine(0, y, w, color1);
-    for (x = 0; x < w; x += 5)
-        M5.Lcd.drawFastVLine(x, 0, h, color2);
-
-    return micros() - start;
-}
-
-unsigned long testRects(uint16_t color)
-{
-    unsigned long start;
-    int n, i, i2,
-        cx = M5.Lcd.width() / 2,
-        cy = M5.Lcd.height() / 2;
-
-    M5.Lcd.fillScreen(TFT_BLACK);
-    n = min(M5.Lcd.width(), M5.Lcd.height());
-    start = micros();
-    for (i = 2; i < n; i += 6)
-    {
-        i2 = i / 2;
-        M5.Lcd.drawRect(cx - i2, cy - i2, i, i, color);
-    }
-
-    return micros() - start;
-}
-
-unsigned long testFilledRects(uint16_t color1, uint16_t color2)
-{
-    unsigned long start, t = 0;
-    int n, i, i2,
-        cx = M5.Lcd.width() / 2 - 1,
-        cy = M5.Lcd.height() / 2 - 1;
-
-    M5.Lcd.fillScreen(TFT_BLACK);
-    n = min(M5.Lcd.width(), M5.Lcd.height());
-    for (i = n - 1; i > 0; i -= 6)
-    {
-        i2 = i / 2;
-        start = micros();
-        M5.Lcd.fillRect(cx - i2, cy - i2, i, i, color1);
-        t += micros() - start;
-        // Outlines are not included in timing results
-        M5.Lcd.drawRect(cx - i2, cy - i2, i, i, color2);
-    }
-
-    return t;
-}
-
-unsigned long testFilledCircles(uint8_t radius, uint16_t color)
-{
-    unsigned long start;
-    int x, y, w = M5.Lcd.width(), h = M5.Lcd.height(), r2 = radius * 2;
-
-    M5.Lcd.fillScreen(TFT_BLACK);
-    start = micros();
-    for (x = radius; x < w; x += r2)
-    {
-        for (y = radius; y < h; y += r2)
-        {
-            M5.Lcd.fillCircle(x, y, radius, color);
-        }
-    }
-
-    return micros() - start;
-}
-
-unsigned long testCircles(uint8_t radius, uint16_t color)
-{
-    unsigned long start;
-    int x, y, r2 = radius * 2,
-              w = M5.Lcd.width() + radius,
-              h = M5.Lcd.height() + radius;
-
-    // Screen is not cleared for this one -- this is
-    // intentional and does not affect the reported time.
-    start = micros();
-    for (x = 0; x < w; x += r2)
-    {
-        for (y = 0; y < h; y += r2)
-        {
-            M5.Lcd.drawCircle(x, y, radius, color);
-        }
-    }
-
-    return micros() - start;
-}
-
-unsigned long testTriangles()
-{
-    unsigned long start;
-    int n, i, cx = M5.Lcd.width() / 2 - 1,
-              cy = M5.Lcd.height() / 2 - 1;
-
-    M5.Lcd.fillScreen(TFT_BLACK);
-    n = min(cx, cy);
-    start = micros();
-    for (i = 0; i < n; i += 5)
-    {
-        M5.Lcd.drawTriangle(
-            cx, cy - i,     // peak
-            cx - i, cy + i, // bottom left
-            cx + i, cy + i, // bottom right
-            M5.Lcd.color565(0, 0, i));
-    }
-
-    return micros() - start;
-}
-
-unsigned long testFilledTriangles()
-{
-    unsigned long start, t = 0;
-    int i, cx = M5.Lcd.width() / 2 - 1,
-           cy = M5.Lcd.height() / 2 - 1;
-
-    M5.Lcd.fillScreen(TFT_BLACK);
-    start = micros();
-    for (i = min(cx, cy); i > 10; i -= 5)
-    {
-        start = micros();
-        M5.Lcd.fillTriangle(cx, cy - i, cx - i, cy + i, cx + i, cy + i,
-                            M5.Lcd.color565(0, i, i));
-        t += micros() - start;
-        M5.Lcd.drawTriangle(cx, cy - i, cx - i, cy + i, cx + i, cy + i,
-                            M5.Lcd.color565(i, i, 0));
-    }
-
-    return t;
-}
-
-unsigned long testRoundRects()
-{
-    unsigned long start;
-    int w, i, i2,
-        cx = M5.Lcd.width() / 2 - 1,
-        cy = M5.Lcd.height() / 2 - 1;
-
-    M5.Lcd.fillScreen(TFT_BLACK);
-    w = min(M5.Lcd.width(), M5.Lcd.height());
-    start = micros();
-    for (i = 0; i < w; i += 6)
-    {
-        i2 = i / 2;
-        M5.Lcd.drawRoundRect(cx - i2, cy - i2, i, i, i / 8, M5.Lcd.color565(i, 0, 0));
-    }
-
-    return micros() - start;
-}
-
-unsigned long testFilledRoundRects()
-{
-    unsigned long start;
-    int i, i2,
-        cx = M5.Lcd.width() / 2 - 1,
-        cy = M5.Lcd.height() / 2 - 1;
-
-    M5.Lcd.fillScreen(TFT_BLACK);
-    start = micros();
-    for (i = min(M5.Lcd.width(), M5.Lcd.height()); i > 20; i -= 6)
-    {
-        i2 = i / 2;
-        M5.Lcd.fillRoundRect(cx - i2, cy - i2, i, i, i / 8, M5.Lcd.color565(0, i, 0));
-    }
-
-    return micros() - start;
-}
-
-// the setup routine runs once when M5Stack starts up
-void setup() {
-    
-    //gpio test 
-    // pinMode(BUTTON_A_PIN, INPUT_PULLUP);
-    // if(digitalRead(BUTTON_A_PIN) == 0) {
-    //     gpio_test_flg = 1;
-    // }
-
-    // if (gpio_test_flg) {
-    //     GPIO_test();
-    // }
-
-    // initialize the M5Stack object
-    M5.begin();
-
-    // dac test
-    // if (gpio_test_flg)
-    // {
-    //     adc_test();
-    // }
-
-    startupLogo();
-    Wire.begin();
-
-    // Lcd display
-    M5.Lcd.setBrightness(100);
-    M5.Lcd.fillScreen(BLACK);
-    M5.Lcd.setCursor(10, 10);
-    M5.Lcd.setTextColor(WHITE);
-    M5.Lcd.setTextSize(1);
-    M5.Lcd.printf("Display Test!");
-    delay(300);
-
-    M5.Lcd.fillScreen(WHITE);
-    delay(150);
-    M5.Lcd.fillScreen(RED);
-    delay(150);
-    M5.Lcd.fillScreen(GREEN);
-    delay(150);
-    M5.Lcd.fillScreen(BLUE);
-    delay(150);
-    M5.Lcd.fillScreen(BLACK);
-    delay(150);
-
-    // draw graphic
-    yield();
-    Serial.print(F("Lines                    "));
-    yield();
-    Serial.println(testLines(TFT_CYAN));
-    //total+=testLines(TFT_CYAN);
-    //delay(500);
-
-    yield();
-    Serial.print(F("Horiz/Vert Lines         "));
-    yield();
-    Serial.println(testFastLines(TFT_RED, TFT_BLUE));
-    //total+=testFastLines(TFT_RED, TFT_BLUE);
-    //delay(500);
-
-    yield();
-    Serial.print(F("Rectangles (outline)     "));
-    yield();
-    Serial.println(testRects(TFT_GREEN));
-    //total+=testRects(TFT_GREEN);
-    //delay(500);
-
-    yield();
-    Serial.print(F("Rectangles (filled)      "));
-    yield();
-    Serial.println(testFilledRects(TFT_YELLOW, TFT_MAGENTA));
-    //total+=testFilledRects(TFT_YELLOW, TFT_MAGENTA);
-    //delay(500);
-
-    yield();
-    Serial.print(F("Circles (filled)         "));
-    yield();
-    Serial.println(testFilledCircles(10, TFT_MAGENTA));
-    //total+= testFilledCircles(10, TFT_MAGENTA);
-
-    yield();
-    Serial.print(F("Circles (outline)        "));
-    yield();
-    Serial.println(testCircles(10, TFT_WHITE));
-    //total+=testCircles(10, TFT_WHITE);
-    //delay(500);
-
-    yield();
-    Serial.print(F("Triangles (outline)      "));
-    yield();
-    Serial.println(testTriangles());
-    //total+=testTriangles();
-    //delay(500);
-
-    yield();
-    Serial.print(F("Triangles (filled)       "));
-    yield();
-    Serial.println(testFilledTriangles());
-    //total += testFilledTriangles();
-    //delay(500);
-
-    yield();
-    Serial.print(F("Rounded rects (outline)  "));
-    yield();
-    Serial.println(testRoundRects());
-    //total+=testRoundRects();
-    //delay(500);
-
-    yield();
-    Serial.print(F("Rounded rects (filled)   "));
-    yield();
-    Serial.println(testFilledRoundRects());
-    //total+=testFilledRoundRects();
-    //delay(500);
-
-    yield();
-    Serial.println(F("Done!"));
-    yield();
-
-    //rand draw 
-    int i = 250;
-    while(--i) {
-        M5.Lcd.fillTriangle(random(M5.Lcd.width()-1), random(M5.Lcd.height()-1), random(M5.Lcd.width()-1), random(M5.Lcd.height()-1), random(M5.Lcd.width()-1), random(M5.Lcd.height()-1), random(0xfffe));
-    }
-    for(int i=255; i>=0; i--) {
-        M5.Lcd.setBrightness(i);
-        delay(2);
-    }
-
-    //wifi test
-    M5.Lcd.setCursor(0, 10);
-    M5.Lcd.fillScreen(BLACK);
-    for(int i=0; i<200; i++) {
-        M5.Lcd.setBrightness(i);
-        delay(2);
-    }
-
-    byte c = IMU.readByte(MPU9250_ADDRESS, WHO_AM_I_MPU9250);
-    Serial.print("MPU9250 "); Serial.print("I AM "); Serial.print(c, HEX);
-    Serial.print(" I should be "); Serial.println(0x71, HEX);
-    Serial.println("");
-    M5.Lcd.setCursor(20,0); M5.Lcd.print("MPU9250");
-    M5.Lcd.setCursor(0,10); M5.Lcd.print("I AM");
-    M5.Lcd.setCursor(0,20); M5.Lcd.print(c, HEX);
-    M5.Lcd.setCursor(0,30); M5.Lcd.print("I Should Be");
-    M5.Lcd.setCursor(0,40); M5.Lcd.println(0x71, HEX);
-    M5.Lcd.println();
-    delay(100);
-
-    IMU.initMPU9250();
-    // Initialize device for active mode read of acclerometer, gyroscope, and
-    // temperature
-    Serial.println("MPU9250 initialized for active data mode....");
-
-    // Read the WHO_AM_I register of the magnetometer, this is a good test of
-    // communication
-    byte d = IMU.readByte(AK8963_ADDRESS, WHO_AM_I_AK8963);
-    Serial.print("AK8963 "); Serial.print("I AM "); Serial.print(d, HEX);
-    Serial.print(" I should be "); Serial.println(0x48, HEX);
-
-    // M5.Lcd.fillScreen(BLACK);
-    M5.Lcd.setCursor(20,100); M5.Lcd.print("AK8963");
-    M5.Lcd.setCursor(0,110); M5.Lcd.print("I AM");
-    M5.Lcd.setCursor(0,120); M5.Lcd.print(d, HEX);
-    M5.Lcd.setCursor(0,130); M5.Lcd.print("I Should Be");
-    M5.Lcd.setCursor(0,140); M5.Lcd.print(0x48, HEX);
     delay(1000);
-
-    M5.Lcd.setCursor(0, 0);
-    M5.Lcd.println("wifi test:");
-    M5.Lcd.fillScreen(BLACK);
-    wifi_test();
-    delay(2000);
-
-    // TF card test
-    M5.Lcd.fillScreen(BLACK);
-    M5.Lcd.setCursor(0, 10);
-    M5.Lcd.printf("TF card test:\r\n");
-    // digitalWrite(TFT_CS, 1);
-    listDir(SD, "/", 0);
-    writeFile(SD, "/hello.txt", "Hello world");
-    readFile(SD, "/hello.txt");
-
-    //Button test
-    M5.Lcd.println();
-    M5.Lcd.println();
-    M5.Lcd.print("buttons Test:");
-    M5.Lcd.setTextColor(RED);
+    //M5.Lcd.println("");
 }
 
-// the loop routine runs over and over again forever
-void loop(){
-    buttons_test();
-    M5.update();
+void grove_test() {
+  float tem = 0.0;
+  tem = dht12.readTemperature();
+  if(tem > 1.0){
+  //Lcd_Asc(0,140,"T:");
+  //dht12.readTemperature();
+  Serial.println(dht12.readTemperature());
+  //Lcd_PrintValueF(20, 140, dht12.readTemperature(),6);
+  //Lcd_Asc(60,140,"C");
+  Lcd_Asc(0,140,"I2C exist");
+  }else{
+
+   //Lcd_ClearRect(0, 140, 80, 20, WHITE);
+   Lcd_Asc(0,140,"              ");
+  }
+  //Serial.println(dht12.readHumidity());
+
+}
+
+void sh200i_test() {
+
+  //sh200i_init();
+  unsigned char tempdata[1];
+  I2C_Read_NBytes(SH200I_ADDRESS, SH200I_OUTPUT_ACC_X, 1, tempdata);
+  accX = tempdata[0];
+  I2C_Read_NBytes(SH200I_ADDRESS, SH200I_OUTPUT_ACC_X+1, 1, tempdata);
+  accX |= tempdata[0] << 8;
+
+
+  I2C_Read_NBytes(SH200I_ADDRESS, SH200I_OUTPUT_ACC_X+2, 1, tempdata);
+  accY = tempdata[0];
+  I2C_Read_NBytes(SH200I_ADDRESS, SH200I_OUTPUT_ACC_X+3, 1, tempdata);
+  accY |= tempdata[0] << 8;
+    
+  I2C_Read_NBytes(SH200I_ADDRESS, SH200I_OUTPUT_ACC_X+4, 1, tempdata);
+  accZ = tempdata[0];
+  I2C_Read_NBytes(SH200I_ADDRESS, SH200I_OUTPUT_ACC_X+5, 1, tempdata);
+  accZ |= tempdata[0] << 8;
+
+  I2C_Read_NBytes(SH200I_ADDRESS, SH200I_OUTPUT_ACC_X+6, 1, tempdata);
+  gyroX = tempdata[0];
+  I2C_Read_NBytes(SH200I_ADDRESS, SH200I_OUTPUT_ACC_X+7, 1, tempdata);
+  gyroX |= tempdata[0] << 8;
+
+  I2C_Read_NBytes(SH200I_ADDRESS, SH200I_OUTPUT_ACC_X+8, 1, tempdata);
+  gyroY = tempdata[0];
+  I2C_Read_NBytes(SH200I_ADDRESS, SH200I_OUTPUT_ACC_X+9, 1, tempdata);
+  gyroY |= tempdata[0] << 8;
+
+  I2C_Read_NBytes(SH200I_ADDRESS, SH200I_OUTPUT_ACC_X+10, 1, tempdata);
+  gyroZ = tempdata[0];
+  I2C_Read_NBytes(SH200I_ADDRESS, SH200I_OUTPUT_ACC_X+11, 1, tempdata);
+  gyroZ |= tempdata[0] << 8;
+
+#if 0
+  Serial.printf("aX = %ld,aY = %ld,aZ = %ld,gX = %ld,gY = %ld,gZ = %ld\r\n", accX, accY, accZ,gyroX, gyroY, gyroZ);
+#else
+  Serial.printf("aX = %ld,aY = %ld,aZ = %ld,gX = %ld,gY = %ld,gZ = %ld\r\n", accX, accY, accZ,gyroX, gyroY, gyroZ);
+  //Lcd_Asc(0,60,"sh200i ok!");
+  Lcd_ClearRect(0,20,80,100,WHITE);
+  Lcd_Asc(0,20,"a:");
+  //Lcd_Asc(50,20,"Rt");
+  //Lcd_Asc(40,20,"      ");
+  //Lcd_Asc(0,40,"         ");
+  Lcd_PrintValueI(40, 20, accX);
+  Lcd_PrintValueI(0, 40, accY);
+  Lcd_PrintValueI(40, 40, accZ);
+  //Lcd_Asc(0,40,"Rt");
+  //Lcd_Asc(60,40,"Rt");
+  Lcd_Asc(0,60,"g:");
+  Lcd_PrintValueI(40, 60, gyroX);
+  Lcd_PrintValueI(0, 80, gyroY);
+  Lcd_PrintValueI(40, 80, gyroZ);
+  //Lcd_Asc(50,60,"Rt");
+  //Lcd_Asc(0,80,"Rt");
+  //Lcd_Asc(60,80,"Rt");
+#endif
+  //delay(1000);
+}
+
+void ir_test() {
+  //!IR
+  //rem.begin(LED_RI,1);
+  rem.necSend(0x3000, 0xfd02);
+  //Lcd_Asc(0,100,"ir ok!");
+}
+
+uint8_t Rt_second;
+uint8_t Rt_old_second;
+void rtc_test() {
+    rtc.GetBm8563Time();
+    Rt_second = rtc.Second;
+    #if 0
+    Serial.printf("time = %02d : %02d : %02d\n",rtc.Hour, rtc.Minute, rtc.Second);
+    delay(1000);
+    #else
+    if(Rt_old_second != Rt_second){
+     Lcd_Asc(0,100,"Rt");
+     Lcd_Asc(17,100,(char *)rtc.DateString);
+    }
+
+    Rt_old_second = Rt_second;
+    #endif
+    //rtc.GetBm8563Time();
+    //second_test_2 = rtc.Second;
+    //Serial.printf("time = %02d : %02d : %02d\n",rtc.Hour, rtc.Minute, rtc.Second);
+    //if(second_test_1 != second_test_2)
+      //Lcd_Asc(0,80,"rtc ok!");
+}
+
+void setup() {
+  // put your setup code here, to run once:
+  Wire.begin();
+  //Wire1.begin();
+  Serial.begin(115200);
+
+  //power
+  axp192.Init();
+   
+  //lcd
+  Lcd_Init();
+  Lcd_pic(gImage_001);
+  delay(1000);
+  Lcd_Clear(WHITE);
+  delay(50);
+  Lcd_Clear(BLUE);
+  delay(50);
+  Lcd_Clear(RED);
+  delay(50);
+  Lcd_Clear(GREEN);
+  delay(50);
+  Lcd_Clear(YELLOW);
+  delay(50);
+
+  Lcd_Clear(WHITE);
+  wifi_test();
+  Lcd_Clear(WHITE);
+  Lcd_Asc(8,0,"M5StickC");
+
+  //!sh200i
+  sh200i_init();
+  //Lcd_Asc(0,20,"my name is");
+
+  //!IR
+  rem.begin(LED_RI,1);
+
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, HIGH);
+
+  pinMode(IO_1, OUTPUT);
+  digitalWrite(IO_1, HIGH);
+
+  pinMode(IO_2, OUTPUT);
+  digitalWrite(IO_2, HIGH);
+
+  pinMode(IO_3, OUTPUT);
+  digitalWrite(IO_3, LOW);
+
+
+  pinMode(BUTTON_HOME, INPUT);
+  pinMode(BUTTON_PIN, INPUT);
+
+  spm_test();
+}
+
+bool test_led = 0;
+bool led = true;
+long loopTime, startTime = 0;
+int led_count = 2000;
+void loop() {
+  // put your main code here, to run repeatedly:
+  loopTime = millis();
+  //startTime = loopTime;
+#if 1
+  if(digitalRead(BUTTON_HOME) == LOW){
+    led_count++;
+    
+    //if(led_count >= 15);
+    //led_count = 0;
+    //while(digitalRead(BUTTON_HOME) == LOW);
+  }
+
+  if(digitalRead(BUTTON_PIN) == LOW){
+    //Lcd_Asc(0,140,"Kpin ok!");
+    led = !led;
+    rem.necSend(0x3000, 0xfd02);
+    while(digitalRead(BUTTON_PIN) == LOW);
+  }
+  digitalWrite(LED_BUILTIN, led);
+
+  //io test
+  digitalWrite(IO_1, test_led);
+  digitalWrite(IO_2, test_led);
+  digitalWrite(IO_3, test_led);
+
+#endif
+  //!rtc
+  if(startTime < (loopTime - 1000)){
+  test_led = !test_led;
+  startTime = loopTime;
+  rtc_test();
+  sh200i_test();
+  grove_test();
+  /*
+  uint16_t offset = (int)ADC_INPUT * 0x1000 + 0xFFF;
+  Lcd_ClearRect(40, 120, 180,140, WHITE);
+  Lcd_PrintValueI(40, 120, offset-buffer);
+  Serial.printf("ADC reading: %d\n", offset-buffer);
+  if(offset-buffer >= 100){
+  Lcd_Asc(0,120,"mic: exist");
+  }else
+  {
+    Lcd_Asc(0,120,"           ");
+  }
+  */
+  }
+
+  axp192.ScreenBreath(led_count / 200);
+    //delay(1000);
 }

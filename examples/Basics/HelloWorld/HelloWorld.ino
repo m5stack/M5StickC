@@ -1,9 +1,8 @@
-#include <M5Stack.h>
+#include <M5StickC.h>
 
-// the setup routine runs once when M5Stack starts up
+// the setup routine runs once when M5StickC starts up
 void setup(){
-
-  // Initialize the M5Stack object
+  // Initialize the M5StickC object
   M5.begin();
 
   // LCD display
@@ -12,5 +11,4 @@ void setup(){
 
 // the loop routine runs over and over again forever
 void loop() {
-
 }

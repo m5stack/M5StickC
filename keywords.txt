@@ -1,0 +1,84 @@
+#######################################
+# Syntax Coloring Map For M5StickC
+#######################################
+
+#######################################
+# Library (KEYWORD3)
+#######################################
+
+M5StickC KEYWORD3
+M5	KEYWORD3
+m5	KEYWORD3
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+Lcd	KEYWORD1
+Speaker	KEYWORD1
+BtnA	KEYWORD1
+BtnB	KEYWORD1
+BtnC	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+begin	KEYWORD2
+update	KEYWORD2
+
+isPressed	KEYWORD2
+wasPressed	KEYWORD2
+pressedFor	KEYWORD2
+
+isReleased	KEYWORD2
+wasReleased	KEYWORD2
+releasedFor	KEYWORD2
+wasReleasefor	KEYWORD2
+
+held	KEYWORD2
+repeat	KEYWORD2
+timeHeld	KEYWORD2
+
+getBuffer	KEYWORD2
+setContrast	KEYWORD2
+clear	KEYWORD2
+update	KEYWORD2
+fillScreen	KEYWORD2
+persistence	KEYWORD2
+setColor	KEYWORD2
+drawPixel	KEYWORD2
+getPixel	KEYWORD2
+drawLine	KEYWORD2
+drawFastVLine	KEYWORD2
+drawFastHLine	KEYWORD2
+drawRect	KEYWORD2
+fillRect	KEYWORD2
+drawRoundRect	KEYWORD2
+fillRoundRect	KEYWORD2
+drawCircle	KEYWORD2
+fillCircle	KEYWORD2
+drawCircleHelper	KEYWORD2
+fillCircleHelper	KEYWORD2
+drawTriangle	KEYWORD2
+fillTriangle	KEYWORD2
+drawBitmap	KEYWORD2
+drawChar	KEYWORD2
+print	KEYWORD2
+cursorX	KEYWORD2
+cursorY	KEYWORD2
+fontSize	KEYWORD2
+textWrap	KEYWORD2
+fontWidth	KEYWORD2
+fontHeight	KEYWORD2
+setFont	KEYWORD2
+setTextColor	KEYWORD2
+setTextSize	KEYWORD2
+
+WHITE	LITERAL1
+BLACK	LITERAL1
+INVERT	LITERAL1
+GRAY	LITERAL1
+RED	LITERAL1
+BLUE	LITERAL1
+GREEN	LITERAL1
