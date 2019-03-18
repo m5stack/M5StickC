@@ -1,6 +1,6 @@
 #ifndef __IIC_H__
 #define __IIC_H__
-#include <driver\i2c.h>
+#include <driver/i2c.h>
 
 
 #define DATA_LENGTH                        512              /*!<Data buffer length for test buffer*/

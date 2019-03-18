@@ -3,17 +3,15 @@
 #include <WiFi.h>
 
 
-#include "axp192.h"
-#include "Lcd_Driver.h"
+#include "AXP192.h"
+#include "LCD_Driver.h"
 #include "LCD_Config.h"
 #include "IMU.h"
-#include "rtc.h"
+#include "RTC.h"
 #include "esp32_rmt.h"
 #include "DHT12.h"
 
 #include <driver/i2s.h>
-
-
 #define PIN_CLK  0
 #define PIN_DATA 34
 #define READ_LEN (2 * 1024)

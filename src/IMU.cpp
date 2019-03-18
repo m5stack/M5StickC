@@ -18,11 +18,11 @@
 
 
 void I2C_Read_NBytes(uint8_t driver_Addr, uint8_t start_Addr, uint8_t number_Bytes, uint8_t *read_Buffer){
-    Wire.beginTransmission(driver_Addr);
-    Wire.write(start_Addr);  
-    Wire.endTransmission();
-    Wire.requestFrom(driver_Addr,1);
-    byte buf = Wire.read();
+    Wire1.beginTransmission(driver_Addr);
+    Wire1.write(start_Addr);  
+    Wire1.endTransmission();
+    Wire1.requestFrom(driver_Addr,1);
+    byte buf = Wire1.read();
     //Serial.printf("I2C Read OP, ADDR: 0x%02x, ADS: 0x%02x, NumBytes: %u, result: 0x%02x\n\r", driver_Addr, start_Addr, number_Bytes, buf);
     *read_Buffer = buf;
 }
@@ -36,10 +36,10 @@ void I2C_Read_NBytes(uint8_t driver_Addr, uint8_t start_Addr, uint8_t number_Byt
 //  * @param  write_Buffer(所写的数据存放的地址) 
 //  */
 void I2C_Write_NBytes(uint8_t driver_Addr, uint8_t start_Addr, uint8_t number_Bytes, uint8_t *write_Buffer){
-    Wire.beginTransmission(driver_Addr);
-    Wire.write(start_Addr);  
-    Wire.write(*write_Buffer); 
-    Wire.endTransmission();
+    Wire1.beginTransmission(driver_Addr);
+    Wire1.write(start_Addr);  
+    Wire1.write(*write_Buffer); 
+    Wire1.endTransmission();
     //Serial.printf("I2C Write OP, ADDR: 0x%02x, ADS: 0x%02x, NumBytes: %u, Data: 0x%02x\n\r", driver_Addr, start_Addr, number_Bytes, *write_Buffer);
 }
 

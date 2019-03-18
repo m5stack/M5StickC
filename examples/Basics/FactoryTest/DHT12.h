@@ -7,7 +7,6 @@
 #ifndef DHT12_h 
 #define DHT12_h 
 #include "Arduino.h"
-//#include "Wire.h"
 #include"iic.h"
 
 #define CELSIUS		1
