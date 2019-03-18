@@ -21,7 +21,7 @@ void I2C_Read_NBytes(uint8_t driver_Addr, uint8_t start_Addr, uint8_t number_Byt
     Wire1.beginTransmission(driver_Addr);
     Wire1.write(start_Addr);  
     Wire1.endTransmission();
-    Wire1.requestFrom(driver_Addr,1);
+    Wire1.requestFrom(driver_Addr,(uint8_t)1);
     byte buf = Wire1.read();
     //Serial.printf("I2C Read OP, ADDR: 0x%02x, ADS: 0x%02x, NumBytes: %u, result: 0x%02x\n\r", driver_Addr, start_Addr, number_Bytes, buf);
     *read_Buffer = buf;

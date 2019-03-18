@@ -2,13 +2,11 @@
 #define _CONFIG_H_
 
 
-#define IR  9
 
-
-#define LED_RI      9
-#define LED         10
-#define BUTTON_HOME 37
-#define BUTTON_PIN  39
+#define M5_IR      9
+#define M5_LED     10
+#define M5_BUTTON_HOME 37
+#define M5_BUTTON_RST  39
 
 // UART
 #define USE_SERIAL Serial

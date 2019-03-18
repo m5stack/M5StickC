@@ -13,9 +13,6 @@
 #include "AXP192.h"
 
 #include "utility/Config.h"
-//#include "utility/esp32_rmt.h"
-//#include "utility/In_eSPI.h"
-//#include "utility/Sprite.h"
 #include "RTC.h"
 
 class M5StickC {

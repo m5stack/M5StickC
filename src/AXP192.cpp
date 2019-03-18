@@ -1,4 +1,4 @@
-#include "axp192.h"
+#include "AXP192.h"
 
 AXP192::AXP192(){
   
