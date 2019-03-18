@@ -24,10 +24,10 @@ void i2sInit()
    };
 
    i2s_pin_config_t pin_config;
-   pin_config.bck_io_num  = I2S_PIN_NO_CHANGE;
-	 pin_config.ws_io_num   = PIN_CLK;
+   pin_config.bck_io_num   = I2S_PIN_NO_CHANGE;
+   pin_config.ws_io_num    = PIN_CLK;
    pin_config.data_out_num = I2S_PIN_NO_CHANGE;
-	 pin_config.data_in_num = PIN_DATA;
+   pin_config.data_in_num  = PIN_DATA;
 	
    
    i2s_driver_install(I2S_NUM_0, &i2s_config, 0, NULL);
@@ -40,12 +40,12 @@ void i2sInit()
 void mic_record_task (void* arg)
 {   
     
-    while (1){
-	    i2s_read_bytes(I2S_NUM_0, (char*) BUFFER, READ_LEN, (100 / portTICK_RATE_MS));
-      adcBuffer = (uint16_t *)BUFFER;
-      showSignal();
-	    vTaskDelay(100 / portTICK_RATE_MS);
-	  }
+  while(1){
+    i2s_read_bytes(I2S_NUM_0, (char*) BUFFER, READ_LEN, (100 / portTICK_RATE_MS));
+    adcBuffer = (uint16_t *)BUFFER;
+    showSignal();
+    vTaskDelay(100 / portTICK_RATE_MS);
+  }
 
 }
 
