@@ -20,7 +20,7 @@ English | [中文](README_cn.md)
 **Red LED & IR transmitter & BUTTON A & BUTTON B**
 
 <table>
- <tr><td>ESP32 chip</td><td>GPIO9</td><td>GPIO10</td><td>GPIO37</td><td>GPIO39</td></tr>
+ <tr><td>ESP32 chip</td><td>GPIO10</td><td>GPIO9</td><td>GPIO37</td><td>GPIO39</td></tr>
  <tr><td>Red LED</td><td>LED pin</td><td> </td><td> </td><td> </td></tr>
  <tr><td>IR transmitter</td><td> </td><td>transmitter pin</td><td> </td><td> </td></tr>
 <tr><td>BUTTON A</td><td> </td><td> </td><td>button pin</td><td> </td></tr>
