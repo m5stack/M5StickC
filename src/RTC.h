@@ -3,10 +3,32 @@
 
 #include <Wire.h>
 
+typedef struct
+{
+  uint8_t Hours;
+  uint8_t Minutes;
+  uint8_t Seconds;
+}RTC_TimeTypeDef;
+
+
+typedef struct
+{
+  uint8_t WeekDay;
+  uint8_t Month;
+  uint8_t Date;
+  uint16_t Year;
+}RTC_DateTypeDef;
+
 class RTC { 
 public:
   RTC();
   void GetBm8563Time(void);
+
+  void SetTime(RTC_TimeTypeDef* RTC_TimeStruct);
+  void SetData(RTC_DateTypeDef* RTC_DateStruct);
+
+  void GetTime(RTC_TimeTypeDef* RTC_TimeStruct);
+  void GetData(RTC_DateTypeDef* RTC_DateStruct);
   
 public:
   uint8_t Second;
@@ -26,6 +48,10 @@ private:
   void Bcd2asc(void);
   void DataMask();
   void Str2Time(void);
+
+
+  uint8_t Bcd2ToByte(uint8_t Value);
+  uint8_t ByteToBcd2(uint8_t Value);
    
 private:
 
