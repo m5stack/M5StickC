@@ -19,7 +19,7 @@
 **红色 LED & 红外发射管 IR & 按键 BUTTON A & 按键 BUTTON B**
 
 <table>
- <tr><td>ESP32 芯片</td><td>GPIO9</td><td>GPIO10</td><td>GPIO37</td><td>GPIO39</td></tr>
+ <tr><td>ESP32 芯片</td><td>GPIO10</td><td>GPIO9</td><td>GPIO37</td><td>GPIO39</td></tr>
  <tr><td>红色 LED</td><td>LED 管脚</td><td> </td><td> </td><td> </td></tr>
  <tr><td>红外发射管 IR</td><td> </td><td>发射管引脚</td><td> </td><td> </td></tr>
 <tr><td>按键 BUTTON A</td><td> </td><td> </td><td>按键管脚</td><td> </td></tr>
