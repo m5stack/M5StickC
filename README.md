@@ -1,4 +1,4 @@
 # M5StickC Library
 
 
-Welcom to program with M5StickC Core
+Welcome to program with M5StickC Core
