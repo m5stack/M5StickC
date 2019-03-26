@@ -107,7 +107,7 @@ void mic_record_task (void* arg)
     //i2s_start(I2S_NUM_0);
     i2s_read_bytes(I2S_NUM_0, (char*) BUFFER, READ_LEN, (100 / portTICK_RATE_MS));
     adcBuffer = (uint16_t *)BUFFER;
-    showSignal();
+    //showSignal();
     vTaskDelay(100 / portTICK_RATE_MS);
     //i2s_stop(I2S_NUM_0);
   }
@@ -232,5 +232,7 @@ void loop() {
     while(digitalRead(M5_BUTTON_HOME) == LOW);
     M5.Axp.ScreenBreath(led_count);
   }
+
+  showSignal();
 
 }
