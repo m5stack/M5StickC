@@ -148,6 +148,10 @@ bool M5Display::initHzk16(boolean use, const char *HZK16Path,
 
   }
 
+  case ExternalHzk16:
+    return false;
+    break;
+
   case DontUsedHzk16: {
 
     if (pHzk16File != NULL) {
