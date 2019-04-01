@@ -21,8 +21,7 @@ typedef enum {
 typedef enum
 {
   DontUsedHzk16,
-  InternalHzk16,
-  ExternalHzk16
+  InternalHzk16
 }Hzk16Types;
 
 class M5Display : public TFT_eSPI {
