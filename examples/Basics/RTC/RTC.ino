@@ -2,7 +2,7 @@
 
 RTC_TimeTypeDef RTC_TimeStruct;
 RTC_DateTypeDef RTC_DateStruct;
-//extern const unsigned char gImage_000[];
+
 void setup() {
   // put your setup code here, to run once:
   M5.begin();

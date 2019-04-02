@@ -47,6 +47,8 @@ class M5Display : public TFT_eSPI {
   inline void highlight(bool isHighlight) { highlighted = isHighlight; }
   // Set highlight color
   inline void setHighlightColor(uint16_t color) { highlightcolor = color; istransparent = false; }
+  void qrcode(const char *string, uint16_t x = 5, uint16_t y = 45, uint8_t width = 70, uint8_t version = 7);
+  void qrcode(const String &string, uint16_t x = 5, uint16_t y = 45, uint8_t width = 70, uint8_t version = 7);
   /*
   void clearDisplay(uint32_t color=ILI9341_BLACK) { fillScreen(color); }
   void clear(uint32_t color=ILI9341_BLACK) { fillScreen(color); }
@@ -72,8 +74,8 @@ class M5Display : public TFT_eSPI {
 
   #define setFont setFreeFont
 
-  void qrcode(const char *string, uint16_t x = 50, uint16_t y = 10, uint8_t width = 220, uint8_t version = 6);
-  void qrcode(const String &string, uint16_t x = 50, uint16_t y = 10, uint8_t width = 220, uint8_t version = 6);
+  //void qrcode(const char *string, uint16_t x = 50, uint16_t y = 10, uint8_t width = 220, uint8_t version = 6);
+  //void qrcode(const String &string, uint16_t x = 50, uint16_t y = 10, uint8_t width = 220, uint8_t version = 6);
 
   void drawBmp(fs::FS &fs, const char *path, uint16_t x, uint16_t y);
   void drawBmpFile(fs::FS &fs, const char *path, uint16_t x, uint16_t y);
