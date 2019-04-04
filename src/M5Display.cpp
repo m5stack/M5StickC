@@ -438,7 +438,7 @@ void M5Display::writeHzkGbk(const char *c) {
 
 void M5Display::setTextWrap(boolean w) { textwrap = w; }
 
-include "utility/qrcode.h"
+#include "utility/qrcode.h"
 void M5Display::qrcode(const char *string, uint16_t x, uint16_t y, uint8_t width, uint8_t version) {
   
   // Create the QR code
