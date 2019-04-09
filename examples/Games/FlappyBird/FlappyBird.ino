@@ -9,19 +9,19 @@
 #define TFTW2           40     // half screen width
 #define TFTH2           80     // half screen height
 // game constant
-#define SPEED             1
+#define SPEED            1
 #define GRAVITY         9.8
 #define JUMP_FORCE     2.15
 #define SKIP_TICKS     20.0     // 1000 / 50fps
 #define MAX_FRAMESKIP     5
 // bird size
-#define BIRDW             4     // bird width
-#define BIRDH             4     // bird height
-#define BIRDW2            2     // half width
-#define BIRDH2            2     // half height
+#define BIRDW             8     // bird width
+#define BIRDH             8     // bird height
+#define BIRDW2            4     // half width
+#define BIRDH2            4     // half height
 // pipe size
 #define PIPEW            15     // pipe width
-#define GAPHEIGHT        42     // pipe gap height
+#define GAPHEIGHT        30     // pipe gap height
 // floor size
 #define FLOORH           20     // floor height (from bottom of the screen)
 // grass size
@@ -88,25 +88,6 @@ static short tmpx, tmpy;
 // faster drawPixel method by inlining calls and using setAddrWindow and pushColor
 // using macro to force inlining
 #define drawPixel(a, b, c) M5.Lcd.setAddrWindow(a, b, a, b); M5.Lcd.pushColor(c)
-
-
-void setup() {
-  // put your setup code here, to run once:
-M5.begin();
-pinMode(M5_BUTTON_HOME, INPUT);
-resetMaxScore();
-
-}
-
-void loop() {
-  // put your main code here, to run repeatedly:
-  game_start();
-  game_loop();
-  game_over();
-}
-
-
-
 // ---------------
 // game loop
 // ---------------
@@ -137,28 +118,17 @@ void game_loop() {
   bool passed_pipe = false;
   // temp var for setAddrWindow
   unsigned char px;
+  unsigned char bpx;
 
   while (1) {
     loops = 0;
     while( millis() > next_game_tick && loops < MAX_FRAMESKIP) {
-      // ===============
-      // input
-      // ===============
-      //if (M5.BtnB.wasPressed()) {
-        // if the bird is not too close to the top of the screen apply jump force
-        //if (bird.y > BIRDH2*0.5) bird.vel_y = -JUMP_FORCE;
-        // else zero velocity
-        //else bird.vel_y = 0;
-      //}
-      //M5.update();
-
-       if(digitalRead(M5_BUTTON_HOME) == LOW){
-      while(digitalRead(M5_BUTTON_HOME) == LOW);
-       if (bird.y > BIRDH2*0.5) bird.vel_y = -JUMP_FORCE;
-        // else zero velocity
-        else bird.vel_y = 0;
-     
-    }
+      if(digitalRead(M5_BUTTON_HOME) == LOW){
+        //while(digitalRead(M5_BUTTON_HOME) == LOW);
+         if (bird.y > BIRDH2*0.5) bird.vel_y = -JUMP_FORCE;
+          // else zero velocity
+          else bird.vel_y = 0;
+      }
       
       // ===============
       // update
@@ -176,6 +146,7 @@ void game_loop() {
 
       // pipe
       // ---------------
+      
       pipes.x -= SPEED;
       // if pipe reached edge of the screen reset its position and gap
       if (pipes.x < -PIPEW) {
@@ -194,6 +165,7 @@ void game_loop() {
     // pipe
     // ---------------
     // we save cycles if we avoid drawing the pipe when outside the screen
+
     if (pipes.x >= 0 && pipes.x < TFTW) {
       // pipe color
       M5.Lcd.drawFastVLine(pipes.x+3, 0, pipes.gap_y, PIPECOL);
@@ -210,9 +182,13 @@ void game_loop() {
       drawPixel(pipes.x+3, pipes.gap_y-6, PIPESEAMCOL);
       drawPixel(pipes.x+3, pipes.gap_y+GAPHEIGHT+6, PIPESEAMCOL);
     }
+#if 1
     // erase behind pipe
-    if (pipes.x <= TFTW) M5.Lcd.drawFastVLine(pipes.x+PIPEW, 0, GAMEH, BCKGRDCOL);
-
+    if (pipes.x <= TFTW)
+     M5.Lcd.drawFastVLine(pipes.x+PIPEW, 0, GAMEH, BCKGRDCOL);
+     //M5.Lcd.drawFastVLine(pipes.x, 0, GAMEH, BCKGRDCOL);
+    // PIPECOL
+#endif
     // bird
     // ---------------
     tmpx = BIRDW-1;
@@ -357,13 +333,8 @@ void game_over() {
   M5.Lcd.setCursor( 1, 21);
   M5.Lcd.print("Max Score:");
   M5.Lcd.print(maxScore);
-  while (1) {
-    // wait for push button/*
-      //if(M5.BtnB.wasPressed()) {
-        //break;
-      //}
-    //M5.update();
-
+  while(1) {
+    // wait for push button
     if(digitalRead(M5_BUTTON_HOME) == LOW){
       while(digitalRead(M5_BUTTON_HOME) == LOW);
       break;
@@ -398,4 +369,20 @@ void EEPROM_Read(int *num, int MemPos)
    ByteArray[x] = EEPROM.read((MemPos * 2) + x);    
  }
  memcpy(num, ByteArray, 2);
+}
+
+
+void setup() {
+  // put your setup code here, to run once:
+  M5.begin();
+  pinMode(M5_BUTTON_HOME, INPUT);
+  resetMaxScore();
+
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  game_start();
+  game_loop();
+  game_over();
 }
