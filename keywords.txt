@@ -6,7 +6,7 @@
 # Library (KEYWORD3)
 #######################################
 
-M5StickC KEYWORD3
+M5StickC	KEYWORD3
 M5	KEYWORD3
 m5	KEYWORD3
 

@@ -11,8 +11,8 @@
 #define SH200I_FIFO_CONFIG 0x12
 #define SH200I_ACC_RANGE 0x16
 #define SH200I_GYRO_RANGE 0x2B
-#define SH200I_OUTPUT_ACC_X 0x00
-#define SH200I_OUTPUT_GYRO_X 0x06
+#define SH200I_OUTPUT_ACC 0x00
+#define SH200I_OUTPUT_GYRO 0x06
 #define SH200I_OUTPUT_TEMP 0x0C
 #define SH200I_REG_SET1 0xBA
 #define SH200I_REG_SET2 0xCA   //ADC reset
@@ -20,10 +20,62 @@
 #define SH200I_SOFT_RESET 0x7F
 #define SH200I_RESET 0x75
 
-void I2C_Read_NBytes(uint8_t driver_Addr, uint8_t start_Addr, uint8_t number_Bytes, uint8_t *read_Buffer);
-void I2C_Write_NBytes(uint8_t driver_Addr, uint8_t start_Addr, uint8_t number_Bytes, uint8_t *write_Buffer);
-void sh200i_ADCReset(void);
-void sh200i_Reset(void);
-void sh200i_init(void);
+#define G (9.8)
+#define RtA 		57.324841
+#define AtR    	0.0174533	
+#define Gyro_Gr	0.0010653
+
+
+
+
+
+class IMU { 
+public:
+  IMU();
+  void I2C_Read_NBytes(uint8_t driver_Addr, uint8_t start_Addr, uint8_t number_Bytes, uint8_t *read_Buffer);
+  void I2C_Write_NBytes(uint8_t driver_Addr, uint8_t start_Addr, uint8_t number_Bytes, uint8_t *write_Buffer);
+  void sh200i_ADCReset(void);
+  void sh200i_Reset(void);
+
+  void Init(void);
+
+  void getGres();
+  void getAres();
+  void getAccelData(int16_t* ax, int16_t* ay, int16_t* az);
+  void getGyroData(int16_t* gx, int16_t* gy, int16_t* gz);
+  void getTempData(int16_t *t);
+
+public:
+  
+   float aRes, gRes;
+
+
+protected:
+    // Set initial input parameters
+    enum Ascale {
+      AFS_4G = 0,
+      AFS_8G,
+      AFS_16G
+    };
+
+    enum Gscale {
+      GFS_125DPS = 0,
+      GFS_250DPS,
+      GFS_500DPS,
+      GFS_1000DPS,
+      GFS_2000DPS
+    };
+
+    // Specify sensor full scale
+    uint8_t Gscale = GFS_2000DPS;
+    uint8_t Ascale = AFS_4G;
+  
+
+  
+private:
+   
+private:
+
+};
 
 #endif

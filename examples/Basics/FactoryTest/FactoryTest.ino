@@ -1,5 +1,4 @@
 #include <M5StickC.h>
-#include <IMU.h>
 #include <WiFi.h>
 #include <driver/i2s.h>
 
@@ -19,13 +18,21 @@ int IO_3 = 36;
 
 #define PIN_CLK  0
 #define PIN_DATA 34
-#define READ_LEN (2 * 1024)
+#define READ_LEN (2 * 80)
 #define SHOW_LEN (80)
 uint8_t BUFFER[READ_LEN] = {0};
 
 uint16_t *adcBuffer = NULL;
 uint16_t oldx[SHOW_LEN];
 uint16_t oldy[SHOW_LEN];
+
+int16_t accX = 0;
+int16_t accY = 0;
+int16_t accZ = 0;
+
+int16_t gyroX = 0;
+int16_t gyroY = 0;
+int16_t gyroZ = 0;
 
 void wifi_test() {
     M5.Lcd.setTextColor(BLACK, WHITE);
@@ -49,56 +56,22 @@ void wifi_test() {
       M5.Lcd.printf("%d AP");
     }
 }
+
 void sh200i_test() {
 
-  int16_t accX = 0;
-  int16_t accY = 0;
-  int16_t accZ = 0;
-
-  int16_t gyroX = 0;
-  int16_t gyroY = 0;
-  int16_t gyroZ = 0;
-  unsigned char tempdata[1];
-
-  I2C_Read_NBytes(SH200I_ADDRESS, SH200I_OUTPUT_ACC_X, 1, tempdata);
-  accX = tempdata[0];
-  I2C_Read_NBytes(SH200I_ADDRESS, SH200I_OUTPUT_ACC_X+1, 1, tempdata);
-  accX |= tempdata[0] << 8;
-
-
-  I2C_Read_NBytes(SH200I_ADDRESS, SH200I_OUTPUT_ACC_X+2, 1, tempdata);
-  accY = tempdata[0];
-  I2C_Read_NBytes(SH200I_ADDRESS, SH200I_OUTPUT_ACC_X+3, 1, tempdata);
-  accY |= tempdata[0] << 8;
-    
-  I2C_Read_NBytes(SH200I_ADDRESS, SH200I_OUTPUT_ACC_X+4, 1, tempdata);
-  accZ = tempdata[0];
-  I2C_Read_NBytes(SH200I_ADDRESS, SH200I_OUTPUT_ACC_X+5, 1, tempdata);
-  accZ |= tempdata[0] << 8;
-
-  I2C_Read_NBytes(SH200I_ADDRESS, SH200I_OUTPUT_ACC_X+6, 1, tempdata);
-  gyroX = tempdata[0];
-  I2C_Read_NBytes(SH200I_ADDRESS, SH200I_OUTPUT_ACC_X+7, 1, tempdata);
-  gyroX |= tempdata[0] << 8;
-
-  I2C_Read_NBytes(SH200I_ADDRESS, SH200I_OUTPUT_ACC_X+8, 1, tempdata);
-  gyroY = tempdata[0];
-  I2C_Read_NBytes(SH200I_ADDRESS, SH200I_OUTPUT_ACC_X+9, 1, tempdata);
-  gyroY |= tempdata[0] << 8;
-
-  I2C_Read_NBytes(SH200I_ADDRESS, SH200I_OUTPUT_ACC_X+10, 1, tempdata);
-  gyroZ = tempdata[0];
-  I2C_Read_NBytes(SH200I_ADDRESS, SH200I_OUTPUT_ACC_X+11, 1, tempdata);
-  gyroZ |= tempdata[0] << 8;
-
-
-  Serial.printf("aX = %ld,aY = %ld,aZ = %ld,gX = %ld,gY = %ld,gZ = %ld\r\n", accX, accY, accZ,gyroX, gyroY, gyroZ);
+  M5.IMU.getGyroData(&gyroX,&gyroY,&gyroZ);
+  M5.IMU.getAccelData(&accX,&accY,&accZ);
+  
   M5.Lcd.setTextColor(GREEN, WHITE);
-  M5.Lcd.setCursor(5, 1, 1);
-  M5.Lcd.println("y   Y   Z");
-  M5.Lcd.setCursor(0, 15);
-  M5.Lcd.printf("%3d %3d %3d\r\n", accX, accY, accZ);
-  M5.Lcd.printf("%3d %3d %3d", gyroX, gyroY, gyroZ);
+  M5.Lcd.setCursor(20, 1, 1);
+  M5.Lcd.println("mg  o/s");
+  M5.Lcd.setCursor(0, 10);
+  M5.Lcd.printf("x  %d   %.1f    ", (int)(((float) gyroX) * M5.IMU.gRes), ((float) accX) * M5.IMU.aRes);
+  M5.Lcd.setCursor(0, 20);
+  M5.Lcd.printf("y  %d   %.1f    ", (int)(((float) gyroY) * M5.IMU.gRes), ((float) accY) * M5.IMU.aRes);
+  M5.Lcd.setCursor(0, 30);
+  M5.Lcd.printf("z  %d   %.1f    ", (int)(((float) gyroZ) * M5.IMU.gRes), ((float) accZ) * M5.IMU.aRes);
+ 
 }
 
 void rtc_test(){
@@ -131,10 +104,12 @@ void mic_record_task (void* arg)
 {   
     
   while(1){
+    //i2s_start(I2S_NUM_0);
     i2s_read_bytes(I2S_NUM_0, (char*) BUFFER, READ_LEN, (100 / portTICK_RATE_MS));
     adcBuffer = (uint16_t *)BUFFER;
-    showSignal();
+    //showSignal();
     vTaskDelay(100 / portTICK_RATE_MS);
+    //i2s_stop(I2S_NUM_0);
   }
 
 }
@@ -212,7 +187,7 @@ void setup() {
   M5.Lcd.fillScreen(WHITE);
 
   //!SH200I
-  sh200i_init();
+  M5.IMU.Init();
 
   //!IR LED
   rem.begin(M5_IR,true);
@@ -257,5 +232,7 @@ void loop() {
     while(digitalRead(M5_BUTTON_HOME) == LOW);
     M5.Axp.ScreenBreath(led_count);
   }
+
+  showSignal();
 
 }

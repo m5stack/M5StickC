@@ -4,7 +4,9 @@
 
 
 
+IMU::IMU(){
 
+}
 //i2c读写函数说明：
 //读函数
 //I2C_Read_NBytes(uint8_t driver_Addr, uint8_t start_Addr, uint8_t number_Bytes, uint8_t *read_Buffer)
@@ -17,14 +19,18 @@
 //  */
 
 
-void I2C_Read_NBytes(uint8_t driver_Addr, uint8_t start_Addr, uint8_t number_Bytes, uint8_t *read_Buffer){
+void IMU::I2C_Read_NBytes(uint8_t driver_Addr, uint8_t start_Addr, uint8_t number_Bytes, uint8_t *read_Buffer){
     Wire1.beginTransmission(driver_Addr);
     Wire1.write(start_Addr);  
-    Wire1.endTransmission();
-    Wire1.requestFrom(driver_Addr,(uint8_t)1);
-    byte buf = Wire1.read();
-    //Serial.printf("I2C Read OP, ADDR: 0x%02x, ADS: 0x%02x, NumBytes: %u, result: 0x%02x\n\r", driver_Addr, start_Addr, number_Bytes, buf);
-    *read_Buffer = buf;
+    Wire1.endTransmission(false);
+    uint8_t i = 0;
+    Wire1.requestFrom(driver_Addr,number_Bytes);
+    //byte buf = Wire1.read();
+    //*read_Buffer = buf;
+    //! Put read results in the Rx buffer
+    while (Wire1.available()) {
+    read_Buffer[i++] = Wire1.read();
+     }        
 }
 //写函数
 //I2C_Write_NBytes(uint8_t driver_Addr, uint8_t start_Addr, uint8_t number_Bytes, uint8_t *write_Buffer)
@@ -35,7 +41,7 @@ void I2C_Read_NBytes(uint8_t driver_Addr, uint8_t start_Addr, uint8_t number_Byt
 //  * @param  number_Bytes(需要写的数据的字节数)
 //  * @param  write_Buffer(所写的数据存放的地址) 
 //  */
-void I2C_Write_NBytes(uint8_t driver_Addr, uint8_t start_Addr, uint8_t number_Bytes, uint8_t *write_Buffer){
+void IMU::I2C_Write_NBytes(uint8_t driver_Addr, uint8_t start_Addr, uint8_t number_Bytes, uint8_t *write_Buffer){
     Wire1.beginTransmission(driver_Addr);
     Wire1.write(start_Addr);  
     Wire1.write(*write_Buffer); 
@@ -43,7 +49,7 @@ void I2C_Write_NBytes(uint8_t driver_Addr, uint8_t start_Addr, uint8_t number_By
     //Serial.printf("I2C Write OP, ADDR: 0x%02x, ADS: 0x%02x, NumBytes: %u, Data: 0x%02x\n\r", driver_Addr, start_Addr, number_Bytes, *write_Buffer);
 }
 
-void sh200i_ADCReset(void)
+void IMU::sh200i_ADCReset(void)
 {
   unsigned char tempdata[1];
   //set 0xC2 bit2 1-->0
@@ -60,7 +66,7 @@ void sh200i_ADCReset(void)
   I2C_Write_NBytes(SH200I_ADDRESS, SH200I_ADC_RESET, 1, tempdata);
 }
 
-void sh200i_Reset(void)
+void IMU::sh200i_Reset(void)
 {
   unsigned char tempdata[1];
   
@@ -80,7 +86,7 @@ void sh200i_Reset(void)
 
 
 //初始化
-void sh200i_init(void) 
+void IMU::Init(void) 
 {
   unsigned char tempdata[1];
   
@@ -148,4 +154,87 @@ void sh200i_init(void)
   I2C_Write_NBytes(SH200I_ADDRESS, SH200I_REG_SET2, 1, tempdata);
   
   delay(10);
+}
+
+
+void IMU::getGres(){
+
+   switch (Gscale)
+  {
+  // Possible gyro scales (and their register bit settings) are:
+  // 250 DPS (00), 500 DPS (01), 1000 DPS (10), and 2000 DPS  (11). 
+        // Here's a bit of an algorith to calculate DPS/(ADC tick) based on that 2-bit value:
+    case GFS_125DPS:
+          gRes = 125.0/32768.0;
+          break;
+    case GFS_250DPS:
+          gRes = 250.0/32768.0;
+          break;
+    case GFS_500DPS:
+          gRes = 500.0/32768.0;
+          break;
+    case GFS_1000DPS:
+          gRes = 1000.0/32768.0;
+          break;
+    case GFS_2000DPS:
+          gRes = 2000.0/32768.0;
+          break;
+  }
+
+}
+
+
+void IMU::getAres(){
+   switch (Ascale)
+   {
+   // Possible accelerometer scales (and their register bit settings) are:
+   // 2 Gs (00), 4 Gs (01), 8 Gs (10), and 16 Gs  (11). 
+        // Here's a bit of an algorith to calculate DPS/(ADC tick) based on that 2-bit value:
+    case AFS_4G:
+          aRes = 4.0/32768.0;
+          break;
+    case AFS_8G:
+          aRes = 8.0/32768.0;
+          break;
+    case AFS_16G:
+          aRes = 16.0/32768.0;
+          break;
+  }
+
+}
+
+void IMU::getAccelData(int16_t* ax, int16_t* ay, int16_t* az){
+
+   uint8_t buf[6];  
+	 I2C_Read_NBytes(SH200I_ADDRESS,SH200I_OUTPUT_ACC,6,buf);
+	
+	 *ax=((int16_t)buf[1]<<8)|buf[0];  
+	 *ay=((int16_t)buf[3]<<8)|buf[2];  
+	 *az=((int16_t)buf[5]<<8)|buf[4];
+
+
+  
+   getAres();
+	
+
+}
+void IMU::getGyroData(int16_t* gx, int16_t* gy, int16_t* gz){
+
+   uint8_t buf[6];  
+	 I2C_Read_NBytes(SH200I_ADDRESS,SH200I_OUTPUT_GYRO,6,buf);
+	
+	 *gx=((uint16_t)buf[1]<<8)|buf[0];  
+	 *gy=((uint16_t)buf[3]<<8)|buf[2];  
+	 *gz=((uint16_t)buf[5]<<8)|buf[4];
+
+    getGres();
+
+}
+
+void IMU::getTempData(int16_t *t){
+
+  uint8_t buf[2];  
+	I2C_Read_NBytes(SH200I_ADDRESS,SH200I_OUTPUT_TEMP,2,buf);
+
+  *t=((uint16_t)buf[1]<<8)|buf[0];  
 }

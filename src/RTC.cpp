@@ -73,3 +73,123 @@ void RTC::Bcd2asc(void)
     asc[j++] =trdata[i]&0x0f|0x30;
   }
 }
+
+
+uint8_t RTC::Bcd2ToByte(uint8_t Value)
+{
+  uint8_t tmp = 0;
+  tmp = ((uint8_t)(Value & (uint8_t)0xF0) >> (uint8_t)0x4) * 10;
+  return (tmp + (Value & (uint8_t)0x0F));
+}
+
+uint8_t RTC::ByteToBcd2(uint8_t Value)
+{
+  uint8_t bcdhigh = 0;
+  
+  while (Value >= 10)
+  {
+    bcdhigh++;
+    Value -= 10;
+  }
+  
+  return  ((uint8_t)(bcdhigh << 4) | Value);
+}
+
+
+void RTC::GetTime(RTC_TimeTypeDef* RTC_TimeStruct){
+    
+    //if()
+    uint8_t buf[3] = {0};
+
+    Wire1.beginTransmission(0x51);
+    Wire1.write(0x02);
+    Wire1.endTransmission();
+    Wire1.requestFrom(0x51,3); 
+
+    while(Wire1.available()){
+    
+      buf[0] = Wire1.read();
+      buf[1] = Wire1.read();
+      buf[2] = Wire1.read();
+     
+   }
+
+
+   RTC_TimeStruct -> Seconds  = Bcd2ToByte(buf[0]&0x7f);    //秒
+   RTC_TimeStruct -> Minutes  = Bcd2ToByte(buf[1]&0x7f);    //分
+   RTC_TimeStruct -> Hours    = Bcd2ToByte(buf[2]&0x3f);    //时
+}
+
+void RTC::SetTime(RTC_TimeTypeDef* RTC_TimeStruct){
+
+  if(RTC_TimeStruct == NULL)
+    return;
+
+  Wire1.beginTransmission(0x51);
+  Wire1.write(0x02);
+  Wire1.write(ByteToBcd2(RTC_TimeStruct->Seconds)); 
+  Wire1.write(ByteToBcd2(RTC_TimeStruct->Minutes)); 
+  Wire1.write(ByteToBcd2(RTC_TimeStruct->Hours)); 
+  Wire1.endTransmission();
+
+
+}
+
+
+
+void RTC::GetData(RTC_DateTypeDef* RTC_DateStruct){
+
+  uint8_t buf[4] = {0};
+
+  Wire1.beginTransmission(0x51);
+  Wire1.write(0x05);
+  Wire1.endTransmission();
+  Wire1.requestFrom(0x51,4); 
+
+  while(Wire1.available()){
+    
+      buf[0] = Wire1.read();
+      buf[1] = Wire1.read();
+      buf[2] = Wire1.read();
+      buf[3] = Wire1.read();
+     
+  }
+
+
+  RTC_DateStruct ->Date = Bcd2ToByte(buf[0]&0x3f);
+  RTC_DateStruct ->WeekDay = Bcd2ToByte(buf[1]&0x07);
+  RTC_DateStruct ->Month = Bcd2ToByte(buf[2]&0x1f);
+
+  if(buf[2]&0x80){
+    RTC_DateStruct ->Year = 1900 + Bcd2ToByte(buf[3]&0xff);
+  }else{
+    RTC_DateStruct ->Year = 2000  + Bcd2ToByte(buf[3]&0xff);
+  }
+  
+}
+
+
+void RTC::SetData(RTC_DateTypeDef* RTC_DateStruct){
+
+  if(RTC_DateStruct == NULL)
+    return;
+  Wire1.beginTransmission(0x51);
+  Wire1.write(0x05);
+  Wire1.write(ByteToBcd2(RTC_DateStruct->Date)); 
+  Wire1.write(ByteToBcd2(RTC_DateStruct->WeekDay)); 
+  
+  if(RTC_DateStruct->Year < 2000){
+
+    Wire1.write(ByteToBcd2(RTC_DateStruct->Month) | 0x80); 
+    Wire1.write(ByteToBcd2((uint8_t)(RTC_DateStruct->Year % 100))); 
+
+  }else
+  {
+    /* code */
+    Wire1.write(ByteToBcd2(RTC_DateStruct->Month) | 0x00); 
+    Wire1.write(ByteToBcd2((uint8_t)(RTC_DateStruct->Year %100))); 
+  }
+  
+  Wire1.endTransmission();
+
+}
