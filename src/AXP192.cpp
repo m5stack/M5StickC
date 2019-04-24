@@ -57,7 +57,12 @@ void AXP192::begin(void){
 	Wire1.write(0x91); 
     Wire1.write(0xFF); //gpio0	
 	Wire1.endTransmission();
- */
+ */ 
+    
+    Wire1.beginTransmission(0x34);
+	Wire1.write(0x31); 
+    Wire1.write(0x04);          //3.0v
+	Wire1.endTransmission();
 }
 
 
@@ -340,4 +345,60 @@ uint32_t AXP192::GetPowerbatData(void){
 
     return power;
 
+}
+
+
+uint16_t AXP192::GetVapsData(void){
+
+    uint16_t vaps = 0;
+    Wire1.beginTransmission(0x34);
+    Wire1.write(0x7E);
+    Wire1.endTransmission();
+    Wire1.requestFrom(0x34, 1);
+    uint8_t buf = Wire1.read();
+
+    Wire1.beginTransmission(0x34);
+    Wire1.write(0x7F);
+    Wire1.endTransmission();
+    Wire1.requestFrom(0x34, 1);
+    uint8_t buf2 = Wire1.read();
+    
+    vaps = ((uint16_t)(buf << 4) + buf2);
+    return vaps;
+
+}
+
+
+void AXP192::SetSleep(void){
+
+    Wire1.beginTransmission(0x34);
+    Wire1.write(0x31);
+    Wire1.endTransmission();
+    Wire1.requestFrom(0x34, 1);
+    uint8_t buf = Wire1.read();
+    
+    buf = (1<<3)|buf;
+    Wire1.beginTransmission(0x34);
+    Wire1.write(0x31);
+    Wire1.write(buf);
+    Wire1.endTransmission();
+    
+    Wire1.beginTransmission(0x34);
+    Wire1.write(0x12);
+    Wire1.write(0x41);
+    Wire1.endTransmission();
+
+}
+
+
+
+uint8_t AXP192::GetWarningLeve(void){
+
+    uint16_t vaps = 0;
+    Wire1.beginTransmission(0x34);
+    Wire1.write(0x47);
+    Wire1.endTransmission();
+    Wire1.requestFrom(0x34, 1);
+    uint8_t buf = Wire1.read();
+    return (buf & 0x01);
 }

@@ -3,6 +3,7 @@
 #include <driver/i2s.h>
 
 #include "esp32_rmt.h"
+#include "DHT12.h"
 
 
 extern const unsigned char gImage_logo[];
@@ -10,6 +11,7 @@ long loopTime, startTime = 0;
 bool led = true;
 bool test_led = 0;
 ESP32_RMT rem;
+DHT12 dht12;
 uint8_t led_count = 15;
 
 int IO_1 = 0;
@@ -145,24 +147,25 @@ void spm_test(){
   xTaskCreatePinnedToCore(mic_record_task, "mic_record_task", 2048 * 2, NULL, 1, NULL, 1);
 }
 
-/*
+
 void grove_test() {
+  
   float tem = 0.0;
   tem = dht12.readTemperature();
+  M5.Lcd.setTextColor(BLUE, WHITE);
   if(tem > 1.0){
-  Serial.println(dht12.readTemperature());
-  Lcd_Asc(0,140,"I2C exist");
+    M5.Lcd.setCursor(10, 120, 2);
+    M5.Lcd.printf("I2C exist");
   }else{
-
-   Lcd_Asc(0,140,"              ");
+    M5.Lcd.fillRect(0, 120, 80, 160, WHITE);
   }
-
-}*/
+}
 
 
 void setup() {
   // put your setup code here, to run once:
   M5.begin();
+  Wire.begin(32,33);
   
   //!Logo
   M5.Lcd.fillScreen(WHITE);
@@ -195,20 +198,47 @@ void setup() {
   digitalWrite(M5_LED, LOW);
   pinMode(M5_BUTTON_HOME, INPUT);
   pinMode(M5_BUTTON_RST, INPUT);
+  pinMode(IO_1, OUTPUT);
+  digitalWrite(IO_1, HIGH);
+
+  pinMode(IO_2, OUTPUT);
+  digitalWrite(IO_2, HIGH);
+
+  pinMode(IO_3, OUTPUT);
+  digitalWrite(IO_3, LOW);
 
   //!mic
   spm_test();
 
+  //Wire.begin(32,33);
 }
-
+long sleep_count = 0;
 void loop() {
   // put your main code here, to run repeatedly:
   loopTime = millis();
   if(startTime < (loopTime - 500)){
-    startTime = loopTime;
+    if(M5.Axp.GetWarningLeve()){
+      sleep_count++;
+      if(sleep_count >= 1){
+      M5.Lcd.fillScreen(WHITE);
+      M5.Lcd.setCursor(0, 20, 1);
+      M5.Lcd.setTextColor(RED, WHITE);
+      M5.Lcd.printf("Warning: low battery");
+      if(sleep_count >= 10){
+        sleep_count = 0;
+        M5.Axp.SetSleep();
+      }
+      }
+    }else{
+      M5.Lcd.fillScreen(WHITE);
+      test_led  = !test_led;
+      grove_test();
+      sh200i_test();
+      rtc_test();
 
-    sh200i_test();
-    rtc_test();
+      showSignal();
+    }
+    startTime = loopTime;
   }
 
   //io test
@@ -233,6 +263,6 @@ void loop() {
     M5.Axp.ScreenBreath(led_count);
   }
 
-  showSignal();
+  //showSignal();
 
 }

@@ -32,6 +32,11 @@ public:
 
   uint16_t GetVinData(void);
   uint16_t GetIinData(void);
+
+  uint16_t GetVapsData(void);
+  void SetSleep(void);
+
+  uint8_t GetWarningLeve(void);
 public:
 private:
    
