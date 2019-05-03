@@ -170,6 +170,10 @@ bool M5Display::initHzk16(boolean use, const char *HZK16Path,
 
   }
 
+  default: {
+    break;
+  }
+
   }
 
   return hzk16Type != DontUsedHzk16;
