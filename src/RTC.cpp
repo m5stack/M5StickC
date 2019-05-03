@@ -70,7 +70,7 @@ void RTC::Bcd2asc(void)
   uint8_t i,j;
   for (j=0,i=0; i<7; i++){
     asc[j++] =(trdata[i]&0xf0)>>4|0x30 ;/*格式为: 秒 分 时 日 月 星期 年 */
-    asc[j++] =trdata[i]&0x0f|0x30;
+    asc[j++] =(trdata[i]&0x0f)|0x30;
   }
 }
 
