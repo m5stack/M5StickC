@@ -59,9 +59,15 @@ void AXP192::begin(void){
 	Wire1.endTransmission();
  */ 
     
-    Wire1.beginTransmission(0x34);
-	Wire1.write(0x31); 
-    Wire1.write(0x04);          //3.0v
+    //Wire1.beginTransmission(0x34);
+	//Wire1.write(0x31); 
+    //Wire1.write(0x04);          //3.0v
+	//Wire1.endTransmission();
+	
+	
+	Wire1.beginTransmission(0x34);
+	Wire1.write(0x30); 
+    Wire1.write(0xe0);          
 	Wire1.endTransmission();
 }
 

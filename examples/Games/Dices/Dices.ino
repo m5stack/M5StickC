@@ -35,10 +35,9 @@ void setup(void) {
 
 
   M5.Lcd.setCursor(10, 30);  
-   M5.Lcd.setTextSize(3);
+  M5.Lcd.setTextSize(3);
   M5.Lcd.print("SHAKE ME");  
   delay(1000);
-
 }
 
 void loop() {
@@ -68,12 +67,12 @@ void loop() {
 
 void draw_dice(int16_t x, int16_t y, int n) {
 
-
   M5.Lcd.fillRect(x, y, 70, 70, WHITE);
 
-    for(int d = 0; d < 7; d++) {
-      if (dot[n][d][0] > 0) {
+  for(int d = 0; d < 7; d++) {
+    if (dot[n][d][0] > 0) {
         M5.Lcd.fillCircle(x+dot[n][d][0], y+dot[n][d][1], DOT_SIZE, TFT_BLACK);
-      }
-    }  
-  }
+    }
+  }  
+
+}
