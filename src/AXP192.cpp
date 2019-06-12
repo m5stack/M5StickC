@@ -260,6 +260,47 @@ uint16_t AXP192::GetIinData(void){
 
 }
 
+uint16_t AXP192::GetVusbinData(void){
+
+    uint16_t vin = 0;
+
+    Wire1.beginTransmission(0x34);
+    Wire1.write(0x5a);
+    Wire1.endTransmission();
+    Wire1.requestFrom(0x34, 1);
+    uint8_t buf = Wire1.read();
+
+    Wire1.beginTransmission(0x34);
+    Wire1.write(0x5b);
+    Wire1.endTransmission();
+    Wire1.requestFrom(0x34, 1);
+    uint8_t buf2 = Wire1.read();
+
+    vin = ((buf << 4) + buf2); // V
+    return vin;
+
+}
+uint16_t AXP192::GetIusbinData(void){
+
+    uint16_t iin = 0;
+
+    Wire1.beginTransmission(0x34);
+    Wire1.write(0x5c);
+    Wire1.endTransmission();
+    Wire1.requestFrom(0x34, 1);
+    uint8_t buf = Wire1.read();
+
+    Wire1.beginTransmission(0x34);
+    Wire1.write(0x5d);
+    Wire1.endTransmission();
+    Wire1.requestFrom(0x34, 1);
+    uint8_t buf2 = Wire1.read();
+
+    iin = ((buf << 4) + buf2); // V
+    return iin;
+
+}
+
 uint16_t AXP192::GetIchargeData(void){
 
     uint16_t icharge = 0;

@@ -33,6 +33,9 @@ public:
   uint16_t GetVinData(void);
   uint16_t GetIinData(void);
 
+  uint16_t GetVusbinData(void);
+  uint16_t GetIusbinData(void);
+
   uint16_t GetVapsData(void);
   void SetSleep(void);
 
