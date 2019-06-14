@@ -21,11 +21,9 @@
 #define SH200I_RESET 0x75
 
 #define G (9.8)
-#define RtA 		57.324841
+#define RtA     57.324841
 #define AtR    	0.0174533	
 #define Gyro_Gr	0.0010653
-
-
 
 
 

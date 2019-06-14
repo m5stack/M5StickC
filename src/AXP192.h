@@ -4,6 +4,12 @@
 #include <Wire.h>
 #include <Arduino.h>
 
+#define SLEEP_MSEC(us) (((uint64_t)us) * 1000L)
+#define SLEEP_SEC(us)  (((uint64_t)us) * 1000000L)
+#define SLEEP_MIN(us)  (((uint64_t)us) * 60L * 1000000L)
+#define SLEEP_HR(us)   (((uint64_t)us) * 60L * 60L * 1000000L)
+
+
 class AXP192 {
 public:
   AXP192();
@@ -35,6 +41,10 @@ public:
 
   uint16_t GetVapsData(void);
   void SetSleep(void);
+  
+  // -- sleep
+  void DeepSleep(uint64_t time_in_us = 0);
+  void LightSleep(uint64_t time_in_us = 0);
 
   uint8_t GetWarningLeve(void);
 public:

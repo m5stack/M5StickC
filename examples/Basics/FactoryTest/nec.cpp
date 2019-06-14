@@ -95,7 +95,7 @@ inline void ESP32_RMT::nec_fill_item_level(rmt_item32_t* item, int high_us, int 
 /*
  * @brief Generate NEC header value: active 9ms + negative 4.5ms
  */
- void ESP32_RMT::nec_fill_item_header(rmt_item32_t* item)
+void ESP32_RMT::nec_fill_item_header(rmt_item32_t* item)
 {
     nec_fill_item_level(item, NEC_HEADER_HIGH_US, NEC_HEADER_LOW_US);
 }

@@ -30,7 +30,7 @@ void IMU::I2C_Read_NBytes(uint8_t driver_Addr, uint8_t start_Addr, uint8_t numbe
     //! Put read results in the Rx buffer
     while (Wire1.available()) {
     read_Buffer[i++] = Wire1.read();
-     }        
+    }        
 }
 //写函数
 //I2C_Write_NBytes(uint8_t driver_Addr, uint8_t start_Addr, uint8_t number_Bytes, uint8_t *write_Buffer)
@@ -206,35 +206,31 @@ void IMU::getAres(){
 void IMU::getAccelData(int16_t* ax, int16_t* ay, int16_t* az){
 
    uint8_t buf[6];  
-	 I2C_Read_NBytes(SH200I_ADDRESS,SH200I_OUTPUT_ACC,6,buf);
+   I2C_Read_NBytes(SH200I_ADDRESS,SH200I_OUTPUT_ACC,6,buf);
 	
-	 *ax=((int16_t)buf[1]<<8)|buf[0];  
-	 *ay=((int16_t)buf[3]<<8)|buf[2];  
-	 *az=((int16_t)buf[5]<<8)|buf[4];
+   *ax=((int16_t)buf[1]<<8)|buf[0];  
+   *ay=((int16_t)buf[3]<<8)|buf[2];  
+   *az=((int16_t)buf[5]<<8)|buf[4];
 
-
-  
    getAres();
-	
-
 }
 void IMU::getGyroData(int16_t* gx, int16_t* gy, int16_t* gz){
 
    uint8_t buf[6];  
-	 I2C_Read_NBytes(SH200I_ADDRESS,SH200I_OUTPUT_GYRO,6,buf);
+   I2C_Read_NBytes(SH200I_ADDRESS,SH200I_OUTPUT_GYRO,6,buf);
 	
-	 *gx=((uint16_t)buf[1]<<8)|buf[0];  
-	 *gy=((uint16_t)buf[3]<<8)|buf[2];  
-	 *gz=((uint16_t)buf[5]<<8)|buf[4];
+   *gx=((uint16_t)buf[1]<<8)|buf[0];  
+   *gy=((uint16_t)buf[3]<<8)|buf[2];  
+   *gz=((uint16_t)buf[5]<<8)|buf[4];
 
-    getGres();
+   getGres();
 
 }
 
 void IMU::getTempData(int16_t *t){
 
   uint8_t buf[2];  
-	I2C_Read_NBytes(SH200I_ADDRESS,SH200I_OUTPUT_TEMP,2,buf);
+  I2C_Read_NBytes(SH200I_ADDRESS,SH200I_OUTPUT_TEMP,2,buf);
 
   *t=((uint16_t)buf[1]<<8)|buf[0];  
 }

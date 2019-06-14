@@ -408,3 +408,32 @@ uint8_t AXP192::GetWarningLeve(void){
     uint8_t buf = Wire1.read();
     return (buf & 0x01);
 }
+
+
+// -- sleep
+void AXP192::DeepSleep(uint64_t time_in_us){
+	
+	SetSleep();
+	
+	if (time_in_us > 0){
+      esp_sleep_enable_timer_wakeup(time_in_us);
+    }else{
+      esp_sleep_disable_wakeup_source(ESP_SLEEP_WAKEUP_TIMER);
+    }
+
+   (time_in_us == 0) ? esp_deep_sleep_start() : esp_deep_sleep(time_in_us);
+	  
+}
+
+void AXP192::LightSleep(uint64_t time_in_us){
+	
+	SetSleep();
+
+	if (time_in_us > 0){
+      esp_sleep_enable_timer_wakeup(time_in_us);
+    }else{
+      esp_sleep_disable_wakeup_source(ESP_SLEEP_WAKEUP_TIMER);
+  }
+  
+  esp_light_sleep_start();
+}
