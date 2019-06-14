@@ -27,12 +27,7 @@ void AXP192::begin(void){
     Wire1.write(0x33);  //Enable Charging, 100mA, 4.2V, End at 0.9
     Wire1.write(0xC0); 
     Wire1.endTransmission();
-/*
-    Wire1.beginTransmission(0x34);
-    Wire1.write(0x33);  
-    Wire1.write(0xC3); 
-    Wire1.endTransmission();
-*/
+
     Wire1.beginTransmission(0x34);
     Wire1.write(0xB8);  //Enable Colume Counter
     Wire1.write(0x80); 
@@ -47,28 +42,16 @@ void AXP192::begin(void){
     Wire1.write(0x36);  
     Wire1.write(0x5c); //PEK
     Wire1.endTransmission();
-	
-  	Wire1.beginTransmission(0x34);
-	Wire1.write(0x90); 
-    Wire1.write(0x02); //gpio0	
-	Wire1.endTransmission();
-	/*
-	Wire1.beginTransmission(0x34);
-	Wire1.write(0x91); 
-    Wire1.write(0xFF); //gpio0	
-	Wire1.endTransmission();
- */ 
     
-    //Wire1.beginTransmission(0x34);
-	//Wire1.write(0x31); 
-    //Wire1.write(0x04);          //3.0v
-	//Wire1.endTransmission();
-	
-	
-	Wire1.beginTransmission(0x34);
-	Wire1.write(0x30); 
-    Wire1.write(0xe0);          
-	Wire1.endTransmission();
+    Wire1.beginTransmission(0x34);
+    Wire1.write(0x90);
+    Wire1.write(0x02); //gpio0
+    Wire1.endTransmission();
+    
+    Wire1.beginTransmission(0x34);
+    Wire1.write(0x30);
+    Wire1.write(0xe0);
+    Wire1.endTransmission();
 }
 
 
@@ -391,7 +374,7 @@ void AXP192::SetSleep(void){
     
     Wire1.beginTransmission(0x34);
     Wire1.write(0x12);
-    Wire1.write(0x41);
+    Wire1.write(0x01);
     Wire1.endTransmission();
 
 }
@@ -413,26 +396,26 @@ uint8_t AXP192::GetWarningLeve(void){
 // -- sleep
 void AXP192::DeepSleep(uint64_t time_in_us){
 	
-	SetSleep();
-	
-	if (time_in_us > 0){
-      esp_sleep_enable_timer_wakeup(time_in_us);
-    }else{
-      esp_sleep_disable_wakeup_source(ESP_SLEEP_WAKEUP_TIMER);
-    }
-
-   (time_in_us == 0) ? esp_deep_sleep_start() : esp_deep_sleep(time_in_us);
+  SetSleep();
+  
+  if (time_in_us > 0){
+    esp_sleep_enable_timer_wakeup(time_in_us);
+  }else{
+    esp_sleep_disable_wakeup_source(ESP_SLEEP_WAKEUP_TIMER);
+  }
+  
+  (time_in_us == 0) ? esp_deep_sleep_start() : esp_deep_sleep(time_in_us);
 	  
 }
 
 void AXP192::LightSleep(uint64_t time_in_us){
 	
-	SetSleep();
-
-	if (time_in_us > 0){
-      esp_sleep_enable_timer_wakeup(time_in_us);
-    }else{
-      esp_sleep_disable_wakeup_source(ESP_SLEEP_WAKEUP_TIMER);
+  SetSleep();
+  
+  if (time_in_us > 0){
+    esp_sleep_enable_timer_wakeup(time_in_us);
+  }else{
+    esp_sleep_disable_wakeup_source(ESP_SLEEP_WAKEUP_TIMER);
   }
   
   esp_light_sleep_start();

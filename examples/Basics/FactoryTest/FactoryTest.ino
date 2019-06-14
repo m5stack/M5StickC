@@ -48,15 +48,14 @@ void wifi_test() {
     int n = WiFi.scanNetworks();
     M5.Lcd.setCursor(7, 20, 2);
     M5.Lcd.println("scan done");
-    if (n == 0) {
+	
+	if (n == 0) {
       M5.Lcd.setTextColor(RED, WHITE);
-      M5.Lcd.setCursor(5, 60, 4);
-      M5.Lcd.printf("%d AP");
     } else {   
       M5.Lcd.setTextColor(GREEN, WHITE);
-      M5.Lcd.setCursor(5, 60, 4);
-      M5.Lcd.printf("%d AP");
     }
+    M5.Lcd.setCursor(5, 60, 4);
+    M5.Lcd.printf("%d AP", n);
 }
 
 void sh200i_test() {
