@@ -747,4 +747,3 @@ esp_err_t rmt_get_ringbuf_handler(rmt_channel_t channel, RingbufHandle_t* buf_ha
     *buf_handler = p_rmt_obj[channel]->rx_buf;
     return ESP_OK;
 }
-

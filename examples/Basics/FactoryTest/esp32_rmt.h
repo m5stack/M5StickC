@@ -52,8 +52,3 @@ class ESP32_RMT
 
 
  #endif // ESP32_RMT
-
-
-
-
-

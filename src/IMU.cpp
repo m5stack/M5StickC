@@ -86,14 +86,18 @@ void IMU::sh200i_Reset(void)
 
 
 //初始化
-void IMU::Init(void) 
+int IMU::Init(void) 
 {
   unsigned char tempdata[1];
   
-  while(tempdata[0] != 0x18)
-  {
-    I2C_Read_NBytes(SH200I_ADDRESS, SH200I_WHOAMI, 1, tempdata);
+  //while(tempdata[0] != 0x18)
+  //{
+  I2C_Read_NBytes(SH200I_ADDRESS, SH200I_WHOAMI, 1, tempdata);
+  if(tempdata[0] != 0x18){
+    return -1;
   }
+    
+  //}
   
   sh200i_ADCReset();
   
@@ -154,6 +158,7 @@ void IMU::Init(void)
   I2C_Write_NBytes(SH200I_ADDRESS, SH200I_REG_SET2, 1, tempdata);
   
   delay(10);
+  return 0;
 }
 
 

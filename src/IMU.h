@@ -35,7 +35,7 @@ public:
   void sh200i_ADCReset(void);
   void sh200i_Reset(void);
 
-  void Init(void);
+  int Init(void);
 
   void getGres();
   void getAres();

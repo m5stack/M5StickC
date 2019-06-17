@@ -70,6 +70,7 @@
 #include "AXP192.h"
 
 #include "utility/Config.h"
+#include "utility/MPU6866.h"
 #include "RTC.h"
 #include "IMU.h"
 
@@ -93,6 +94,8 @@ class M5StickC {
 
      IMU Imu;
 
+     MPU6866 Mpu6866;
+
  private:
     bool isInited;
     //uint8_t _wakeupPin;
@@ -105,6 +108,8 @@ extern M5StickC M5;
 #define axp Axp
 #define imu Imu
 #define IMU Imu
+#define MPU6866 Mpu6866
+#define mpu6866 Mpu6866
 
 #else
 #error “This library only supports boards with ESP32 processor.”	

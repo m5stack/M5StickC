@@ -75,4 +75,3 @@ void ESP32_RMT::send(uint8_t data)
     }
 	
 }
-

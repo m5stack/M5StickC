@@ -74,6 +74,27 @@ void sh200i_test() {
   M5.Lcd.printf("z  %d   %.1f    ", (int)(((float) gyroZ) * M5.IMU.gRes), ((float) accZ) * M5.IMU.aRes);
  
 }
+float accX_f = 0;
+float accY_f = 0;
+float accZ_f = 0;
+
+float gyroX_f = 0;
+float gyroY_f = 0;
+float gyroZ_f = 0;
+void mpu6866_test(){
+  M5.MPU6866.getGyroData(&gyroX_f,&gyroY_f,&gyroZ_f);
+  M5.MPU6866.getAccelData(&accX_f,&accY_f,&accZ_f);
+  
+  M5.Lcd.setTextColor(GREEN, WHITE);
+  M5.Lcd.setCursor(20, 1, 1);
+  M5.Lcd.println("mg  o/s");
+  M5.Lcd.setCursor(0, 10);
+  M5.Lcd.printf("x  %.1f  %.1f", gyroX_f, accX_f);
+  M5.Lcd.setCursor(0, 20);
+  M5.Lcd.printf("y  %.1f  %.1f", gyroY_f, accY_f);
+  M5.Lcd.setCursor(0, 30);
+  M5.Lcd.printf("z  %.1f  %.1f", gyroZ_f, accZ_f);
+}
 
 void rtc_test(){
   
@@ -160,7 +181,8 @@ void grove_test() {
   }
 }
 
-
+int imu_flag = 0;
+int imu_type = 0;
 void setup() {
   // put your setup code here, to run once:
   M5.begin();
@@ -189,7 +211,18 @@ void setup() {
   M5.Lcd.fillScreen(WHITE);
 
   //!SH200I
-  M5.IMU.Init();
+  imu_flag = M5.IMU.Init();
+  if(imu_flag != 0){
+    imu_flag = M5.MPU6866.Init();
+    if(imu_flag == 0)
+      imu_type = 1;
+    else
+      imu_type = -1;
+  }else{
+    imu_type = 0;
+  }
+  Serial.printf("imu_flag = %d\n",imu_type);
+  
 
   //!IR LED
   rem.begin(M5_IR,true);
@@ -232,7 +265,10 @@ void loop() {
       M5.Lcd.fillScreen(WHITE);
       test_led  = !test_led;
       grove_test();
-      sh200i_test();
+      if(imu_type == 0)
+        sh200i_test();
+      else if(imu_type == 1)
+        mpu6866_test();
       rtc_test();
 
       showSignal();

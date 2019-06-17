@@ -21,13 +21,11 @@ public:
   void  StopCoulombcounter(void);
   void  ClearCoulombcounter(void);
   
- 
   uint32_t GetCoulombchargeData(void);
   uint32_t GetCoulombdischargeData(void);
   float GetCoulombData(void);
 
   uint16_t GetVbatData(void);
-
 
   uint16_t GetIchargeData(void);
   uint16_t GetIdischargeData(void);
