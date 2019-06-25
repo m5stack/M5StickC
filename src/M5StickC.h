@@ -71,14 +71,17 @@
 
 #include "utility/Config.h"
 #include "utility/MPU6866.h"
+#include "utility/Button.h"
 #include "RTC.h"
 #include "IMU.h"
+
 
 class M5StickC {
 
  public:
     M5StickC();
 	void begin(bool LCDEnable=true, bool PowerEnable=true, bool SerialEnable=true);
+    void update();
 
     //!LCD
     M5Display Lcd = M5Display();
@@ -86,15 +89,15 @@ class M5StickC {
     //!Power
     AXP192 Axp = AXP192();
 
-    //!IR
-    //ESP32_RMT rem;
-
+    #define DEBOUNCE_MS 10
+    Button BtnA = Button(BUTTON_A_PIN, true, DEBOUNCE_MS);
+    Button BtnB = Button(BUTTON_B_PIN, true, DEBOUNCE_MS);
     //!RTC
-     RTC  Rtc;
+    RTC  Rtc;
 
-     IMU Imu;
+    IMU Imu;
 
-     MPU6866 Mpu6866;
+    MPU6866 Mpu6866;
 
  private:
     bool isInited;

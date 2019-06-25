@@ -7,7 +7,6 @@ M5StickC::M5StickC():isInited(0) {
 
 }
 
-
 void M5StickC::begin(bool LCDEnable, bool PowerEnable, bool SerialEnable){
 	
 	//! Correct init once
@@ -32,13 +31,14 @@ void M5StickC::begin(bool LCDEnable, bool PowerEnable, bool SerialEnable){
 		Lcd.begin();
 	}
 
-	
-
-
 	if (SerialEnable) {
 		Serial.println("OK");
 	}
 }
 
+void M5StickC::update() {
+	M5.BtnA.read();
+	M5.BtnB.read();
+}
 
 M5StickC M5;
