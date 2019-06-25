@@ -31,5 +31,7 @@ void loop() {
   M5.Lcd.printf("CoD:%.2fmAh\r\n",M5.Axp.GetCoulombData());
   M5.Lcd.printf("Vin:%.3fmV\r\n",M5.Axp.GetVinData() * 1.7);
   M5.Lcd.printf("Iin:%.3fmA\r\n",M5.Axp.GetIinData() * 0.625);
+  M5.Lcd.printf("Vuin:%.3fmV\r\n",M5.Axp.GetVusbinData() * 1.7);
+  M5.Lcd.printf("Iuin:%.3fmA\r\n",M5.Axp.GetIusbinData() * 0.375);
   delay(1000);
 }
