@@ -40,7 +40,7 @@ void AXP192::begin(void){
 
     Wire1.beginTransmission(0x34);
     Wire1.write(0x36);  
-    Wire1.write(0x5c); //PEK
+    Wire1.write(0b00001100); //PEK
     Wire1.endTransmission();
     
     Wire1.beginTransmission(0x34);
@@ -54,15 +54,12 @@ void AXP192::begin(void){
     Wire1.endTransmission();
 }
 
-
-
 void AXP192::ScreenBreath(uint8_t brightness){
     Wire1.beginTransmission(0x34);
     Wire1.write(0x28);  
     Wire1.write(((brightness & 0x0f) << 4)); //Enable LDO2&LDO3, LED&TFT 3.3V
     Wire1.endTransmission();
 }
-
 
 void  AXP192::EnableCoulombcounter(void){
   
@@ -72,6 +69,7 @@ void  AXP192::EnableCoulombcounter(void){
   Wire1.endTransmission();
 
 }
+
 void  AXP192::DisableCoulombcounter(void){
 
   Wire1.beginTransmission(0x34);
@@ -80,6 +78,7 @@ void  AXP192::DisableCoulombcounter(void){
   Wire1.endTransmission();
 
 }
+
 void  AXP192::StopCoulombcounter(void){
   Wire1.beginTransmission(0x34);
   Wire1.write(0xB8); 
@@ -87,6 +86,7 @@ void  AXP192::StopCoulombcounter(void){
   Wire1.endTransmission();
 
 }
+
 void  AXP192::ClearCoulombcounter(void){
     
   Wire1.beginTransmission(0x34);
@@ -95,7 +95,6 @@ void  AXP192::ClearCoulombcounter(void){
   Wire1.endTransmission();
 
 }
-
 
 uint32_t AXP192::GetCoulombchargeData(void){
 
@@ -167,6 +166,7 @@ uint32_t AXP192::GetCoulombdischargeData(void){
   return coout;
 
 }
+
 float AXP192::GetCoulombData(void){
 
   uint32_t coin = 0;
@@ -179,7 +179,6 @@ float AXP192::GetCoulombData(void){
   return ccc;
 
 }
-
 
 uint16_t AXP192::GetVbatData(void){
 
@@ -222,6 +221,7 @@ uint16_t AXP192::GetVinData(void){
     return vin;
 
 }
+
 uint16_t AXP192::GetIinData(void){
 
     uint16_t iin = 0;
@@ -263,6 +263,7 @@ uint16_t AXP192::GetVusbinData(void){
     return vin;
 
 }
+
 uint16_t AXP192::GetIusbinData(void){
 
     uint16_t iin = 0;
@@ -377,7 +378,6 @@ uint32_t AXP192::GetPowerbatData(void){
 
 }
 
-
 uint16_t AXP192::GetVapsData(void){
 
     uint16_t vaps = 0;
@@ -397,7 +397,6 @@ uint16_t AXP192::GetVapsData(void){
     return vaps;
 
 }
-
 
 void AXP192::SetSleep(void){
 
@@ -420,8 +419,6 @@ void AXP192::SetSleep(void){
 
 }
 
-
-
 uint8_t AXP192::GetWarningLeve(void){
 
     uint16_t vaps = 0;
@@ -432,7 +429,6 @@ uint8_t AXP192::GetWarningLeve(void){
     uint8_t buf = Wire1.read();
     return (buf & 0x01);
 }
-
 
 // -- sleep
 void AXP192::DeepSleep(uint64_t time_in_us){
@@ -460,4 +456,20 @@ void AXP192::LightSleep(uint64_t time_in_us){
   }
   
   esp_light_sleep_start();
+}
+
+// 0 not press, 0x01 long press, 0x02 press
+uint8_t AXP192::GetBtnPress() {
+    Wire1.beginTransmission(0x34);
+    Wire1.write(0x46);
+    Wire1.endTransmission();
+    Wire1.requestFrom(0x34, 1);
+    uint8_t state = Wire1.read();
+    if(state) {
+        Wire1.beginTransmission(0x34);
+        Wire1.write(0x46);
+        Wire1.write(0x03);
+        Wire1.endTransmission();
+    }
+    return state;
 }

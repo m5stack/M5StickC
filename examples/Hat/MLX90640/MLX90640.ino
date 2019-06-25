@@ -126,6 +126,9 @@ void loop() {
     startTime = loopTime;
 
     M5.update();
+    if(M5.Axp.GetBtnPress() == 0x02) {
+        esp_restart();
+    }
 
     // Reset settings  
     if (M5.BtnA.pressedFor(1000)) {

@@ -41,6 +41,8 @@ public:
   uint16_t GetIusbinData(void);
 
   uint16_t GetVapsData(void);
+  uint8_t GetBtnPress(void);
+  
   void SetSleep(void);
   
   // -- sleep

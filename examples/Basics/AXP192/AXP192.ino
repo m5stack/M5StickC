@@ -33,5 +33,11 @@ void loop() {
   M5.Lcd.printf("Iin:%.3fmA\r\n",M5.Axp.GetIinData() * 0.625);
   M5.Lcd.printf("Vuin:%.3fmV\r\n",M5.Axp.GetVusbinData() * 1.7);
   M5.Lcd.printf("Iuin:%.3fmA\r\n",M5.Axp.GetIusbinData() * 0.375);
-  delay(1000);
+
+  // 0x01 long press(1s), 0x02 press
+  if(M5.Axp.GetBtnPress() == 0x02) {
+    esp_restart();
+  }
+  
+  delay(200);
 }
