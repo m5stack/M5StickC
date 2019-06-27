@@ -44,7 +44,7 @@
 #define MPU6886_ACCEL_CONFIG2     0x1D
 #define MPU6886_FIFO_EN           0x23
 
-#define G (9.8)
+//#define G (9.8)
 #define RtA     57.324841
 #define AtR    	0.0174533	
 #define Gyro_Gr	0.0010653
