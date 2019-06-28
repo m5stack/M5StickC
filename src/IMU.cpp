@@ -158,6 +158,9 @@ int IMU::Init(void)
   I2C_Write_NBytes(SH200I_ADDRESS, SH200I_REG_SET2, 1, tempdata);
   
   delay(10);
+
+  getAres();
+  getGres();
   return 0;
 }
 
@@ -208,7 +211,7 @@ void IMU::getAres(){
 
 }
 
-void IMU::getAccelData(int16_t* ax, int16_t* ay, int16_t* az){
+void IMU::getAccelAdc(int16_t* ax, int16_t* ay, int16_t* az){
 
    uint8_t buf[6];  
    I2C_Read_NBytes(SH200I_ADDRESS,SH200I_OUTPUT_ACC,6,buf);
@@ -217,9 +220,21 @@ void IMU::getAccelData(int16_t* ax, int16_t* ay, int16_t* az){
    *ay=((int16_t)buf[3]<<8)|buf[2];  
    *az=((int16_t)buf[5]<<8)|buf[4];
 
-   getAres();
+   //getAres();
 }
-void IMU::getGyroData(int16_t* gx, int16_t* gy, int16_t* gz){
+
+void IMU::getAccelData(float* ax, float* ay, float* az){
+
+   uint8_t buf[6];  
+   I2C_Read_NBytes(SH200I_ADDRESS,SH200I_OUTPUT_ACC,6,buf);
+	
+   *ax=(((int16_t)buf[1]<<8)|buf[0]) * aRes;  
+   *ay=(((int16_t)buf[3]<<8)|buf[2]) * aRes;  
+   *az=(((int16_t)buf[5]<<8)|buf[4]) * aRes;
+
+   //getAres();
+}
+void IMU::getGyroAdc(int16_t* gx, int16_t* gy, int16_t* gz){
 
    uint8_t buf[6];  
    I2C_Read_NBytes(SH200I_ADDRESS,SH200I_OUTPUT_GYRO,6,buf);
@@ -228,11 +243,32 @@ void IMU::getGyroData(int16_t* gx, int16_t* gy, int16_t* gz){
    *gy=((uint16_t)buf[3]<<8)|buf[2];  
    *gz=((uint16_t)buf[5]<<8)|buf[4];
 
-   getGres();
+   //getGres();
 
 }
 
-void IMU::getTempData(int16_t *t){
+void IMU::getGyroData(float* gx, float* gy, float* gz){
+
+   uint8_t buf[6];  
+   I2C_Read_NBytes(SH200I_ADDRESS,SH200I_OUTPUT_GYRO,6,buf);
+	
+   *gx=(((uint16_t)buf[1]<<8)|buf[0])   * gRes;  
+   *gy=(((uint16_t)buf[3]<<8)|buf[2])   * gRes;  
+   *gz=(((uint16_t)buf[5]<<8)|buf[4])   * gRes;
+
+   //getGres();
+
+}
+
+void IMU::getTempAdc(int16_t *t){
+
+  uint8_t buf[2];  
+  I2C_Read_NBytes(SH200I_ADDRESS,SH200I_OUTPUT_TEMP,2,buf);
+
+  *t=((uint16_t)buf[1]<<8)|buf[0];  
+}
+
+void IMU::getTempData(float *t){
 
   uint8_t buf[2];  
   I2C_Read_NBytes(SH200I_ADDRESS,SH200I_OUTPUT_TEMP,2,buf);

@@ -24,12 +24,16 @@ void setup() {
 
 
 int16_t temp = 0;
-
+/*****************************************
+M5.IMU.getGyroData(&gyroX,&gyroY,&gyroZ);
+M5.IMU.getAccelData(&accX,&accY,&accZ);
+M5.IMU.getTempData(&temp);
+*****************************************/
 void loop() {
   // put your main code here, to run repeatedly:
-  M5.IMU.getGyroData(&gyroX,&gyroY,&gyroZ);
-  M5.IMU.getAccelData(&accX,&accY,&accZ);
-  M5.IMU.getTempData(&temp);
+  M5.IMU.getGyroAdc(&gyroX,&gyroY,&gyroZ);
+  M5.IMU.getAccelAdc(&accX,&accY,&accZ);
+  M5.IMU.getTempAdc(&temp);
   
   M5.Lcd.setCursor(0, 30);
   M5.Lcd.printf("%.2f   %.2f   %.2f      ", ((float) gyroX) * M5.IMU.gRes, ((float) gyroY) * M5.IMU.gRes,((float) gyroZ) * M5.IMU.gRes);

@@ -39,9 +39,13 @@ public:
 
   void getGres();
   void getAres();
-  void getAccelData(int16_t* ax, int16_t* ay, int16_t* az);
-  void getGyroData(int16_t* gx, int16_t* gy, int16_t* gz);
-  void getTempData(int16_t *t);
+  void getAccelAdc(int16_t* ax, int16_t* ay, int16_t* az);
+  void getGyroAdc(int16_t* gx, int16_t* gy, int16_t* gz);
+  void getTempAdc(int16_t *t);
+
+  void getAccelData(float* ax, float* ay, float* az);
+  void getGyroData(float* gx, float* gy, float* gz);
+  void getTempData(float *t);
 
 public:
   
@@ -66,7 +70,7 @@ protected:
 
     // Specify sensor full scale
     uint8_t Gscale = GFS_2000DPS;
-    uint8_t Ascale = AFS_4G;
+    uint8_t Ascale = AFS_8G;
   
 
   

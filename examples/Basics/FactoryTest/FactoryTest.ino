@@ -60,8 +60,8 @@ void wifi_test() {
 
 void sh200i_test() {
 
-  M5.IMU.getGyroData(&gyroX,&gyroY,&gyroZ);
-  M5.IMU.getAccelData(&accX,&accY,&accZ);
+  M5.IMU.getGyroAdc(&gyroX,&gyroY,&gyroZ);
+  M5.IMU.getAccelAdc(&accX,&accY,&accZ);
   
   M5.Lcd.setTextColor(GREEN, WHITE);
   M5.Lcd.setCursor(20, 1, 1);
