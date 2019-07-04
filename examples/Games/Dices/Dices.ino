@@ -44,7 +44,7 @@ void loop() {
 
 
   while(1) {
-    M5.IMU.getAccelData(&accX,&accY,&accZ);
+    M5.IMU.getAccelAdc(&accX,&accY,&accZ);
     if (((float) accX) * M5.IMU.aRes > 1 || ((float) accY) * M5.IMU.aRes > 1 ) {
       break;
     }
