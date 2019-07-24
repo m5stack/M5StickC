@@ -273,5 +273,5 @@ void IMU::getTempData(float *t){
   uint8_t buf[2];  
   I2C_Read_NBytes(SH200I_ADDRESS,SH200I_OUTPUT_TEMP,2,buf);
 
-  *t=(float)((buf[1]<<8)|buf[0]) / 333.87 + 21.0;
+  *t=(int16_t)((buf[1]<<8)|buf[0]) / 333.87 + 21.0;
 }
