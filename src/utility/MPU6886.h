@@ -1,12 +1,12 @@
 /*
- Note: The MPU6866 is an I2C sensor and uses the Arduino Wire library.
+ Note: The MPU6886 is an I2C sensor and uses the Arduino Wire library.
  Because the sensor is not 5V tolerant, we are using a 3.3 V 8 MHz Pro Mini or
  a 3.3 V Teensy 3.1. We have disabled the internal pull-ups used by the Wire
  library in the Wire.h/twi.c utility file. We are also using the 400 kHz fast
  I2C mode by setting the TWI_FREQ  to 400000L /twi.h utility file.
  */
-#ifndef _MPU6866_H_
-#define _MPU6866_H_
+#ifndef _MPU6886_H_
+#define _MPU6886_H_
 
 #include <Wire.h>
 #include <Arduino.h>
@@ -49,7 +49,7 @@
 #define AtR    	0.0174533	
 #define Gyro_Gr	0.0010653
 
-class MPU6866 {
+class MPU6886 {
     public:
       enum Ascale {
         AFS_2G = 0,
@@ -68,7 +68,7 @@ class MPU6866 {
       Gscale Gyscale = GFS_2000DPS;
       Ascale Acscale = AFS_8G;
     public:
-      MPU6866();
+      MPU6886();
       int Init(void);
       void getAccelAdc(int16_t* ax, int16_t* ay, int16_t* az);
       void getGyroAdc(int16_t* gx, int16_t* gy, int16_t* gz);
