@@ -21,18 +21,18 @@ void loop() {
   bat_p     =  M5.Axp.GetPowerbatData() * 1.1 * 0.5 /1000;
   
   M5.Lcd.setCursor(0, 0, 1);
-  M5.Lcd.printf("vbat:%.3fV\r\n",vbat);
-  M5.Lcd.printf("icharge:%dmA\r\n",charge);
-  M5.Lcd.printf("idischg:%dmA\r\n",discharge);
-  M5.Lcd.printf("temp:%.1fC\r\n",temp);
-  M5.Lcd.printf("pbat:%.3fmW\r\n",bat_p);
-  M5.Lcd.printf("CoIn :%d\r\n",M5.Axp.GetCoulombchargeData());
-  M5.Lcd.printf("CoOut:%d\r\n",M5.Axp.GetCoulombdischargeData());
-  M5.Lcd.printf("CoD:%.2fmAh\r\n",M5.Axp.GetCoulombData());
-  M5.Lcd.printf("Vin:%.3fmV\r\n",M5.Axp.GetVinData() * 1.7);
-  M5.Lcd.printf("Iin:%.3fmA\r\n",M5.Axp.GetIinData() * 0.625);
-  M5.Lcd.printf("Vuin:%.3fmV\r\n",M5.Axp.GetVusbinData() * 1.7);
-  M5.Lcd.printf("Iuin:%.3fmA\r\n",M5.Axp.GetIusbinData() * 0.375);
+  M5.Lcd.printf("vbat:%.3fV\r\n",vbat);  //battery voltage
+  M5.Lcd.printf("icharge:%dmA\r\n",charge);  //battery charging current
+  M5.Lcd.printf("idischg:%dmA\r\n",discharge);  //battery output current
+  M5.Lcd.printf("temp:%.1fC\r\n",temp);  //axp192 inside temp
+  M5.Lcd.printf("pbat:%.3fmW\r\n",bat_p);  //battery power
+  M5.Lcd.printf("CoIn :%d\r\n",M5.Axp.GetCoulombchargeData());  //coulomb in current
+  M5.Lcd.printf("CoOut:%d\r\n",M5.Axp.GetCoulombdischargeData());  //coulomb out current
+  M5.Lcd.printf("CoD:%.2fmAh\r\n",M5.Axp.GetCoulombData());  //value of coulomb after calculate
+  M5.Lcd.printf("Vin:%.3fmV\r\n",M5.Axp.GetVinData() * 1.7);  // ACIN vin voltage
+  M5.Lcd.printf("Iin:%.3fmA\r\n",M5.Axp.GetIinData() * 0.625);  // ACIN vin current
+  M5.Lcd.printf("Vuin:%.3fmV\r\n",M5.Axp.GetVusbinData() * 1.7);  //usb vin voltage
+  M5.Lcd.printf("Iuin:%.3fmA\r\n",M5.Axp.GetIusbinData() * 0.375);  // usb vin current
 
   // 0x01 long press(1s), 0x02 press
   if(M5.Axp.GetBtnPress() == 0x02) {
