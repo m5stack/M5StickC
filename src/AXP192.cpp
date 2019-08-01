@@ -15,7 +15,7 @@ void AXP192::begin(void){
 
     Wire1.beginTransmission(0x34);
     Wire1.write(0x28);  
-    Wire1.write(0xff); //Enable LDO2&LDO3, LED&TFT 3.3V
+    Wire1.write(0xcc); //Enable LDO2&LDO3, LED&TFT 3.0V
     Wire1.endTransmission();
    
     Wire1.beginTransmission(0x34);
@@ -24,8 +24,8 @@ void AXP192::begin(void){
     Wire1.endTransmission();
    
     Wire1.beginTransmission(0x34);
-    Wire1.write(0x33);  //Enable Charging, 100mA, 4.2V, End at 0.9
-    Wire1.write(0xC0); 
+    Wire1.write(0x33);  //Enable Charging, 200mA, 4.2V, End at 0.9
+    Wire1.write(0xC1); 
     Wire1.endTransmission();
 
     Wire1.beginTransmission(0x34);
@@ -55,10 +55,42 @@ void AXP192::begin(void){
 }
 
 void AXP192::ScreenBreath(uint8_t brightness){
-    Wire1.beginTransmission(0x34);
+
+	//limit in 3.0V
+	if (brightness > 12) {
+		brightness = 12;
+	}
+	
+	Wire1.beginTransmission(0x34);
+	Wire1.write(0x28);
+	Wire1.endTransmission();
+	Wire1.requestFrom(0x34, 1);
+	uint8_t buf = Wire1.read(); 
+
+	Wire1.beginTransmission(0x34);
+    Wire1.write(0x28);  
+    Wire1.write(((buf & 0x0f) | (brightness << 4))); //Enable LDO2&LDO3, LED&TFT 3.3V
+    Wire1.endTransmission();
+
+/*	
+	Wire1.beginTransmission(0x34);
     Wire1.write(0x28);  
     Wire1.write(((brightness & 0x0f) << 4)); //Enable LDO2&LDO3, LED&TFT 3.3V
     Wire1.endTransmission();
+*/
+	
+}
+
+//get ADC rate    Wire1.write(((brightness & 0x0f) << 4)); //Enable LDO2&LDO3, LED&TFT 3.3V
+uint8_t  AXP192::GetADCrate(void){
+  
+  Wire1.beginTransmission(0x34);
+  Wire1.write(0x84);
+  Wire1.endTransmission();
+  Wire1.requestFrom(0x34, 1);
+  uint8_t buf = Wire1.read();
+  
+  return ((buf >> 6) & 0x03);
 }
 
 void  AXP192::EnableCoulombcounter(void){
@@ -67,6 +99,7 @@ void  AXP192::EnableCoulombcounter(void){
   Wire1.write(0xB8); 
   Wire1.write(0x80);
   Wire1.endTransmission();
+
 
 }
 
@@ -472,4 +505,17 @@ uint8_t AXP192::GetBtnPress() {
         Wire1.endTransmission();
     }
     return state;
+}
+
+// set LDO2 LDO3 voltage to 3.0V
+// LDO2: TFT backlight LDO3: TFT IC
+
+uint8_t AXP192::GetLDO2and3() {
+	Wire1.beginTransmission(0x34);
+	Wire1.write(0x28);
+	Wire1.endTransmission();
+    Wire1.requestFrom(0x34, 1);
+	uint8_t buf = Wire1.read();
+	
+	return buf;
 }
