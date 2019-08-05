@@ -3,6 +3,7 @@
 
 /*
     Install the AdaFruit NeoPixel library first
+    Github: https://github.com/adafruit/Adafruit_NeoPixel
  */
 #include <M5StickC.h>
 #include <Adafruit_NeoPixel.h>
