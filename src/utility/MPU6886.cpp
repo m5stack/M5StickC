@@ -1,12 +1,12 @@
-#include "MPU6866.h"
+#include "MPU6886.h"
 #include <math.h>
 #include <Arduino.h>
 
-MPU6866::MPU6866(){
+MPU6886::MPU6886(){
 
 }
 
-void MPU6866::I2C_Read_NBytes(uint8_t driver_Addr, uint8_t start_Addr, uint8_t number_Bytes, uint8_t *read_Buffer){
+void MPU6886::I2C_Read_NBytes(uint8_t driver_Addr, uint8_t start_Addr, uint8_t number_Bytes, uint8_t *read_Buffer){
     
   Wire1.beginTransmission(driver_Addr);
   Wire1.write(start_Addr);  
@@ -20,7 +20,7 @@ void MPU6866::I2C_Read_NBytes(uint8_t driver_Addr, uint8_t start_Addr, uint8_t n
   }        
 }
 
-void MPU6866::I2C_Write_NBytes(uint8_t driver_Addr, uint8_t start_Addr, uint8_t number_Bytes, uint8_t *write_Buffer){
+void MPU6886::I2C_Write_NBytes(uint8_t driver_Addr, uint8_t start_Addr, uint8_t number_Bytes, uint8_t *write_Buffer){
 
   Wire1.beginTransmission(driver_Addr);
   Wire1.write(start_Addr);
@@ -29,7 +29,7 @@ void MPU6866::I2C_Write_NBytes(uint8_t driver_Addr, uint8_t start_Addr, uint8_t 
 
 }
 
-int MPU6866::Init(void){
+int MPU6886::Init(void){
   unsigned char tempdata[1];
   unsigned char regdata;
   
@@ -97,7 +97,7 @@ int MPU6866::Init(void){
   return 0;
 }
 
-void MPU6866::getAccelAdc(int16_t* ax, int16_t* ay, int16_t* az){
+void MPU6886::getAccelAdc(int16_t* ax, int16_t* ay, int16_t* az){
 
    uint8_t buf[6];  
    I2C_Read_NBytes(MPU6886_ADDRESS,MPU6886_ACCEL_XOUT_H,6,buf);
@@ -107,7 +107,7 @@ void MPU6866::getAccelAdc(int16_t* ax, int16_t* ay, int16_t* az){
    *az=((int16_t)buf[4]<<8)|buf[5];
 
 }
-void MPU6866::getGyroAdc(int16_t* gx, int16_t* gy, int16_t* gz){
+void MPU6886::getGyroAdc(int16_t* gx, int16_t* gy, int16_t* gz){
 
   uint8_t buf[6];
   I2C_Read_NBytes(MPU6886_ADDRESS,MPU6886_GYRO_XOUT_H,6,buf);
@@ -118,7 +118,7 @@ void MPU6866::getGyroAdc(int16_t* gx, int16_t* gy, int16_t* gz){
   
 }
 
-void MPU6866::getTempAdc(int16_t *t){
+void MPU6886::getTempAdc(int16_t *t){
   
   uint8_t buf[2];  
   I2C_Read_NBytes(MPU6886_ADDRESS,MPU6886_TEMP_OUT_H,2,buf);
@@ -129,7 +129,7 @@ void MPU6866::getTempAdc(int16_t *t){
 
 
 //!俯仰，航向，横滚：pitch，yaw，roll，指三维空间中飞行器的旋转状态。
-void MPU6866::getAhrsData(float *pitch,float *roll,float *yaw){
+void MPU6886::getAhrsData(float *pitch,float *roll,float *yaw){
 
   float accX = 0; 
   float accY = 0;
@@ -147,7 +147,7 @@ void MPU6866::getAhrsData(float *pitch,float *roll,float *yaw){
 
 }
 
-void MPU6866::getGres(){
+void MPU6886::getGres(){
 
    switch (Gyscale)
    {
@@ -169,7 +169,7 @@ void MPU6866::getGres(){
 }
 
 
-void MPU6866::getAres(){
+void MPU6886::getAres(){
    switch (Acscale)
    {
    // Possible accelerometer scales (and their register bit settings) are:
@@ -191,7 +191,7 @@ void MPU6866::getAres(){
 
 }
  
-void MPU6866::SetGyroFsr(Gscale scale)
+void MPU6886::SetGyroFsr(Gscale scale)
 {
     //return IIC_Write_Byte(MPU_GYRO_CFG_REG,scale<<3);//设置陀螺仪满量程范围
     unsigned char regdata;	
@@ -203,7 +203,7 @@ void MPU6866::SetGyroFsr(Gscale scale)
     getGres();
 }
 
-void MPU6866::SetAccelFsr(Ascale scale)
+void MPU6886::SetAccelFsr(Ascale scale)
 {
     unsigned char regdata;	
     regdata = (scale<<3);
@@ -217,7 +217,7 @@ void MPU6866::SetAccelFsr(Ascale scale)
 
 
 
-void MPU6866::getAccelData(float* ax, float* ay, float* az){
+void MPU6886::getAccelData(float* ax, float* ay, float* az){
 
 
   int16_t accX = 0;
@@ -232,7 +232,7 @@ void MPU6866::getAccelData(float* ax, float* ay, float* az){
 
 }
       
-void MPU6866::getGyroData(float* gx, float* gy, float* gz){
+void MPU6886::getGyroData(float* gx, float* gy, float* gz){
   int16_t gyroX = 0;
   int16_t gyroY = 0;
   int16_t gyroZ = 0;
@@ -243,7 +243,7 @@ void MPU6866::getGyroData(float* gx, float* gy, float* gz){
   *gz = (float)gyroZ * gRes;
 }
 
-void MPU6866::getTempData(float *t){
+void MPU6886::getTempData(float *t){
   
   int16_t temp = 0;
   getTempAdc(&temp);

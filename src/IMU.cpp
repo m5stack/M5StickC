@@ -216,9 +216,9 @@ void IMU::getAccelAdc(int16_t* ax, int16_t* ay, int16_t* az){
    uint8_t buf[6];  
    I2C_Read_NBytes(SH200I_ADDRESS,SH200I_OUTPUT_ACC,6,buf);
 	
-   *ax=((int16_t)buf[1]<<8)|buf[0];  
-   *ay=((int16_t)buf[3]<<8)|buf[2];  
-   *az=((int16_t)buf[5]<<8)|buf[4];
+   *ax=(int16_t)((buf[1]<<8)|buf[0]);  
+   *ay=(int16_t)((buf[3]<<8)|buf[2]);  
+   *az=(int16_t)((buf[5]<<8)|buf[4]);
 
    //getAres();
 }
@@ -228,9 +228,9 @@ void IMU::getAccelData(float* ax, float* ay, float* az){
    uint8_t buf[6];  
    I2C_Read_NBytes(SH200I_ADDRESS,SH200I_OUTPUT_ACC,6,buf);
 	
-   *ax=(((int16_t)buf[1]<<8)|buf[0]) * aRes;  
-   *ay=(((int16_t)buf[3]<<8)|buf[2]) * aRes;  
-   *az=(((int16_t)buf[5]<<8)|buf[4]) * aRes;
+   *ax=(int16_t)((buf[1]<<8)|buf[0]) * aRes;  
+   *ay=(int16_t)((buf[3]<<8)|buf[2]) * aRes;  
+   *az=(int16_t)((buf[5]<<8)|buf[4]) * aRes;
 
    //getAres();
 }
@@ -239,9 +239,9 @@ void IMU::getGyroAdc(int16_t* gx, int16_t* gy, int16_t* gz){
    uint8_t buf[6];  
    I2C_Read_NBytes(SH200I_ADDRESS,SH200I_OUTPUT_GYRO,6,buf);
 	
-   *gx=((uint16_t)buf[1]<<8)|buf[0];  
-   *gy=((uint16_t)buf[3]<<8)|buf[2];  
-   *gz=((uint16_t)buf[5]<<8)|buf[4];
+   *gx=(int16_t)((buf[1]<<8)|buf[0]);  
+   *gy=(int16_t)((buf[3]<<8)|buf[2]);  
+   *gz=(int16_t)((buf[5]<<8)|buf[4]);
 
    //getGres();
 
@@ -252,9 +252,9 @@ void IMU::getGyroData(float* gx, float* gy, float* gz){
    uint8_t buf[6];  
    I2C_Read_NBytes(SH200I_ADDRESS,SH200I_OUTPUT_GYRO,6,buf);
 	
-   *gx=(((uint16_t)buf[1]<<8)|buf[0])   * gRes;  
-   *gy=(((uint16_t)buf[3]<<8)|buf[2])   * gRes;  
-   *gz=(((uint16_t)buf[5]<<8)|buf[4])   * gRes;
+   *gx=(int16_t)((buf[1]<<8)|buf[0]) * gRes;  
+   *gy=(int16_t)((buf[3]<<8)|buf[2]) * gRes;  
+   *gz=(int16_t)((buf[5]<<8)|buf[4]) * gRes;
 
    //getGres();
 
@@ -265,7 +265,7 @@ void IMU::getTempAdc(int16_t *t){
   uint8_t buf[2];  
   I2C_Read_NBytes(SH200I_ADDRESS,SH200I_OUTPUT_TEMP,2,buf);
 
-  *t=((uint16_t)buf[1]<<8)|buf[0];  
+  *t=(int16_t)((buf[1]<<8)|buf[0]);  
 }
 
 void IMU::getTempData(float *t){
@@ -273,5 +273,5 @@ void IMU::getTempData(float *t){
   uint8_t buf[2];  
   I2C_Read_NBytes(SH200I_ADDRESS,SH200I_OUTPUT_TEMP,2,buf);
 
-  *t=((uint16_t)buf[1]<<8)|buf[0];  
+  *t=(int16_t)((buf[1]<<8)|buf[0]) / 333.87 + 21.0;
 }
