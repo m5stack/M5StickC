@@ -1,7 +1,7 @@
 /*
   Color test
     hardware: M5Stack
-  
+
   please install the Adfruit TCS34725 library first ...
 */
 

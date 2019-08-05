@@ -1,3 +1,8 @@
+/*
+    note: need add library Adafruit_BMP280 from library manage
+    Github: https://github.com/adafruit/Adafruit_BMP280_Library
+*/
+
 #include <M5StickC.h>
 #include "DHT12.h"
 #include <Wire.h>
