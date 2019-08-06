@@ -141,7 +141,7 @@ void setupScrollArea(uint16_t tfa, uint16_t bfa) {
 // Setup the vertical scrolling start address pointer
 // ##############################################################################################
 void scrollAddress(uint16_t vsp) {
-  M5.Lcd.writecommand(ILI9341_VSCRSADD); // Vertical scrolling pointer
+  M5.Lcd.writecommand(ST7735_VSCRDEF); // Vertical scrolling pointer
   M5.Lcd.writedata(vsp>>8);
   M5.Lcd.writedata(vsp);
 }
