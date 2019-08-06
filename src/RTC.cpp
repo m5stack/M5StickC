@@ -193,3 +193,4 @@ void RTC::SetData(RTC_DateTypeDef* RTC_DateStruct){
   Wire1.endTransmission();
 
 }
+
