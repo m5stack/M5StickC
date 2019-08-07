@@ -52,6 +52,16 @@ void AXP192::begin(void){
     Wire1.write(0x30); //VBUS limit
     Wire1.write(0xe0);
     Wire1.endTransmission();
+
+    Wire1.beginTransmission(0x34);
+    Wire1.write(0x39);
+    Wire1.write(0xFC);
+    Wire1.endTransmission();
+
+    Wire1.beginTransmission(0x34);
+    Wire1.write(0x35);
+    Wire1.write(0xA2);
+    Wire1.endTransmission();
 }
 
 void AXP192::ScreenBreath(uint8_t brightness){

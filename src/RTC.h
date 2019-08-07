@@ -28,8 +28,7 @@ public:
   void SetData(RTC_DateTypeDef* RTC_DateStruct);
 
   void GetTime(RTC_TimeTypeDef* RTC_TimeStruct);
-  void GetData(RTC_DateTypeDef* RTC_DateStruct);
-  
+  void GetData(RTC_DateTypeDef* RTC_DateStruct); 
 public:
   uint8_t Second;
   uint8_t Minute;
