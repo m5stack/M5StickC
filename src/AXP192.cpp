@@ -15,7 +15,7 @@ void AXP192::begin(void){
 
     Wire1.beginTransmission(0x34);
     Wire1.write(0x28);  
-    Wire1.write(0xcc); //Enable LDO2&LDO3, LED&TFT 3.0V
+    Wire1.write(0xca); //Enable LDO2&LDO3, LED&TFT 3.0V
     Wire1.endTransmission();
    
     Wire1.beginTransmission(0x34);
