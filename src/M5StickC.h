@@ -3,7 +3,7 @@
 //! Licensed under the MIT license. See LICENSE file in the project root for full license information.
 /**
  * \par Copyright (C), 2016-2017, M5Stack
- * \class M5Stack
+ * \class M5StickC
  * \brief   M5StickC library.
  * @file    M5StickC.h
  * @author  M5Stack
