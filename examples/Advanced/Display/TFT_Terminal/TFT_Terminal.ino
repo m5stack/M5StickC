@@ -28,7 +28,8 @@
 #define TEXT_HEIGHT 16 // Height of text to be printed and scrolled
 #define TOP_FIXED_AREA 14 // Number of lines in top fixed area (lines counted from top of screen)
 #define BOT_FIXED_AREA 0 // Number of lines in bottom fixed area (lines counted from bottom of screen)
-#define YMAX 160 // Bottom of screen area
+#define YMAX 80 // Bottom of screen area
+#define XMAX 160
 
 // The initial y coordinate of the top of the scrolling area
 uint16_t yStart = 0;
@@ -63,8 +64,8 @@ void setup() {
   // Serial.begin(115200);
   
   M5.Lcd.setTextColor(TFT_WHITE, TFT_BLUE);
-  M5.Lcd.fillRect(0,0,320,TEXT_HEIGHT, TFT_BLUE);
-  M5.Lcd.drawCentreString("Serial Terminal - 115200",160/2,0,2);
+  M5.Lcd.fillRect(0,0,XMAX,TEXT_HEIGHT, TFT_BLUE);
+  M5.Lcd.drawCentreString("Serial Terminal - 115200",XMAX/2,0,2);
 
   // Change colour for scrolling zone text
   M5.Lcd.setTextColor(TFT_WHITE, TFT_BLACK);
@@ -92,7 +93,7 @@ void loop(void) {
   while (Serial.available()) {
     data = Serial.read();
     // If it is a CR or we are near end of line then scroll one line
-    if (data == '\r' || xPos>311) {
+    if (data == '\r' || xPos>XMAX) {
       xPos = 0;
       yDraw = scroll_line(); // It can take 13ms to scroll and blank 16 pixel lines
     }
@@ -111,7 +112,7 @@ int scroll_line() {
   int yTemp = yStart; // Store the old yStart, this is where we draw the next line
   // Use the record of line lengths to optimise the rectangle size we need to erase the top line
   // M5.Lcd.fillRect(0,yStart,blank[(yStart-TOP_FIXED_AREA)/TEXT_HEIGHT],TEXT_HEIGHT, TFT_BLACK);
-  M5.Lcd.fillRect(0,yStart,320,TEXT_HEIGHT, TFT_BLACK);
+  M5.Lcd.fillRect(0,yStart,XMAX,TEXT_HEIGHT, TFT_BLACK);
 
   // Change the top of the scroll area
   yStart+=TEXT_HEIGHT;
