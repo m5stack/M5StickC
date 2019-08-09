@@ -93,7 +93,7 @@ void loop(void) {
   while (Serial.available()) {
     data = Serial.read();
     // If it is a CR or we are near end of line then scroll one line
-    if (data == '\r' || xPos>311) {
+    if (data == '\r' || xPos>XMAX) {
       xPos = 0;
       yDraw = scroll_line(); // It can take 13ms to scroll and blank 16 pixel lines
     }
