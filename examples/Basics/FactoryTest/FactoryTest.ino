@@ -12,7 +12,7 @@ bool led = true;
 bool test_led = 0;
 ESP32_RMT rem;
 DHT12 dht12;
-uint8_t led_count = 15;
+uint8_t led_count = 12;
 
 int IO_1 = 0;
 int IO_2 = 26;
@@ -292,7 +292,7 @@ void loop() {
 
   if(digitalRead(M5_BUTTON_HOME) == LOW){
     led_count++;
-    if(led_count >= 16)
+    if(led_count > 12)
       led_count = 7;
     while(digitalRead(M5_BUTTON_HOME) == LOW);
     M5.Axp.ScreenBreath(led_count);
