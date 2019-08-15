@@ -28,14 +28,6 @@ uint16_t *adcBuffer = NULL;
 uint16_t oldx[SHOW_LEN];
 uint16_t oldy[SHOW_LEN];
 
-int16_t accX = 0;
-int16_t accY = 0;
-int16_t accZ = 0;
-
-int16_t gyroX = 0;
-int16_t gyroY = 0;
-int16_t gyroZ = 0;
-
 void wifi_test() {
     M5.Lcd.setTextColor(BLACK, WHITE);
     M5.Lcd.setCursor(7, 0, 2);
@@ -58,22 +50,6 @@ void wifi_test() {
     M5.Lcd.printf("%d AP", n);
 }
 
-void sh200i_test() {
-
-  M5.IMU.getGyroAdc(&gyroX,&gyroY,&gyroZ);
-  M5.IMU.getAccelAdc(&accX,&accY,&accZ);
-  
-  M5.Lcd.setTextColor(GREEN, WHITE);
-  M5.Lcd.setCursor(20, 1, 1);
-  M5.Lcd.println("mg  o/s");
-  M5.Lcd.setCursor(0, 10);
-  M5.Lcd.printf("x  %d   %.1f    ", (int)(((float) gyroX) * M5.IMU.gRes), ((float) accX) * M5.IMU.aRes);
-  M5.Lcd.setCursor(0, 20);
-  M5.Lcd.printf("y  %d   %.1f    ", (int)(((float) gyroY) * M5.IMU.gRes), ((float) accY) * M5.IMU.aRes);
-  M5.Lcd.setCursor(0, 30);
-  M5.Lcd.printf("z  %d   %.1f    ", (int)(((float) gyroZ) * M5.IMU.gRes), ((float) accZ) * M5.IMU.aRes);
- 
-}
 float accX_f = 0;
 float accY_f = 0;
 float accZ_f = 0;
@@ -81,9 +57,9 @@ float accZ_f = 0;
 float gyroX_f = 0;
 float gyroY_f = 0;
 float gyroZ_f = 0;
-void mpu6886_test(){
-  M5.MPU6886.getGyroData(&gyroX_f,&gyroY_f,&gyroZ_f);
-  M5.MPU6886.getAccelData(&accX_f,&accY_f,&accZ_f);
+void imu_test(){
+  M5.IMU.getGyroData(&gyroX_f,&gyroY_f,&gyroZ_f);
+  M5.IMU.getAccelData(&accX_f,&accY_f,&accZ_f);
   
   M5.Lcd.setTextColor(GREEN, WHITE);
   M5.Lcd.setCursor(20, 1, 1);
@@ -181,8 +157,6 @@ void grove_test() {
   }
 }
 
-int imu_flag = 0;
-int imu_type = 0;
 void setup() {
   // put your setup code here, to run once:
   M5.begin();
@@ -210,19 +184,9 @@ void setup() {
   delay(1000);
   M5.Lcd.fillScreen(WHITE);
 
-  //!SH200I
-  imu_flag = M5.IMU.Init();
-  if(imu_flag != 0){
-    imu_flag = M5.MPU6886.Init();
-    if(imu_flag == 0)
-      imu_type = 1;
-    else
-      imu_type = -1;
-  }else{
-    imu_type = 0;
-  }
-  Serial.printf("imu_flag = %d\n",imu_type);
-  
+  //!IMU
+  M5.IMU.Init();
+  Serial.printf("imuType = %d\n",M5.IMU.imuType);
 
   //!IR LED
   rem.begin(M5_IR,true);
@@ -265,10 +229,7 @@ void loop() {
       M5.Lcd.fillScreen(WHITE);
       test_led  = !test_led;
       grove_test();
-      if(imu_type == 0)
-        sh200i_test();
-      else if(imu_type == 1)
-        mpu6886_test();
+      imu_test();
       rtc_test();
 
       showSignal();
