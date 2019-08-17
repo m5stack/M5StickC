@@ -3,12 +3,12 @@
 
 #define PIN_CLK  0
 #define PIN_DATA 34
-#define READ_LEN (2 * 1024)
+#define READ_LEN (2 * 256)
+#define GAIN_FACTOR 3
 uint8_t BUFFER[READ_LEN] = {0};
 
-uint16_t oldx[160];
 uint16_t oldy[160];
-uint16_t *adcBuffer = NULL;
+int16_t *adcBuffer = NULL;
 
 void i2sInit()
 {
@@ -39,14 +39,13 @@ void i2sInit()
 
 void mic_record_task (void* arg)
 {   
-    
+  size_t bytesread;
   while(1){
-    i2s_read_bytes(I2S_NUM_0, (char*) BUFFER, READ_LEN, (100 / portTICK_RATE_MS));
-    adcBuffer = (uint16_t *)BUFFER;
+    i2s_read(I2S_NUM_0,(char*) BUFFER, READ_LEN, &bytesread, (100 / portTICK_RATE_MS));
+    adcBuffer = (int16_t *)BUFFER;
     showSignal();
     vTaskDelay(100 / portTICK_RATE_MS);
   }
-
 }
 
 void setup() {
@@ -57,22 +56,22 @@ void setup() {
   M5.Lcd.println("mic test");
 
   i2sInit();
-  xTaskCreatePinnedToCore(mic_record_task, "mic_record_task", 2048, NULL, 1, NULL, 1);
+  xTaskCreate(mic_record_task, "mic_record_task", 2048, NULL, 1, NULL);
 }
 
 
 void showSignal(){
-  int x, y;
+  int y;
   for (int n = 0; n < 160; n++){
-    x = n;
-    y = map(adcBuffer[n], 0, 65535, 10, 70);
-    M5.Lcd.drawPixel(oldx[n], oldy[n],WHITE);
-    M5.Lcd.drawPixel(x,y,BLACK);
-    oldx[n] = x;
+    y = adcBuffer[n] * GAIN_FACTOR;
+    y = map(y, INT16_MIN, INT16_MAX, 10, 70);
+    M5.Lcd.drawPixel(n, oldy[n],WHITE);
+    M5.Lcd.drawPixel(n,y,BLACK);
     oldy[n] = y;
   }
 }
 
 void loop() {
-  
+  printf("loop cycling\n");
+  vTaskDelay(1000 / portTICK_RATE_MS); // otherwise the main task wastes half of the cpu cycles
 }
