@@ -70,6 +70,7 @@
 #include "AXP192.h"
 
 #include "utility/Config.h"
+#include "utility/SH200Q.h"
 #include "utility/MPU6886.h"
 #include "utility/Button.h"
 #include "RTC.h"
@@ -98,6 +99,7 @@ class M5StickC {
     IMU Imu;
 
     MPU6886 Mpu6886;
+    SH200Q Sh200Q;
 
  private:
     bool isInited;
@@ -113,6 +115,8 @@ extern M5StickC M5;
 #define IMU Imu
 #define MPU6886 Mpu6886
 #define mpu6886 Mpu6886
+#define SH200Q Sh200Q
+#define sh200q Sh200Q
 
 #else
 #error “This library only supports boards with ESP32 processor.”	
