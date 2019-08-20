@@ -34,6 +34,8 @@ void M5StickC::begin(bool LCDEnable, bool PowerEnable, bool SerialEnable){
 	if (SerialEnable) {
 		Serial.println("OK");
 	}
+
+	Rtc.begin();
 }
 
 void M5StickC::update() {

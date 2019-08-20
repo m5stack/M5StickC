@@ -22,6 +22,8 @@ typedef struct
 class RTC { 
 public:
   RTC();
+
+  void begin(void);
   void GetBm8563Time(void);
 
   void SetTime(RTC_TimeTypeDef* RTC_TimeStruct);
