@@ -463,7 +463,6 @@ void AXP192::SetSleep(void){
 
 uint8_t AXP192::GetWarningLeve(void){
 
-    uint16_t vaps = 0;
     Wire1.beginTransmission(0x34);
     Wire1.write(0x47);
     Wire1.endTransmission();
