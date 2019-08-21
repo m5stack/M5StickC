@@ -84,8 +84,6 @@ if(hzkTypes == InternalHzk16){
 bool M5Display::initHzk16(boolean use, const char *HZK16Path,
                         const char *ASC16Path) {
 
-  bool result = false;
-
   if (use == false) { // Do not use HZK16 and ASC16 fonts
 
     hzk16Type = DontUsedHzk16;
