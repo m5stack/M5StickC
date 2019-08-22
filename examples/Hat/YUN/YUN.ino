@@ -19,8 +19,8 @@ void setup() {
   Wire.begin(0, 26, 100000);
   M5.Lcd.setRotation(1);
   M5.Lcd.setTextSize(2);
-  // led_set(uint8_t 1, 0x080808);
   // RGB888
+  // led_set(uint8_t 1, 0x080808);
   
   if (!bmp.begin(0x76)) {
     Serial.println(F("Could not find a valid BMP280 sensor, check wiring!"));
@@ -41,12 +41,13 @@ uint8_t color_light = 5;
 
 void loop() {
   
+  led_set_all((color_light << 16) | (color_light << 8) | color_light);
   if(millis() > update_time) {
     update_time = millis() + 1000;
     tmp = sht20.read_temperature();
     hum = sht20.read_humidity();
-    pressure = bmp.readPressure();
     light = light_get();
+    pressure = bmp.readPressure();
     M5.Lcd.setCursor(0, 8);
     M5.Lcd.setTextColor(TFT_WHITE, TFT_BLACK);
     M5.Lcd.printf("tmp:%.2f\r\n", tmp);
@@ -59,12 +60,6 @@ void loop() {
   }
 
   M5.update();
-
-  led_set_all((color_light << 16) | (color_light << 8) | color_light);
-  // color_light--;
-  // if(color_light == 0) {
-  //   color_light = 100;
-  // }
 
   if(M5.BtnA.wasPressed()) {
     esp_restart();  
