@@ -9,7 +9,7 @@ void setup() {
   //M5.Lcd.setTextSize(2);
   M5.Lcd.setCursor(20, 2);
   M5.Lcd.printf("UNIT_LIGHT EXAMPLE\n");
-  pinMode(26, INPUT);
+  pinMode(32, INPUT);
   M5.Lcd.setCursor(10, 30);
   M5.Lcd.print("GPIO33:");
   M5.Lcd.setCursor(10, 50);
