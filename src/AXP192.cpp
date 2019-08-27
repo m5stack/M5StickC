@@ -24,8 +24,8 @@ void AXP192::begin(void){
     Wire1.endTransmission();
    
     Wire1.beginTransmission(0x34);
-    Wire1.write(0x33);  //Enable Charging, 200mA, 4.2V, End at 0.9
-    Wire1.write(0xC1); 
+    Wire1.write(0x33);  //Enable Charging, 100mA, 4.2V, End at current less than 10%
+    Wire1.write(0xC0); 
     Wire1.endTransmission();
 
     Wire1.beginTransmission(0x34);
