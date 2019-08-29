@@ -18,9 +18,9 @@ int dot[6][6][2] {
   {{15,15},{15,35},{15,55},{55,15},{55,35},{55,55}},
   };
 
-int16_t accX = 0;
-int16_t accY = 0;
-int16_t accZ = 0;
+float accX = 0;
+float accY = 0;
+float accZ = 0;
 
 
 void setup(void) {
@@ -44,8 +44,8 @@ void loop() {
 
 
   while(1) {
-    M5.IMU.getAccelAdc(&accX,&accY,&accZ);
-    if (((float) accX) * M5.IMU.aRes > 1 || ((float) accY) * M5.IMU.aRes > 1 ) {
+    M5.IMU.getAccelData(&accX,&accY,&accZ);
+    if (accX > 1.5 ||  accY > 1.5 ) {
       break;
     }
   }
@@ -53,12 +53,12 @@ void loop() {
   M5.Lcd.fillScreen(TFT_GREEN);
 
   // Draw first dice
-  delay(1000);  // A little delay to increase suspense :-D
+  delay(500);  // A little delay to increase suspense :-D
   int number = random(0, 6);
   draw_dice(5,5,number);
 
   // Draw second dice
-  delay(1000);
+  delay(500);
   number = random(0, 6);
   draw_dice(85,5,number);
 
@@ -69,7 +69,7 @@ void draw_dice(int16_t x, int16_t y, int n) {
 
   M5.Lcd.fillRect(x, y, 70, 70, WHITE);
 
-  for(int d = 0; d < 7; d++) {
+  for(int d = 0; d < 6; d++) {
     if (dot[n][d][0] > 0) {
         M5.Lcd.fillCircle(x+dot[n][d][0], y+dot[n][d][1], DOT_SIZE, TFT_BLACK);
     }
