@@ -13,6 +13,7 @@ double temp = 0.0;
 double bat_p = 0.0;
 
 void loop() {
+  M5.update();
 
   vbat      = M5.Axp.GetVbatData() * 1.1 / 1000;
   charge    = M5.Axp.GetIchargeData() / 2;
@@ -22,6 +23,7 @@ void loop() {
   
   M5.Lcd.setCursor(0, 0, 1);
   M5.Lcd.printf("vbat:%.3fV\r\n",vbat);  //battery voltage
+  M5.Lcd.printf("charge:%d\r\n",M5.Axp.GetCharge());  //battery charging flag
   M5.Lcd.printf("icharge:%dmA\r\n",charge);  //battery charging current
   M5.Lcd.printf("idischg:%dmA\r\n",discharge);  //battery output current
   M5.Lcd.printf("temp:%.1fC\r\n",temp);  //axp192 inside temp
@@ -39,5 +41,10 @@ void loop() {
     esp_restart();
   }
   
+  // Toggle charge flag
+  if(M5.BtnB.wasReleased()){
+    M5.Axp.SetCharge(!M5.Axp.GetCharge());
+  }
+
   delay(200);
 }

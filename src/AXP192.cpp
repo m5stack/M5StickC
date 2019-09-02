@@ -515,3 +515,38 @@ uint8_t AXP192::GetBtnPress() {
     return state;
 }
 
+// Get charge flag
+bool AXP192::GetCharge() {
+    Wire1.beginTransmission(0x34);
+    Wire1.write(0x33);
+    Wire1.endTransmission();
+    Wire1.requestFrom(0x34, 1);
+    uint8_t state = Wire1.read();
+
+    return state & 0x80;
+}
+
+// Set charge flag
+void AXP192::SetCharge(bool charge) {
+    // get param
+    Wire1.beginTransmission(0x34);
+    Wire1.write(0x33);
+    Wire1.endTransmission();
+    Wire1.requestFrom(0x34, 1);
+    uint8_t state = Wire1.read();
+
+    // set flag
+    if(charge){
+        // ON
+        state = state | 0x80;
+    } else {
+        // OFF
+        state = state & 0x7f;
+    }
+
+    // set param
+    Wire1.beginTransmission(0x34);
+    Wire1.write(0x33);
+    Wire1.write(state);
+    Wire1.endTransmission();
+}
