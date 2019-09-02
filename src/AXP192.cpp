@@ -461,6 +461,18 @@ void AXP192::SetSleep(void){
 
 }
 
+bool AXP192::GetSleep(void){
+
+    Wire1.beginTransmission(0x34);
+    Wire1.write(0x12);
+    Wire1.endTransmission();
+    Wire1.requestFrom(0x34, 1);
+    uint8_t buf = Wire1.read();
+    
+    return buf == 0x01;
+
+}
+
 uint8_t AXP192::GetWarningLeve(void){
 
     Wire1.beginTransmission(0x34);
