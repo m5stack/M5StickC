@@ -440,19 +440,21 @@ uint16_t AXP192::GetVapsData(void){
 
 }
 
-void AXP192::SetSleep(void){
+void AXP192::SetSleep(bool wake){
 
-    Wire1.beginTransmission(0x34);
-    Wire1.write(0x31);
-    Wire1.endTransmission();
-    Wire1.requestFrom(0x34, 1);
-    uint8_t buf = Wire1.read();
-    
-    buf = (1<<3)|buf;
-    Wire1.beginTransmission(0x34);
-    Wire1.write(0x31);
-    Wire1.write(buf);
-    Wire1.endTransmission();
+    if(wake){
+        Wire1.beginTransmission(0x34);
+        Wire1.write(0x31);
+        Wire1.endTransmission();
+        Wire1.requestFrom(0x34, 1);
+        uint8_t buf = Wire1.read();
+
+        buf = (1<<3)|buf;
+        Wire1.beginTransmission(0x34);
+        Wire1.write(0x31);
+        Wire1.write(buf);
+        Wire1.endTransmission();
+    }
     
     Wire1.beginTransmission(0x34);
     Wire1.write(0x12);

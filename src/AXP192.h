@@ -43,7 +43,7 @@ public:
   uint16_t GetVapsData(void);
   uint8_t GetBtnPress(void);
   
-  void SetSleep(void);
+  void SetSleep(bool wake=true);
   
   // -- sleep
   void DeepSleep(uint64_t time_in_us = 0);
