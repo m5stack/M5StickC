@@ -50,6 +50,8 @@ public:
   void LightSleep(uint64_t time_in_us = 0);
 
   uint8_t GetWarningLeve(void);
+
+  void halt(void);
 public:
 private:
    
