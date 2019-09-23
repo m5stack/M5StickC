@@ -104,7 +104,7 @@ uint8_t FingerPrint::fpm_readAddMode(void)
     
     fpm_sendAndReceive(200);
     
-    return RxBuf[Q2];
+    return FP.RxBuf[Q2];
 }
 
 uint16_t FingerPrint::fpm_getUserNum(void)
@@ -119,7 +119,7 @@ uint16_t FingerPrint::fpm_getUserNum(void)
     res = fpm_sendAndReceive(200);
     
     if(res == ACK_SUCCESS && RxBuf[Q3] == ACK_SUCCESS) {
-        return RxBuf[Q2];
+        return FP.RxBuf[Q2];
     }
     else {
         return 0XFF;
