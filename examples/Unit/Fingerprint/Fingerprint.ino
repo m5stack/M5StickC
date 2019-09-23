@@ -18,7 +18,7 @@ void CleanScreen()
 void setup() {
     M5.begin();
     //Serial.begin(19200);
-    Serial2.begin(19200, SERIAL_8N1, 32, 33);
+    Serial2.begin(19200, SERIAL_8N1, 33, 32);
     M5.Lcd.setRotation(3);
     //M5.Lcd.clear(BLACK);
     //M5.Lcd.setTextColor(YELLOW);
