@@ -13,7 +13,7 @@ Adafruit_BMP280 bme;
 
 void setup() {
     M5.begin();
-    Wire.begin();
+    Wire.begin(32, 33, 100000);
     M5.Lcd.setRotation(3);
 
     Serial.println(F("ENV Unit(DHT12 and BMP280) test..."));
