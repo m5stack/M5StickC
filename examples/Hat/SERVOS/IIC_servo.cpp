@@ -26,25 +26,6 @@ void IIC_Write_2bytes(uint8_t address,uint8_t Register_address,uint16_t data)
   Wire.endTransmission();
 }
 
-/* void IIC_Read(uint8_t address,uint8_t Register_address,uint8_t quantity,uint8_t *data)
-{
-	uint8_t temp;
-	Wire.beginTransmission(address);
-	Wire.write(Register_address);
-	Wire.requestFrom(address, quantity);
-	while(Wire.available()==0);
-	
-	for (uint16_t x = 0 ; x < quantity; x++)
-	{
-		temp=Wire.read();
-		M5.Lcd.println(temp,HEX);
-		data[x]=temp;
-	}
-	
-	if(Wire.available()==0)
-		M5.Lcd.println("success");
-	Wire.endTransmission(); 
-} */
 
 
 uint8_t readBytes(uint8_t address, uint8_t subAddress, uint8_t count,uint8_t * dest) {
