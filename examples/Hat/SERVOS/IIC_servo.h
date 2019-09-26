@@ -4,8 +4,6 @@
 #include <M5StickC.h>
 
 #define SERVO_ADDRESS	0X38
-
-
 void IIC_Servo_Init();	//sda  0     scl  26		
 
 uint8_t Servo_angle_set(uint8_t Servo_CH,uint8_t angle);

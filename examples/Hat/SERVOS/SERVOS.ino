@@ -16,11 +16,11 @@ void setup(){
 
   IIC_Servo_Init();     //sda  0     scl  26 
 
-//  Servo_angle_set(1,90);     // CH1     ，0°
-//  Servo_angle_set(2,180);   // CH2     ，180°
-//  
-//  Servo_pulse_set(3,2500);  //CH3      ，2500us High level ==  180°
-//  Servo_pulse_set(4,1500);  //CH4      ，1500us High level ==  90°
+  Servo_angle_set(1,90);     // CH1     ，90°
+  Servo_angle_set(2,180);   // CH2     ，180°
+  
+  Servo_pulse_set(3,2500);  //CH3      ，2500us High level ==  180°
+  Servo_pulse_set(4,1500);  //CH4      ，1500us High level ==  90°
   
   
 
@@ -56,4 +56,5 @@ void loop() {
   {
     Servo_angle_set(i,180);     //
   }
+
 }

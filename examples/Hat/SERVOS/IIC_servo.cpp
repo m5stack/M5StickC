@@ -23,6 +23,7 @@ void IIC_Write_2bytes(uint8_t address,uint8_t Register_address,uint16_t data)
   Wire.write(Register_address);
   Wire.write(data >> 8); //MSB
   Wire.write(data & 0xFF); //LSB
+  
   Wire.endTransmission();
 }
 
@@ -63,11 +64,11 @@ uint8_t Servo_angle_set(uint8_t Servo_CH,uint8_t angle)
 	return 0;
 }
 
-uint8_t Servo_pulse_set(uint8_t Servo_CH,uint16_t width)
+uint8_t Servo_pulse_set(uint8_t Servo_CH,uint16_t width)    //0x10        ->16
 {
 	uint8_t servo_ch =	Servo_CH-1;
-	uint8_t Register_address=2*servo_ch+8;
-	if(Register_address%2==1 || Register_address>23)
+	uint8_t Register_address=2*servo_ch+16;
+	if(Register_address%2==1 || Register_address>32)
 		return 1;
 	IIC_Write_2bytes(SERVO_ADDRESS,Register_address,width);
 	return 0;
@@ -76,7 +77,7 @@ uint8_t Servo_pulse_set(uint8_t Servo_CH,uint16_t width)
 uint8_t RGB_set(uint8_t R,uint8_t G,uint8_t B)
 {
 	Wire.beginTransmission(SERVO_ADDRESS);
-	Wire.write(24);
+	Wire.write(32);
 	Wire.write(G);
 	Wire.write(R);
 	Wire.write(B);
@@ -95,15 +96,14 @@ uint16_t Servo_pulse_read(uint8_t Servo_CH)
 {
 	uint8_t data[2];
 	uint8_t servo_ch =	Servo_CH-1;
-	uint8_t Register_address=2*servo_ch+8;
+	uint8_t Register_address=2*servo_ch+16;
 	readBytes(SERVO_ADDRESS,Register_address,2,data);
-	
-	return  (data[0]<<8)+data[1];
+  return  (data[0]<<8)+data[1];
 }
 
 uint32_t RGB_read()
 {
 	uint8_t data[5];
-	readBytes(SERVO_ADDRESS,24,3,data);
+	readBytes(SERVO_ADDRESS,32,3,data);
 	return (data[0]<<16)+(data[1]<<8)+data[2];
 }
