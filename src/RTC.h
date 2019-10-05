@@ -27,10 +27,10 @@ public:
   void GetBm8563Time(void);
 
   void SetTime(RTC_TimeTypeDef* RTC_TimeStruct);
-  void SetData(RTC_DateTypeDef* RTC_DateStruct);
+  void SetDate(RTC_DateTypeDef* RTC_DateStruct);
 
   void GetTime(RTC_TimeTypeDef* RTC_TimeStruct);
-  void GetData(RTC_DateTypeDef* RTC_DateStruct); 
+  void GetDate(RTC_DateTypeDef* RTC_DateStruct);
 public:
   uint8_t Second;
   uint8_t Minute;
