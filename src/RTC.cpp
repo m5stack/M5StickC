@@ -7,7 +7,12 @@ RTC::RTC(){
 }
 
 void RTC::begin(void) {
-   Wire1.begin(21,22);   
+  Wire1.begin(21,22);
+
+  Wire1.beginTransmission(0x51);
+  Wire1.write(0x00);
+  Wire1.write(0x00);
+  Wire1.endTransmission();
 }
 
 void RTC::GetBm8563Time(void){
