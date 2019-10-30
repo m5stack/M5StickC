@@ -6,83 +6,155 @@ AXP192::AXP192(){
 
 void AXP192::begin(void){
   
-    Wire1.begin(21,22);
-  
-    Wire1.beginTransmission(0x34);
-    Wire1.write(0x10);  
-    Wire1.write(0xff);  //OLED_VPP Enable
-    Wire1.endTransmission();
+	Wire1.begin(21, 22);
+	Wire1.setClock(400000);
 
-    Wire1.beginTransmission(0x34);
-    Wire1.write(0x28);  
-    Wire1.write(0xcc); //Enable LDO2&LDO3, LED&TFT 3.0V
-    Wire1.endTransmission();
-   
-    Wire1.beginTransmission(0x34);
-    Wire1.write(0x82);  //Enable all the ADCs
-    Wire1.write(0xff); 
-    Wire1.endTransmission();
-   
-    Wire1.beginTransmission(0x34);
-    Wire1.write(0x33);  //Enable Charging, 100mA, 4.2V, End at current less than 10%
-    Wire1.write(0xC0); 
-    Wire1.endTransmission();
+	// Set LDO2 & LDO3(TFT_LED & TFT) 3.0V
+	Write1Byte(0x28, 0xcc);	
 
-    Wire1.beginTransmission(0x34);
-    Wire1.write(0xB8);  //Enable Colume Counter
-    Wire1.write(0x80); 
-    Wire1.endTransmission();
+	// Set ADC to All Enable
+	Write1Byte(0x82, 0xff);
 
-    Wire1.beginTransmission(0x34);
-    Wire1.write(0x12);  
-    Wire1.write(0x4d); //Enable DC-DC1, OLED_VDD, 5B V_EXT
-    Wire1.endTransmission();
+    // Bat charge voltage to 4.2, Current 100MA
+    Write1Byte(0x33, 0xc0);
 
-    Wire1.beginTransmission(0x34);
-    Wire1.write(0x36);  //pek setting
-    Wire1.write(0b00001100); //shut down setting with 4s,auto shut donw while  btn press longer then shut donw setting
-    Wire1.endTransmission();
+    // Enable Bat,ACIN,VBUS,APS adc
+    Write1Byte(0x82, 0xff);
+
+    // Enable Ext, LDO2, LDO3, DCDC1
+	Write1Byte(0x12, Read8bit(0x12) | 0x4D);	
     
-    Wire1.beginTransmission(0x34);
-    Wire1.write(0x90);
-    Wire1.write(0x02); //gpio0 setting
-    Wire1.endTransmission();
+    // 128ms power on, 4s power off
+    Write1Byte(0x36, 0x0C);
+
+	// Set RTC voltage to 3.3V
+	Write1Byte(0x91, 0xF0);	
+
+	// Set GPIO0 to LDO
+	Write1Byte(0x90, 0x02);
+
+    // Disable vbus hold limit
+	Write1Byte(0x30, 0x80);
+
+    // Set temperature protection
+    Write1Byte(0x39, 0xfc);
     
-    Wire1.beginTransmission(0x34);
-    Wire1.write(0x30); //VBUS limit
-    Wire1.write(0xe0);
-    Wire1.endTransmission();
-
-    Wire1.beginTransmission(0x34);
-    Wire1.write(0x39);
-    Wire1.write(0xFC);
-    Wire1.endTransmission();
-
-    Wire1.beginTransmission(0x34);
-    Wire1.write(0x35);
-    Wire1.write(0xA2);
-    Wire1.endTransmission();
+    // Enable RTC BAT charge 
+    Write1Byte(0x35, 0xa2);
+    
+    // Enable bat detection
+    Write1Byte(0x32, 0x46);
 }
 
-void AXP192::ScreenBreath(uint8_t brightness){
-  //limit in 3.0V
-  if (brightness > 12) {
-    brightness = 12;
-  }
-    
-  Wire1.beginTransmission(0x34);
-  Wire1.write(0x28);  //LDO2andLDO3 setting
-  Wire1.endTransmission();
-  Wire1.requestFrom(0x34, 1);
-  uint8_t buf = Wire1.read(); //read previous setting 
-
-  Wire1.beginTransmission(0x34);
-  Wire1.write(0x28);  
-  Wire1.write(((buf & 0x0f) | (brightness << 4))); //just change the LDO2 setting
-  Wire1.endTransmission();
-    
+void AXP192::Write1Byte( uint8_t Addr ,  uint8_t Data )
+{
+	Wire1.beginTransmission(0x34);
+	Wire1.write(Addr);
+	Wire1.write(Data);
+	Wire1.endTransmission();
 }
 
+uint8_t AXP192::Read8bit( uint8_t Addr )
+{
+	Wire1.beginTransmission(0x34);
+	Wire1.write(Addr);
+	Wire1.endTransmission();
+	Wire1.requestFrom(0x34, 1);
+	return Wire1.read();
+}
+
+uint16_t AXP192::Read12Bit( uint8_t Addr)
+{
+    uint16_t Data = 0;
+	uint8_t buf[2];
+    ReadBuff(Addr,2,buf);
+    Data = ((buf[0] << 4) + buf[1]); //
+    return Data;
+}
+
+uint16_t AXP192::Read13Bit( uint8_t Addr)
+{
+    uint16_t Data = 0;
+	uint8_t buf[2];
+    ReadBuff(Addr,2,buf);
+    Data = ((buf[0] << 5) + buf[1]); //
+    return Data;
+}
+
+uint16_t AXP192::Read16bit( uint8_t Addr )
+{
+	uint16_t ReData = 0;
+	Wire1.beginTransmission(0x34);
+	Wire1.write(Addr);
+	Wire1.endTransmission();
+	Wire1.requestFrom(0x34, 2);
+	for( int i = 0 ; i < 2 ; i++ )
+	{
+		ReData <<= 8;
+		ReData |= Wire1.read();
+	}
+	return ReData;
+}
+
+uint32_t AXP192::Read24bit( uint8_t Addr )
+{
+	uint32_t ReData = 0;
+	Wire1.beginTransmission(0x34);
+	Wire1.write(Addr);
+	Wire1.endTransmission();
+	Wire1.requestFrom(0x34, 3);
+	for( int i = 0 ; i < 3 ; i++ )
+	{
+		ReData <<= 8;
+		ReData |= Wire1.read();
+	}
+	return ReData;
+}
+
+uint32_t AXP192::Read32bit( uint8_t Addr )
+{
+	uint32_t ReData = 0;
+	Wire1.beginTransmission(0x34);
+	Wire1.write(Addr);
+	Wire1.endTransmission();
+	Wire1.requestFrom(0x34, 2);
+	for( int i = 0 ; i < 4 ; i++ )
+	{
+		ReData <<= 8;
+		ReData |= Wire1.read();
+	}
+	return ReData;
+}
+
+void AXP192::ReadBuff( uint8_t Addr , uint8_t Size , uint8_t *Buff )
+{
+	Wire1.beginTransmission(0x34);
+	Wire1.write(Addr);
+	Wire1.endTransmission();
+	Wire1.requestFrom(0x34, (int)Size);
+	for (int i = 0; i < Size; i++)
+	{
+		*( Buff + i )  = Wire1.read();
+	}
+}
+
+void AXP192::ScreenBreath(uint8_t brightness)
+{
+	if (brightness > 12) 
+	{
+		brightness = 12;
+	}
+	uint8_t buf = Read8bit( 0x28 );
+	Write1Byte( 0x28 , ((buf & 0x0f) | (brightness << 4)) );
+}
+
+bool AXP192::GetBatState()
+{
+	if( Read8bit(0x01) | 0x20 )
+		return true;
+	else
+		return false;
+}
 //---------coulombcounter_from_here---------
 //enable: void EnableCoulombcounter(void); 
 //disable: void DisableCOulombcounter(void);
@@ -92,111 +164,34 @@ void AXP192::ScreenBreath(uint8_t brightness){
 //get discharge data: uint32_t GetCoulombdischargeData(void);
 //get coulomb val affter calculation: float GetCoulombData(void);
 //------------------------------------------
-void  AXP192::EnableCoulombcounter(void){
-  
-  Wire1.beginTransmission(0x34);
-  Wire1.write(0xB8); 
-  Wire1.write(0x80);
-  Wire1.endTransmission();
-
-
+void  AXP192::EnableCoulombcounter(void)
+{
+  	Write1Byte( 0xB8 , 0x80 );
 }
 
-void  AXP192::DisableCoulombcounter(void){
-
-  Wire1.beginTransmission(0x34);
-  Wire1.write(0xB8); 
-  Wire1.write(0x00);
-  Wire1.endTransmission();
-
+void  AXP192::DisableCoulombcounter(void)
+{
+  	Write1Byte( 0xB8 , 0x00 );
 }
 
-void  AXP192::StopCoulombcounter(void){
-  Wire1.beginTransmission(0x34);
-  Wire1.write(0xB8); 
-  Wire1.write(0xC0);
-  Wire1.endTransmission();
-
+void  AXP192::StopCoulombcounter(void)
+{
+  	Write1Byte( 0xB8 , 0xC0 );
 }
 
-void  AXP192::ClearCoulombcounter(void){
-    
-  Wire1.beginTransmission(0x34);
-  Wire1.write(0xB8); 
-  Wire1.write(0xA0);
-  Wire1.endTransmission();
-
+void  AXP192::ClearCoulombcounter(void)
+{
+  	Write1Byte( 0xB8 , 0xA0 );
 }
 
-uint32_t AXP192::GetCoulombchargeData(void){
-
-  uint32_t coin;
-
-  Wire1.beginTransmission(0x34);
-  Wire1.write(0xB0);
-  Wire1.endTransmission();
-  Wire1.requestFrom(0x34, 1);
-  uint8_t buf = Wire1.read();
-
-  
-
-  Wire1.beginTransmission(0x34);
-  Wire1.write(0xB1);
-  Wire1.endTransmission();
-  Wire1.requestFrom(0x34, 1);
-  uint8_t buf1 = Wire1.read();
- 
-  Wire1.beginTransmission(0x34);
-  Wire1.write(0xB2);
-  Wire1.endTransmission();
-  Wire1.requestFrom(0x34, 1);
-  uint8_t buf2 = Wire1.read();
-
-  Wire1.beginTransmission(0x34);
-  Wire1.write(0xB3);
-  Wire1.endTransmission();
-  Wire1.requestFrom(0x34, 1);
-  uint8_t buf3 = Wire1.read();
-
-  coin = ((buf << 24) + (buf1 << 16) + (buf2 << 8) + buf3); 
-
-  return coin;
-
+uint32_t AXP192::GetCoulombchargeData(void)
+{
+  	return Read32bit(0xB0);
 }
 
-uint32_t AXP192::GetCoulombdischargeData(void){
-
-  uint32_t coout;
-
-  Wire1.beginTransmission(0x34);
-  Wire1.write(0xB4);
-  Wire1.endTransmission();
-  Wire1.requestFrom(0x34, 1);
-  uint8_t buf = Wire1.read();
-
-  Wire1.beginTransmission(0x34);
-  Wire1.write(0xB5);
-  Wire1.endTransmission();
-  Wire1.requestFrom(0x34, 1);
-  uint8_t buf1 = Wire1.read();
-
-  Wire1.beginTransmission(0x34);
-  Wire1.write(0xB6);
-  Wire1.endTransmission();
-  Wire1.requestFrom(0x34, 1);
-  uint8_t buf2 = Wire1.read();
-
-  Wire1.beginTransmission(0x34);
-  Wire1.write(0xB7);
-  Wire1.endTransmission();
-  Wire1.requestFrom(0x34, 1);
-  uint8_t buf3 = Wire1.read();
-
-
-  coout = ((buf << 24) + (buf1 << 16) + (buf2 << 8) + buf3); 
-
-  return coout;
-
+uint32_t AXP192::GetCoulombdischargeData(void)
+{
+  	return Read32bit(0xB4);
 }
 
 float AXP192::GetCoulombData(void){
@@ -218,251 +213,105 @@ float AXP192::GetCoulombData(void){
 uint16_t AXP192::GetVbatData(void){
 
     uint16_t vbat = 0;
-
-    Wire1.beginTransmission(0x34);
-    Wire1.write(0x78); // battery voltage LSB buff
-    Wire1.endTransmission();
-    Wire1.requestFrom(0x34, 1);
-    uint8_t buf = Wire1.read();
-
-    Wire1.beginTransmission(0x34);
-    Wire1.write(0x79); // battery voltage MSB buff
-    Wire1.endTransmission();
-    Wire1.requestFrom(0x34, 1);
-    uint8_t buf2 = Wire1.read();
-
-    vbat = ((buf << 4) + buf2); // V
+	uint8_t buf[2];
+    ReadBuff(0x78,2,buf);
+    vbat = ((buf[0] << 4) + buf[1]); // V
     return vbat;
-
 }
 
-uint16_t AXP192::GetVinData(void){
-
+uint16_t AXP192::GetVinData(void)
+{
     uint16_t vin = 0;
-
-	// ACIN connect to the M5stickC 5Vin port
-    Wire1.beginTransmission(0x34);
-    Wire1.write(0x56); // ACIN voltage LSB buff
-    Wire1.endTransmission();
-    Wire1.requestFrom(0x34, 1);
-    uint8_t buf = Wire1.read();
-
-    Wire1.beginTransmission(0x34);
-    Wire1.write(0x57); // ACIN voltage MSB buff
-    Wire1.endTransmission();
-    Wire1.requestFrom(0x34, 1);
-    uint8_t buf2 = Wire1.read();
-
-    vin = ((buf << 4) + buf2); // V
+    uint8_t buf[2];
+    ReadBuff(0x56,2,buf);
+    vin = ((buf[0] << 4) + buf[1]); // V
     return vin;
-
 }
 
-uint16_t AXP192::GetIinData(void){
-
+uint16_t AXP192::GetIinData(void)
+{
     uint16_t iin = 0;
-
-	// ACIN current
-    Wire1.beginTransmission(0x34);
-    Wire1.write(0x58); // ACIN voltage LSB buff
-    Wire1.endTransmission();
-    Wire1.requestFrom(0x34, 1);
-    uint8_t buf = Wire1.read();
-
-    Wire1.beginTransmission(0x34);
-    Wire1.write(0x59); // ACIN voltage MSB buff
-    Wire1.endTransmission();
-    Wire1.requestFrom(0x34, 1);
-    uint8_t buf2 = Wire1.read();
-
-    iin = ((buf << 4) + buf2); // V
+    uint8_t buf[2];
+    ReadBuff(0x58,2,buf);
+    iin = ((buf[0] << 4) + buf[1]);
     return iin;
-
 }
 
-uint16_t AXP192::GetVusbinData(void){
-
+uint16_t AXP192::GetVusbinData(void)
+{
     uint16_t vin = 0;
-
-	//vbus voltage
-    Wire1.beginTransmission(0x34);
-    Wire1.write(0x5a); // vbus voltage LSB
-    Wire1.endTransmission();
-    Wire1.requestFrom(0x34, 1);
-    uint8_t buf = Wire1.read();
-
-    Wire1.beginTransmission(0x34);
-    Wire1.write(0x5b); // vbus voltage MSB
-    Wire1.endTransmission();
-    Wire1.requestFrom(0x34, 1);
-    uint8_t buf2 = Wire1.read();
-
-    vin = ((buf << 4) + buf2); // V
+    uint8_t buf[2];
+    ReadBuff(0x5a,2,buf);
+    vin = ((buf[0] << 4) + buf[1]); // V
     return vin;
-
 }
 
-uint16_t AXP192::GetIusbinData(void){
-
+uint16_t AXP192::GetIusbinData(void)
+{
     uint16_t iin = 0;
-
-    // Vbus current 
-    Wire1.beginTransmission(0x34);
-    Wire1.write(0x5c); // vbus  current LSB
-    Wire1.endTransmission();
-    Wire1.requestFrom(0x34, 1);
-    uint8_t buf = Wire1.read();
-
-    Wire1.beginTransmission(0x34);
-    Wire1.write(0x5d); // vbus  current MSB
-    Wire1.endTransmission();
-    Wire1.requestFrom(0x34, 1);
-    uint8_t buf2 = Wire1.read();
-
-    iin = ((buf << 4) + buf2); // V
+    uint8_t buf[2];
+    ReadBuff(0x5C,2,buf);
+    iin = ((buf[0] << 4) + buf[1]);
     return iin;
-
 }
 
 uint16_t AXP192::GetIchargeData(void){
 
     uint16_t icharge = 0;
-
-    // battery charging current
-    Wire1.beginTransmission(0x34);
-    Wire1.write(0x7a); // LSB
-    Wire1.endTransmission();
-    Wire1.requestFrom(0x34, 1);
-    uint8_t buf = Wire1.read();
-
-    Wire1.beginTransmission(0x34);
-    Wire1.write(0x7b); // MSB
-    Wire1.endTransmission();
-    Wire1.requestFrom(0x34, 1);
-    uint8_t buf2 = Wire1.read();
-
-    icharge = ((buf << 5) + buf2);
-
+    uint8_t buf[2];
+    ReadBuff(0x7A,2,buf);
+    icharge = ( buf[0] << 5 ) + buf[1] ;
     return icharge;
-
 }
 
-uint16_t AXP192::GetIdischargeData(void){
-
+uint16_t AXP192::GetIdischargeData(void)
+{
     uint16_t idischarge = 0;
-
-    // battery discharge current
-    Wire1.beginTransmission(0x34);
-    Wire1.write(0x7c); // LSB
-    Wire1.endTransmission();
-    Wire1.requestFrom(0x34, 1);
-    uint8_t buf = Wire1.read();
-
-    Wire1.beginTransmission(0x34);
-    Wire1.write(0x7d); // MSB
-    Wire1.endTransmission();
-    Wire1.requestFrom(0x34, 1);
-    uint8_t buf2 = Wire1.read();
-
-    idischarge = ((buf << 5) + buf2);
-
+    uint8_t buf[2];
+    ReadBuff(0x7C,2,buf);
+    idischarge = ( buf[0] << 5 ) + buf[1] ;
     return idischarge;
-
 }
 
-uint16_t AXP192::GetTempData(void){
-
+uint16_t AXP192::GetTempData(void)
+{
     uint16_t temp = 0;
-
-	// get temp of AXP192
-    Wire1.beginTransmission(0x34);
-    Wire1.write(0x5e);
-    Wire1.endTransmission();
-    Wire1.requestFrom(0x34, 1);
-    uint8_t buf = Wire1.read();
-
-    Wire1.beginTransmission(0x34);
-    Wire1.write(0x5f);
-    Wire1.endTransmission();
-    Wire1.requestFrom(0x34, 1);
-    uint8_t buf2 = Wire1.read();
-
-    temp = ((buf << 4) + buf2);
-
+    uint8_t buf[2];
+    ReadBuff(0x5e,2,buf);
+    temp = ((buf[0] << 4) + buf[1]);
     return temp;
 }
 
-uint32_t AXP192::GetPowerbatData(void){
-
+uint32_t AXP192::GetPowerbatData(void)
+{
     uint32_t power = 0;
-
-    Wire1.beginTransmission(0x34);
-    Wire1.write(0x70);
-    Wire1.endTransmission();
-    Wire1.requestFrom(0x34, 1);
-    uint8_t buf0 = Wire1.read();
-
-    Wire1.beginTransmission(0x34);
-    Wire1.write(0x71);
-    Wire1.endTransmission();
-    Wire1.requestFrom(0x34, 1);
-    uint8_t buf1 = Wire1.read();
-
-    Wire1.beginTransmission(0x34);
-    Wire1.write(0x72);
-    Wire1.endTransmission();
-    Wire1.requestFrom(0x34, 1);
-    uint8_t buf2 = Wire1.read();
-
-    power = (buf0 << 16) + (buf1 << 8) + buf2;
-
+    uint8_t buf[3];
+    ReadBuff(0x70,2,buf);
+    power = (buf[0] << 16) + (buf[1] << 8) + buf[2];
     return power;
-
 }
 
-uint16_t AXP192::GetVapsData(void){
-
+uint16_t AXP192::GetVapsData(void)
+{
     uint16_t vaps = 0;
-    Wire1.beginTransmission(0x34);
-    Wire1.write(0x7E);
-    Wire1.endTransmission();
-    Wire1.requestFrom(0x34, 1);
-    uint8_t buf = Wire1.read();
-
-    Wire1.beginTransmission(0x34);
-    Wire1.write(0x7F);
-    Wire1.endTransmission();
-    Wire1.requestFrom(0x34, 1);
-    uint8_t buf2 = Wire1.read();
-    
-    vaps = ((uint16_t)(buf << 4) + buf2);
+    uint8_t buf[2];
+    ReadBuff(0x7e,2,buf);
+    vaps = ((buf[0] << 4) + buf[1]);
     return vaps;
-
 }
 
-void AXP192::SetSleep(void){
-
-    Wire1.beginTransmission(0x34);
-    Wire1.write(0x31);
-    Wire1.endTransmission();
-    Wire1.requestFrom(0x34, 1);
-    uint8_t buf = Wire1.read();
-    
+void AXP192::SetSleep(void)
+{
+    uint8_t buf = Read8bit(0x31);
     buf = (1<<3)|buf;
-    Wire1.beginTransmission(0x34);
-    Wire1.write(0x31);
-    Wire1.write(buf);
-    Wire1.endTransmission();
-    
-    Wire1.beginTransmission(0x34);
-    Wire1.write(0x12);
-    Wire1.write(0x01);
-    Wire1.endTransmission();
-
+	Write1Byte( 0x31 , buf );
+	Write1Byte( 0x90 , 0x00 );
+	Write1Byte( 0x12 , 0x09 );
+    Write1Byte( 0x12 , 0x00 );
 }
 
-uint8_t AXP192::GetWarningLeve(void){
-
+uint8_t AXP192::GetWarningLeve(void)
+{
     Wire1.beginTransmission(0x34);
     Wire1.write(0x47);
     Wire1.endTransmission();
@@ -472,46 +321,147 @@ uint8_t AXP192::GetWarningLeve(void){
 }
 
 // -- sleep
-void AXP192::DeepSleep(uint64_t time_in_us){
-    
-  SetSleep();
-  
-  if (time_in_us > 0){
-    esp_sleep_enable_timer_wakeup(time_in_us);
-  }else{
-    esp_sleep_disable_wakeup_source(ESP_SLEEP_WAKEUP_TIMER);
-  }
-  
-  (time_in_us == 0) ? esp_deep_sleep_start() : esp_deep_sleep(time_in_us);
-      
+void AXP192::DeepSleep(uint64_t time_in_us)
+{ 
+	SetSleep();
+	
+	if (time_in_us > 0)
+	{
+		esp_sleep_enable_timer_wakeup(time_in_us);
+	}
+	else
+	{
+		esp_sleep_disable_wakeup_source(ESP_SLEEP_WAKEUP_TIMER);
+	}
+	(time_in_us == 0) ? esp_deep_sleep_start() : esp_deep_sleep(time_in_us);
 }
 
-void AXP192::LightSleep(uint64_t time_in_us){
-    
-  SetSleep();
+void AXP192::LightSleep(uint64_t time_in_us)
+{
+  	SetSleep();
   
-  if (time_in_us > 0){
-    esp_sleep_enable_timer_wakeup(time_in_us);
-  }else{
-    esp_sleep_disable_wakeup_source(ESP_SLEEP_WAKEUP_TIMER);
-  }
-  
-  esp_light_sleep_start();
+	if (time_in_us > 0)
+	{
+		esp_sleep_enable_timer_wakeup(time_in_us);
+	}
+	else
+	{
+		esp_sleep_disable_wakeup_source(ESP_SLEEP_WAKEUP_TIMER);
+	}
+  	esp_light_sleep_start();
 }
 
 // 0 not press, 0x01 long press, 0x02 press
-uint8_t AXP192::GetBtnPress() {
-    Wire1.beginTransmission(0x34);
-    Wire1.write(0x46);
-    Wire1.endTransmission();
-    Wire1.requestFrom(0x34, 1);
-    uint8_t state = Wire1.read();
-    if(state) {
-        Wire1.beginTransmission(0x34);
-        Wire1.write(0x46);
-        Wire1.write(0x03);
-        Wire1.endTransmission();
+uint8_t AXP192::GetBtnPress()
+{
+    uint8_t state = Read8bit(0x46);
+    if(state) 
+    {
+        Write1Byte( 0x46 , 0x03 );
     }
     return state;
 }
 
+uint8_t AXP192::GetWarningLevel(void)
+{
+    return Read8bit(0x47) & 0x01;
+}
+
+float AXP192::GetBatVoltage()
+{
+	float ADCLSB = 1.1 / 1000.0;
+	uint16_t ReData = Read12Bit( 0x78 );
+	return ReData * ADCLSB;
+}
+
+float AXP192::GetBatCurrent()
+{
+	float ADCLSB = 0.5;
+	uint16_t CurrentIn = Read13Bit( 0x7A );
+	uint16_t CurrentOut = Read13Bit( 0x7C );
+	return ( CurrentIn - CurrentOut ) * ADCLSB;
+}
+
+float AXP192::GetVinVoltage()
+{
+	float ADCLSB = 1.7 / 1000.0;
+	uint16_t ReData = Read12Bit( 0x56 );
+	return ReData * ADCLSB;
+}
+
+float AXP192::GetVinCurrent()
+{
+	float ADCLSB = 0.625;
+	uint16_t ReData = Read12Bit( 0x58 );
+	return ReData * ADCLSB;
+}
+
+float AXP192::GetVBusVoltage()
+{
+	float ADCLSB = 1.7 / 1000.0;
+	uint16_t ReData = Read12Bit( 0x5A );
+	return ReData * ADCLSB;
+}
+
+float AXP192::GetVBusCurrent()
+{
+	float ADCLSB = 0.375;
+	uint16_t ReData = Read12Bit( 0x5C );
+	return ReData * ADCLSB;
+}
+
+float AXP192::GetTempInAXP192()
+{
+	float ADCLSB = 0.1;
+  	const float OFFSET_DEG_C = -144.7;
+	uint16_t ReData = Read12Bit( 0x5E );
+	return OFFSET_DEG_C + ReData * ADCLSB;
+}
+
+float AXP192::GetBatPower()
+{
+	float VoltageLSB = 1.1;
+	float CurrentLCS = 0.5;
+	uint32_t ReData = Read24bit( 0x70 );
+	return  VoltageLSB * CurrentLCS * ReData/ 1000.0;
+}
+
+float AXP192::GetBatChargeCurrent()
+{
+	float ADCLSB = 0.5;
+	uint16_t ReData = Read12Bit( 0x7A );
+	return ReData * ADCLSB;
+}
+float AXP192::GetAPSVoltage()
+{
+	float ADCLSB = 1.4  / 1000.0;
+	uint16_t ReData = Read12Bit( 0x7E );
+	return ReData * ADCLSB;
+}
+
+float AXP192::GetBatCoulombInput()
+{
+	uint32_t ReData = Read32bit( 0xB0 );
+	return ReData * 65536 * 0.5 / 3600 /25.0;
+}
+
+float AXP192::GetBatCoulombOut()
+{
+	uint32_t ReData = Read32bit( 0xB4 );
+	return ReData * 65536 * 0.5 / 3600 /25.0;
+}
+
+void AXP192::SetCoulombClear()
+{
+	Write1Byte(0xB8,0x20);
+}
+
+void AXP192::SetLDO2( bool State )
+{
+    uint8_t buf = Read8bit(0x12);
+	if( State == true )
+    	buf = (1<<2) | buf;
+	else 
+		buf = ~(1<<2) & buf;
+	Write1Byte( 0x12 , buf );
+}
