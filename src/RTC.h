@@ -28,9 +28,11 @@ public:
 
   void SetTime(RTC_TimeTypeDef* RTC_TimeStruct);
   void SetDate(RTC_DateTypeDef* RTC_DateStruct);
+  void SetData(RTC_DateTypeDef* RTC_DateStruct) __attribute__((deprecated));
 
   void GetTime(RTC_TimeTypeDef* RTC_TimeStruct);
   void GetDate(RTC_DateTypeDef* RTC_DateStruct);
+  void GetData(RTC_DateTypeDef* RTC_DateStruct) __attribute__((deprecated));
 public:
   uint8_t Second;
   uint8_t Minute;
