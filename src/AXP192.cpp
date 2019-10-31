@@ -117,7 +117,7 @@ uint32_t AXP192::Read32bit( uint8_t Addr )
 	Wire1.beginTransmission(0x34);
 	Wire1.write(Addr);
 	Wire1.endTransmission();
-	Wire1.requestFrom(0x34, 2);
+	Wire1.requestFrom(0x34, 4);
 	for( int i = 0 ; i < 4 ; i++ )
 	{
 		ReData <<= 8;
