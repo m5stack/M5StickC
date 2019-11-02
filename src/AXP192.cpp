@@ -306,8 +306,7 @@ void AXP192::SetSleep(void)
     buf = (1<<3)|buf;
 	Write1Byte( 0x31 , buf );
 	Write1Byte( 0x90 , 0x00 );
-	Write1Byte( 0x12 , 0x09 );
-    Write1Byte( 0x12 , 0x00 );
+	Write1Byte( 0x12 , 0x01 );
 }
 
 uint8_t AXP192::GetWarningLeve(void)
