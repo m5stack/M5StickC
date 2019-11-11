@@ -3,6 +3,7 @@
 English | [中文](README_cn.md)
 
 <img src="https://m5stack.oss-cn-shenzhen.aliyuncs.com/image/m5-docs_content/core/m5stickc_01.png" alt="M5StickC_01" width="350" height="350">
+<img src="https://docs.m5stack.com/assets/img/product_pics/core/minicore/m5stickc/m5stickc_05.jpg" alt="M5StickC_01" height="350" style="margin-left:20px">
 
 * **For the Detailed documentation of M5StickC, please click [here](https://docs.m5stack.com/#/en/core/m5stickc)**
 

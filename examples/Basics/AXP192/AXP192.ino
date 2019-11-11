@@ -1,5 +1,5 @@
 #include <M5StickC.h>
-
+#include "AXP192.h"
 TFT_eSprite tftSprite = TFT_eSprite(&M5.Lcd); 
 
 void setup() {
@@ -19,7 +19,7 @@ void loop() {
     tftSprite.setCursor(0, 30);  
     tftSprite.printf("USB:\r\n  V: %.3fv  I: %.3fma\r\n", M5.Axp.GetVBusVoltage(), M5.Axp.GetVBusCurrent());
     tftSprite.setCursor(0, 50);    
-    tftSprite.printf("5V-In:\r\n  V: %.3fw  I: %.3fma\r\n", M5.Axp.GetVinVoltage(), M5.Axp.GetVinCurrent());
+    tftSprite.printf("5V-In:\r\n  V: %.3fv  I: %.3fma\r\n", M5.Axp.GetVinVoltage(), M5.Axp.GetVinCurrent());
     tftSprite.setCursor(0, 70);    
     tftSprite.printf("Bat power %.3fmw", M5.Axp.GetBatPower());
     tftSprite.pushSprite(0, 0);
@@ -30,5 +30,16 @@ void loop() {
         esp_restart();
     }
     
-    delay(200);
+    if(M5.BtnA.wasPressed())
+    {
+        // close tft voltage output
+        M5.Axp.SetLDO2(false);
+        // close tft lcd voltage output
+        M5.Axp.SetLDO3(false);
+    }
+    
+    M5.Axp.SetChargeCurrent(CURRENT_100MA);
+    
+    M5.update();
+    delay(100);
 }
