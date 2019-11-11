@@ -23,7 +23,8 @@ void AXP192::begin(void)
     Write1Byte(0x82, 0xff);
 
     // Enable Ext, LDO2, LDO3, DCDC1
-    Write1Byte(0x12, Read8bit(0x12) | 0x4D);	
+    // Close DCDC2 output
+    Write1Byte(0x12, (Read8bit(0x12) & 0xef) | 0x4D);	
     
     // 128ms power on, 4s power off
     Write1Byte(0x36, 0x0C);
@@ -304,12 +305,10 @@ uint16_t AXP192::GetVapsData(void)
 
 void AXP192::SetSleep(void)
 {
-    uint8_t buf = Read8bit(0x31);
-    buf = (1<<3)|buf;
-    Write1Byte( 0x31 , buf );
-    Write1Byte( 0x90 , 0x00 );
-    Write1Byte( 0x12 , 0x09 );
-    Write1Byte( 0x12 , 0x00 );
+    Write1Byte(0x31 , Read8bit(0x31) | ( 1 << 3));
+    Write1Byte(0x90 , Read8bit(0x90) | 0x07);
+    Write1Byte(0x82, 0x00);
+    Write1Byte(0x12, Read8bit(0x12) & 0xA1);
 }
 
 uint8_t AXP192::GetWarningLeve(void)
@@ -326,7 +325,7 @@ uint8_t AXP192::GetWarningLeve(void)
 void AXP192::DeepSleep(uint64_t time_in_us)
 { 
     SetSleep();
-    
+    esp_sleep_enable_ext0_wakeup((gpio_num_t)37, LOW);
     if (time_in_us > 0)
     {
         esp_sleep_enable_timer_wakeup(time_in_us);
@@ -340,7 +339,6 @@ void AXP192::DeepSleep(uint64_t time_in_us)
 
 void AXP192::LightSleep(uint64_t time_in_us)
 {
-    SetSleep();
     if (time_in_us > 0)
     {
         esp_sleep_enable_timer_wakeup(time_in_us);
@@ -492,4 +490,9 @@ void AXP192::SetChargeCurrent(uint8_t current)
     uint8_t buf = Read8bit(0x33);
     buf = (buf & 0xf0) | (current & 0x07);
     Write1Byte(0x33, buf);
+}
+
+void AXP192::PowerOff()
+{
+    Write1Byte(0x32, Read8bit(0x32) | 0x80);
 }
