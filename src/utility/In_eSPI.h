@@ -15,7 +15,7 @@
 #ifndef _In_eSPIH_
 #define _In_eSPIH_
 
-#define TFT_ESPI_VERSION "1.4.5"
+#define TFT_ESPI_VERSION "1.4.21"
 
 //#define ESP32 //Just used to test ESP32 options
 
@@ -37,7 +37,7 @@
   #define SPI_READ_FREQUENCY SPI_FREQUENCY
 #endif
 
-#ifdef ST7789_DRIVER
+#if defined(ST7789_DRIVER) || defined(ST7789_2_DRIVER)
   #define TFT_SPI_MODE SPI_MODE3
 #else
   #define TFT_SPI_MODE SPI_MODE0
@@ -334,7 +334,7 @@
 
   // Convert swapped byte 16 bit colour to 18 bit and write in 3 bytes
   #define tft_Write_16S(C) spi.transfer(C & 0xF8); \
-                           spi.transfer((C & 0xE0)>>11 | (C & 0x07)<<5); \
+                           spi.transfer((C & 0xE000)>>11 | (C & 0x07)<<5); \
                            spi.transfer((C & 0x1F00)>>5)
   // Write 32 bits to TFT
   #define tft_Write_32(C)  spi.write32(C)
@@ -662,6 +662,7 @@ const PROGMEM fontinfo fontdata [] = {
   #endif
 };
 
+typedef uint16_t (*getColorCallback)(uint16_t x, uint16_t y);
 
 // Class functions and variables
 class TFT_eSPI : public Print {
@@ -746,6 +747,7 @@ class TFT_eSPI : public Print {
 
            // Read the colour of a pixel at x,y and return value in 565 format 
   uint16_t readPixel(int32_t x0, int32_t y0);
+  void     setCallback(getColorCallback getCol);
 
            // The next functions can be used as a pair to copy screen blocks (or horizontal/vertical lines) to another location
            // Read a block of pixels to a data buffer, buffer is 16 bit and the array size must be at least w * h
@@ -837,6 +839,8 @@ class TFT_eSPI : public Print {
 
   void     getSetup(setup_t& tft_settings); // Sketch provides the instance to populate
 
+  static   SPIClass& getSPIinstance(void);
+
   int32_t  cursor_x, cursor_y, padX;
   uint32_t textcolor, textbgcolor;
 
@@ -876,6 +880,7 @@ class TFT_eSPI : public Print {
 
   uint32_t lastColor = 0xFFFF;
 
+  getColorCallback getColor = nullptr;
 
  protected:
 
@@ -912,7 +917,57 @@ class TFT_eSPI : public Print {
 
 // Load the Anti-aliased font extension
 #ifdef SMOOTH_FONT
-  #include "Extensions/Smooth_font.h"
+//  #include "Extensions/Smooth_font.h"
+ // Coded by Bodmer 10/2/18, see license in root directory.
+ // This is part of the TFT_eSPI class and is associated with anti-aliased font functions
+
+ public:
+
+  // These are for the new antialiased fonts
+  void     loadFont(String fontName, fs::FS &ffs);
+  void     loadFont(String fontName, bool flash = true);
+  void     unloadFont( void );
+  bool     getUnicodeIndex(uint16_t unicode, uint16_t *index);
+
+  uint16_t alphaBlend(uint8_t alpha, uint16_t fgc, uint16_t bgc);
+
+  virtual void drawGlyph(uint16_t code);
+
+  void     showFont(uint32_t td);
+
+ // This is for the whole font
+  typedef struct
+  {
+    uint16_t gCount;     // Total number of characters
+    uint16_t yAdvance;   // Line advance
+    uint16_t spaceWidth; // Width of a space character
+    int16_t  ascent;     // Height of top of 'd' above baseline, other characters may be taller
+    int16_t  descent;    // Offset to bottom of 'p', other characters may have a larger descent
+    uint16_t maxAscent;  // Maximum ascent found in font
+    uint16_t maxDescent; // Maximum descent found in font
+  } fontMetrics;
+
+fontMetrics gFont = { 0, 0, 0, 0, 0, 0, 0 };
+
+  // These are for the metrics for each individual glyph (so we don't need to seek this in file and waste time)
+  uint16_t* gUnicode = NULL;  //UTF-16 code, the codes are searched so do not need to be sequential
+  uint8_t*  gHeight = NULL;   //cheight
+  uint8_t*  gWidth = NULL;    //cwidth
+  uint8_t*  gxAdvance = NULL; //setWidth
+  int16_t*  gdY = NULL;       //topExtent
+  int8_t*   gdX = NULL;       //leftExtent
+  uint32_t* gBitmap = NULL;   //file pointer to greyscale bitmap
+
+  bool     fontLoaded = false; // Flags when a anti-aliased font is loaded
+  fs::File fontFile;
+
+  private:
+
+  void     loadMetrics(uint16_t gCount);
+  uint32_t readInt32(void);
+
+  fs::FS   &fontFS = SPIFFS;
+  bool     spiffs = true;
 #endif
 
 }; // End of class TFT_eSPI
