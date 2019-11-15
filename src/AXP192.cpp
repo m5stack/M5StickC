@@ -29,7 +29,7 @@ void AXP192::begin(void)
     // 128ms power on, 4s power off
     Write1Byte(0x36, 0x0C);
 
-    // Set RTC voltage to 3.3V
+    // Set MIC voltage to 3.3V
     Write1Byte(0x91, 0xF0);	
 
     // Set GPIO0 to LDO
