@@ -66,6 +66,7 @@
 #include <Arduino.h>
 #include <Wire.h>
 #include <SPI.h>
+
 #include "M5Display.h"
 #include "AXP192.h"
 
@@ -73,6 +74,8 @@
 #include "utility/SH200Q.h"
 #include "utility/MPU6886.h"
 #include "utility/Button.h"
+#include "utility/CommUtil.h"
+
 #include "RTC.h"
 #include "IMU.h"
 
@@ -97,7 +100,8 @@ class M5StickC {
     RTC  Rtc;
 
     IMU Imu;
-
+    CommUtil I2C = CommUtil();
+    
     MPU6886 Mpu6886;
     SH200Q Sh200Q;
 
