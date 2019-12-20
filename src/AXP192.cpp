@@ -5,7 +5,7 @@ AXP192::AXP192()
   
 }
 
-void AXP192::begin(void)
+void AXP192::begin(bool disableLDO2, bool disableLDO3)
 {  
     Wire1.begin(21, 22);
     Wire1.setClock(400000);
@@ -24,7 +24,10 @@ void AXP192::begin(void)
 
     // Enable Ext, LDO2, LDO3, DCDC1
     // Close DCDC2 output
-    Write1Byte(0x12, (Read8bit(0x12) & 0xef) | 0x4D);	
+    byte buf = (Read8bit(0x12) & 0xef) | 0x4D;
+    if(disableLDO3) buf &= ~(1<<3);
+    if(disableLDO2) buf &= ~(1<<2);
+    Write1Byte(0x12, buf);	
     
     // 128ms power on, 4s power off
     Write1Byte(0x36, 0x0C);

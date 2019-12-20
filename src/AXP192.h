@@ -21,7 +21,7 @@
 class AXP192 {
 public:
     AXP192();
-    void  begin(void);
+    void  begin(bool disableLDO2 = false, bool disableLDO3 = false);
     void  ScreenBreath(uint8_t brightness);
     bool  GetBatState();
   
