@@ -5,7 +5,7 @@ AXP192::AXP192()
   
 }
 
-void AXP192::begin(bool disableLDO2, bool disableLDO3)
+void AXP192::begin(bool disableLDO2, bool disableLDO3, bool disableRTC, bool disableDCDC1, bool disableDCDC3)
 {  
     Wire1.begin(21, 22);
     Wire1.setClock(400000);
@@ -19,24 +19,25 @@ void AXP192::begin(bool disableLDO2, bool disableLDO3)
     // Bat charge voltage to 4.2, Current 100MA
     Write1Byte(0x33, 0xc0);
 
-    // Enable Bat,ACIN,VBUS,APS adc
-    Write1Byte(0x82, 0xff);
-
-    // Enable Ext, LDO2, LDO3, DCDC1
-    // Close DCDC2 output
+    // Depending on configuration enable LDO2, LDO3, DCDC1, DCDC3.
     byte buf = (Read8bit(0x12) & 0xef) | 0x4D;
     if(disableLDO3) buf &= ~(1<<3);
     if(disableLDO2) buf &= ~(1<<2);
+    if(disableDCDC3) buf &= ~(1<<1);
+    if(disableDCDC1) buf &= ~(1<<0);
     Write1Byte(0x12, buf);	
     
     // 128ms power on, 4s power off
     Write1Byte(0x36, 0x0C);
 
-    // Set RTC voltage to 3.3V
-    Write1Byte(0x91, 0xF0);	
+    if(!disableRTC)
+    {
+        // Set RTC voltage to 3.3V
+        Write1Byte(0x91, 0xF0);	
 
-    // Set GPIO0 to LDO
-    Write1Byte(0x90, 0x02);
+        // Set GPIO0 to LDO
+        Write1Byte(0x90, 0x02);
+    }
 
     // Disable vbus hold limit
     Write1Byte(0x30, 0x80);
@@ -45,7 +46,7 @@ void AXP192::begin(bool disableLDO2, bool disableLDO3)
     Write1Byte(0x39, 0xfc);
     
     // Enable RTC BAT charge 
-    Write1Byte(0x35, 0xa2);
+    Write1Byte(0x35, 0xa2 & (disableRTC ? 0x7F : 0xFF));
     
     // Enable bat detection
     Write1Byte(0x32, 0x46);
