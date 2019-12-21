@@ -13,6 +13,9 @@ void AXP192::begin(bool disableLDO2, bool disableLDO3, bool disableRTC, bool dis
     // Set LDO2 & LDO3(TFT_LED & TFT) 3.0V
     Write1Byte(0x28, 0xcc);	
 
+    // Set ADC sample rate to 200hz
+    Write1Byte(0x84, 0b11110010);
+    
     // Set ADC to All Enable
     Write1Byte(0x82, 0xff);
 
@@ -309,10 +312,10 @@ uint16_t AXP192::GetVapsData(void)
 
 void AXP192::SetSleep(void)
 {
-    Write1Byte(0x31 , Read8bit(0x31) | ( 1 << 3));
-    Write1Byte(0x90 , Read8bit(0x90) | 0x07);
-    Write1Byte(0x82, 0x00);
-    Write1Byte(0x12, Read8bit(0x12) & 0xA1);
+    Write1Byte(0x31 , Read8bit(0x31) | ( 1 << 3)); // Power off voltag 3.0v
+    Write1Byte(0x90 , Read8bit(0x90) | 0x07); // GPIO1 floating
+    Write1Byte(0x82, 0x00); // Disable ADCs
+    Write1Byte(0x12, Read8bit(0x12) & 0xA1); // Disable all outputs but DCDC1
 }
 
 uint8_t AXP192::GetWarningLeve(void)
@@ -499,4 +502,9 @@ void AXP192::SetChargeCurrent(uint8_t current)
 void AXP192::PowerOff()
 {
     Write1Byte(0x32, Read8bit(0x32) | 0x80);
+}
+
+void AXP192::setAdcState(bool state)
+{
+        Write1Byte(0x82, state ? 0xff : 0x00);
 }
