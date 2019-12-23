@@ -5,7 +5,7 @@ AXP192::AXP192()
   
 }
 
-void AXP192::begin(void)
+void AXP192::begin(bool disableLDO2, bool disableLDO3, bool disableRTC, bool disableDCDC1, bool disableDCDC3)
 {  
     Wire1.begin(21, 22);
     Wire1.setClock(400000);
@@ -13,27 +13,34 @@ void AXP192::begin(void)
     // Set LDO2 & LDO3(TFT_LED & TFT) 3.0V
     Write1Byte(0x28, 0xcc);	
 
+    // Set ADC sample rate to 200hz
+    Write1Byte(0x84, 0b11110010);
+    
     // Set ADC to All Enable
     Write1Byte(0x82, 0xff);
 
     // Bat charge voltage to 4.2, Current 100MA
     Write1Byte(0x33, 0xc0);
 
-    // Enable Bat,ACIN,VBUS,APS adc
-    Write1Byte(0x82, 0xff);
-
-    // Enable Ext, LDO2, LDO3, DCDC1
-    // Close DCDC2 output
-    Write1Byte(0x12, (Read8bit(0x12) & 0xef) | 0x4D);	
+    // Depending on configuration enable LDO2, LDO3, DCDC1, DCDC3.
+    byte buf = (Read8bit(0x12) & 0xef) | 0x4D;
+    if(disableLDO3) buf &= ~(1<<3);
+    if(disableLDO2) buf &= ~(1<<2);
+    if(disableDCDC3) buf &= ~(1<<1);
+    if(disableDCDC1) buf &= ~(1<<0);
+    Write1Byte(0x12, buf);	
     
     // 128ms power on, 4s power off
     Write1Byte(0x36, 0x0C);
 
-    // Set RTC voltage to 3.3V
-    Write1Byte(0x91, 0xF0);	
+    if(!disableRTC)
+    {
+        // Set RTC voltage to 3.3V
+        Write1Byte(0x91, 0xF0);	
 
-    // Set GPIO0 to LDO
-    Write1Byte(0x90, 0x02);
+        // Set GPIO0 to LDO
+        Write1Byte(0x90, 0x02);
+    }
 
     // Disable vbus hold limit
     Write1Byte(0x30, 0x80);
@@ -42,7 +49,7 @@ void AXP192::begin(void)
     Write1Byte(0x39, 0xfc);
     
     // Enable RTC BAT charge 
-    Write1Byte(0x35, 0xa2);
+    Write1Byte(0x35, 0xa2 & (disableRTC ? 0x7F : 0xFF));
     
     // Enable bat detection
     Write1Byte(0x32, 0x46);
@@ -305,10 +312,10 @@ uint16_t AXP192::GetVapsData(void)
 
 void AXP192::SetSleep(void)
 {
-    Write1Byte(0x31 , Read8bit(0x31) | ( 1 << 3));
-    Write1Byte(0x90 , Read8bit(0x90) | 0x07);
-    Write1Byte(0x82, 0x00);
-    Write1Byte(0x12, Read8bit(0x12) & 0xA1);
+    Write1Byte(0x31 , Read8bit(0x31) | ( 1 << 3)); // Power off voltag 3.0v
+    Write1Byte(0x90 , Read8bit(0x90) | 0x07); // GPIO1 floating
+    Write1Byte(0x82, 0x00); // Disable ADCs
+    Write1Byte(0x12, Read8bit(0x12) & 0xA1); // Disable all outputs but DCDC1
 }
 
 uint8_t AXP192::GetWarningLeve(void)
@@ -495,4 +502,9 @@ void AXP192::SetChargeCurrent(uint8_t current)
 void AXP192::PowerOff()
 {
     Write1Byte(0x32, Read8bit(0x32) | 0x80);
+}
+
+void AXP192::SetAdcState(bool state)
+{
+    Write1Byte(0x82, state ? 0xff : 0x00);
 }

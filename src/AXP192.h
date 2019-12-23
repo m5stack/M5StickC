@@ -21,7 +21,14 @@
 class AXP192 {
 public:
     AXP192();
-    void  begin(void);
+    /**
+     * LDO2: Display backlight
+     * LDO3: Display Control
+     * RTC: Don't set GPIO1 as LDO
+     * DCDC1: Main rail. When not set the controller shuts down.
+     * DCDC3: Use unknown
+     */
+    void  begin(bool disableLDO2 = false, bool disableLDO3 = false, bool disableRTC = false, bool disableDCDC1 = false, bool disableDCDC3 = false);
     void  ScreenBreath(uint8_t brightness);
     bool  GetBatState();
   
@@ -70,7 +77,10 @@ public:
     void SetCoulombClear();
     void SetLDO2( bool State );
     void SetLDO3( bool State );
+    void SetAdcState(bool State);
+    
     void PowerOff();
+
     
 private:
     void Write1Byte( uint8_t Addr ,  uint8_t Data );
