@@ -5,6 +5,7 @@
 // graphics are written to the Sprite rather than the TFT.
 ***************************************************************************************/
 #include "In_eSPI.h"
+
 class TFT_eSprite : public TFT_eSPI {
 
  public:
