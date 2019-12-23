@@ -77,9 +77,10 @@ public:
     void SetCoulombClear();
     void SetLDO2( bool State );
     void SetLDO3( bool State );
+    void SetAdcState(bool State);
+    
     void PowerOff();
 
-    void setAdcState(bool State);
     
 private:
     void Write1Byte( uint8_t Addr ,  uint8_t Data );

@@ -504,7 +504,7 @@ void AXP192::PowerOff()
     Write1Byte(0x32, Read8bit(0x32) | 0x80);
 }
 
-void AXP192::setAdcState(bool state)
+void AXP192::SetAdcState(bool state)
 {
-        Write1Byte(0x82, state ? 0xff : 0x00);
+    Write1Byte(0x82, state ? 0xff : 0x00);
 }
