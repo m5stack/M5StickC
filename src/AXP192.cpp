@@ -435,7 +435,7 @@ float AXP192::GetBatPower()
 float AXP192::GetBatChargeCurrent()
 {
     float ADCLSB = 0.5;
-    uint16_t ReData = Read12Bit( 0x7A );
+    uint16_t ReData = Read13Bit( 0x7A );
     return ReData * ADCLSB;
 }
 
