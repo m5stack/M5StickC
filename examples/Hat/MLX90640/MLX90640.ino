@@ -166,6 +166,8 @@ void loop() {
                                    // ambient temperature
         float emissivity = 0.95;
         MLX90640_CalculateTo(mlx90640Frame, &mlx90640, emissivity, tr, reversePixels);  // save pixels temp to array (pixels)
+        int mode = MLX90640_GetCurMode(MLX90640_address);
+        MLX90640_BadPixelsCorrection(mlx90640.brokenPixels, reversePixels, mode, &mlx90640);
     }
 
     // if want to send tmp array to other device, you can write fun in here: 
