@@ -201,7 +201,7 @@ uint16_t curtime;
 void loop()
 {
     uint8_t i;
-    uint16_t lasttime;
+    uint16_t lasttime = 0;
     //https_test();
     curtime = printLocalTime();
 

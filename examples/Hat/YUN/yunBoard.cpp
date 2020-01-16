@@ -5,14 +5,11 @@
 #define LIGHT_REG_ADDR  0x00
 
 bool I2C_writeBytes(uint8_t address, uint8_t subAddress, uint8_t *data, uint8_t length) {
-  bool function_result = false;
-
   Wire.beginTransmission(address);                // Initialize the Tx buffer
   Wire.write(subAddress);                         // Put slave register address in Tx buffer
   for(int i = 0; i < length; i++) {
     Wire.write(*(data+i));                        // Put data in Tx buffer
   }
-  function_result = (Wire.endTransmission() == 0);  // Send the Tx buffer
 
   return (Wire.endTransmission() == 0);             // Send the Tx buffer
 }

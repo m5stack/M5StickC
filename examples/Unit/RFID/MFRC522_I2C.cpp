@@ -72,7 +72,7 @@ byte MFRC522::PCD_ReadRegister(	byte reg	///< The register to read from. One of 
 	Wire.write(reg);
 	Wire.endTransmission();
 
-	Wire.requestFrom(_chipAddress, 1);
+	Wire.requestFrom(_chipAddress, (byte)1);
 	value = Wire.read();
 	return value;
 } // End PCD_ReadRegister()
@@ -381,7 +381,7 @@ byte MFRC522::PCD_CommunicateWithPICC(	byte command,		///< The command to execut
 										byte rxAlign,		///< In: Defines the bit position in backData[0] for the first bit received. Default 0.
 										bool checkCRC		///< In: True => The last two bytes of the response is assumed to be a CRC_A that must be validated.
 									 ) {
-	byte n, _validBits;
+	byte n, _validBits = 0;
 	unsigned int i;
 
 	// Prepare values for BitFramingReg

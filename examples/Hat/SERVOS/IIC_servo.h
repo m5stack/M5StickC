@@ -12,7 +12,7 @@ uint8_t Servo_angle_set(uint8_t Servo_CH,uint8_t angle);
 //Servo_CH: 1-8 width(us):  500-2500    
 uint8_t Servo_pulse_set(uint8_t Servo_CH,uint16_t width);
 //R: 0-255  G:  0-255   B:  0-255
-uint8_t RGB_set(uint8_t R,uint8_t G,uint8_t B);
+void RGB_set(uint8_t R,uint8_t G,uint8_t B);
 
 uint8_t Servo_angle_read(uint8_t Servo_CH);
 

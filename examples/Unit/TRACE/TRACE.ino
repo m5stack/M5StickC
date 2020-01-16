@@ -10,7 +10,7 @@ void setup() {
     Serial.begin(115200);
 	M5.Lcd.setRotation(3);
     Wire.begin();
-    M5.Lcd.clear(BLACK);
+    M5.Lcd.fillScreen(BLACK);
     M5.Lcd.setTextColor(YELLOW);
     M5.Lcd.setTextSize(2);
     M5.Lcd.setCursor(0, 40);

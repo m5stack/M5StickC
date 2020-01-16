@@ -23,7 +23,7 @@ void loop()
   runTime = millis();
 
   M5.Lcd.fillScreen(TFT_BLACK);
-  int n = random(2, 23), r = random(20, 40), colour = 0; //rainbow();
+  int n = random(2, 23), r = random(20, 40); //rainbow();
 
   for (long i = 0; i < (360 * n); i++) {
     sx = cos((i / n - 90) * DEG2RAD);
