@@ -17,7 +17,7 @@ uint16_t PortHub::hub_a_read_value(uint8_t reg){
   Wire.write(reg | 0x06);
   Wire.endTransmission();
   
-  uint8_t RegValue_L,RegValue_H;
+  uint8_t RegValue_L = 0, RegValue_H = 0;
 
   Wire.requestFrom(IIC_ADDR,2);
   while(Wire.available()){
@@ -35,7 +35,7 @@ uint8_t PortHub::hub_d_read_value_A(uint8_t reg){
   Wire.write(reg | 0x04);
   Wire.endTransmission();
   
-  uint8_t RegValue;
+  uint8_t RegValue = 0;
 
   Wire.requestFrom(IIC_ADDR,1);
   while(Wire.available()){
@@ -50,7 +50,7 @@ uint8_t PortHub::hub_d_read_value_B(uint8_t reg){
   Wire.write(reg | 0x05);
   Wire.endTransmission();
   
-  uint8_t RegValue;
+  uint8_t RegValue = 0;
 
   Wire.requestFrom(IIC_ADDR,1);
   while(Wire.available()){

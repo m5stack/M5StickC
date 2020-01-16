@@ -27,7 +27,6 @@ uint8_t readBytes(uint8_t address, uint8_t subAddress, uint8_t count,uint8_t * d
     Wire.beginTransmission(address);   // Initialize the Tx buffer
     Wire.write(subAddress);            // Put slave register address in Tx buffer
     uint8_t i = 0;
-    uint8_t temp;
     if (Wire.endTransmission(false) == 0 && Wire.requestFrom(address, (uint8_t)count)) 
     {
         while (Wire.available()) 
@@ -63,7 +62,7 @@ uint8_t Servo_pulse_set(uint8_t Servo_CH,uint16_t width)
     return 0;
 }
 
-uint8_t RGB_set(uint8_t R,uint8_t G,uint8_t B)
+void RGB_set(uint8_t R,uint8_t G,uint8_t B)
 {
     Wire.beginTransmission(SERVO_ADDRESS);
     Wire.write(32);

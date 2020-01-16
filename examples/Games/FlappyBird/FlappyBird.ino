@@ -118,7 +118,6 @@ void game_loop() {
   bool passed_pipe = false;
   // temp var for setAddrWindow
   unsigned char px;
-  unsigned char bpx;
 
   while (1) {
     loops = 0;
