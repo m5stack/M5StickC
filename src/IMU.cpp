@@ -34,9 +34,9 @@ void IMU::getGres() {
 
 void IMU::getAres() {
     if (imuType == IMU_SH200Q) {
-        gRes = M5.Sh200Q.aRes;
+        aRes = M5.Sh200Q.aRes;
     } else if (imuType == IMU_MPU6886) {
-        gRes = M5.Mpu6886.aRes;
+        aRes = M5.Mpu6886.aRes;
     }
 }
 
