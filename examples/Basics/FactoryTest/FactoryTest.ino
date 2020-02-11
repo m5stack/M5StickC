@@ -88,6 +88,7 @@ void IRAM_ATTR onTimer()
 
 void ErrorMeg(uint8_t code, const char *str)
 {
+    printf("ErrorMeg: code=%02X str=%s\n", code, str);
     Disbuff.fillRect(0, 0, 160, 80, BLACK);
     Disbuff.pushImage(0, 16, 48, 48, (uint16_t *)error_48);
     Disbuff.setCursor(100, 10);
@@ -104,6 +105,7 @@ void ErrorMeg(uint8_t code, const char *str)
 
 void ErrorMeg(uint8_t code, const char *str1, const char *str2)
 {
+    printf("ErrorMeg: code=%02X str1=%s str2=%s\n", code, str1, str2);
     Disbuff.fillRect(0, 0, 160, 80, BLACK);
     Disbuff.pushImage(0, 16, 48, 48, (uint16_t *)error_48);
     Disbuff.setCursor(100, 10);
