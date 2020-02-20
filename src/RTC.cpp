@@ -11,7 +11,8 @@ void RTC::begin(void) {
 
   Wire1.beginTransmission(0x51);
   Wire1.write(0x00);
-  Wire1.write(0x00);
+  Wire1.write(0x00);  // Status reset
+  Wire1.write(0x00);  // Status2 reset
   Wire1.endTransmission();
 }
 
