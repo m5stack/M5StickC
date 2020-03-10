@@ -32,14 +32,17 @@ public:
     void  ScreenBreath(uint8_t brightness);
     bool  GetBatState();
   
+    uint8_t GetInputPowerStatus();
+    uint8_t GetBatteryChargingStatus();
+
     void  EnableCoulombcounter(void);
     void  DisableCoulombcounter(void);
     void  StopCoulombcounter(void);
     void  ClearCoulombcounter(void);
-    uint32_t GetCoulombchargeData(void);
-    uint32_t GetCoulombdischargeData(void);
-    float GetCoulombData(void); 
-    
+    uint32_t GetCoulombchargeData(void);        // Raw Data for Charge
+    uint32_t GetCoulombdischargeData(void);     // Raw Data for Discharge
+    float GetCoulombData(void);                 // total in - total out and calc
+
     uint16_t GetVbatData(void) __attribute__((deprecated));
     uint16_t GetIchargeData(void) __attribute__((deprecated));
     uint16_t GetIdischargeData(void) __attribute__((deprecated));
@@ -73,13 +76,18 @@ public:
     float GetAPSVoltage();
     float GetBatCoulombInput();
     float GetBatCoulombOut();
-    uint8_t GetWarningLevel(void);	
-    void SetCoulombClear();
-    void SetLDO2( bool State );
+    uint8_t GetWarningLevel(void);    
+    void SetCoulombClear()  __attribute__((deprecated)); // use ClearCoulombcounter instead
+    void SetLDO2( bool State );     // Can turn LCD Backlight OFF for power saving
     void SetLDO3( bool State );
     void SetAdcState(bool State);
     
+    // -- Power Off
     void PowerOff();
+
+    // Power Maintained Storage
+    void Read6BytesStorage( uint8_t *bufPtr );
+    void Write6BytesStorage( uint8_t *bufPtr );
 
     
 private:

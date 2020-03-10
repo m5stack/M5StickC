@@ -11,7 +11,7 @@ void AXP192::begin(bool disableLDO2, bool disableLDO3, bool disableRTC, bool dis
     Wire1.setClock(400000);
 
     // Set LDO2 & LDO3(TFT_LED & TFT) 3.0V
-    Write1Byte(0x28, 0xcc);	
+    Write1Byte(0x28, 0xcc);
 
     // Set ADC sample rate to 200hz
     Write1Byte(0x84, 0b11110010);
@@ -28,7 +28,7 @@ void AXP192::begin(bool disableLDO2, bool disableLDO3, bool disableRTC, bool dis
     if(disableLDO2) buf &= ~(1<<2);
     if(disableDCDC3) buf &= ~(1<<1);
     if(disableDCDC1) buf &= ~(1<<0);
-    Write1Byte(0x12, buf);	
+    Write1Byte(0x12, buf);
     
     // 128ms power on, 4s power off
     Write1Byte(0x36, 0x0C);
@@ -36,7 +36,7 @@ void AXP192::begin(bool disableLDO2, bool disableLDO3, bool disableRTC, bool dis
     if(!disableRTC)
     {
         // Set RTC voltage to 3.3V
-        Write1Byte(0x91, 0xF0);	
+        Write1Byte(0x91, 0xF0);
 
         // Set GPIO0 to LDO
         Write1Byte(0x90, 0x02);
@@ -53,6 +53,9 @@ void AXP192::begin(bool disableLDO2, bool disableLDO3, bool disableRTC, bool dis
     
     // Enable bat detection
     Write1Byte(0x32, 0x46);
+
+    // Set Power off voltage 3.0v
+    Write1Byte(0x31 , Read8bit(0x31) | ( 1 << 3));
 }
 
 void AXP192::Write1Byte( uint8_t Addr ,  uint8_t Data )
@@ -77,7 +80,7 @@ uint16_t AXP192::Read12Bit( uint8_t Addr)
     uint16_t Data = 0;
     uint8_t buf[2];
     ReadBuff(Addr,2,buf);
-    Data = ((buf[0] << 4) + buf[1]); //
+    Data = ((buf[0] << 4) + buf[1]);
     return Data;
 }
 
@@ -86,7 +89,7 @@ uint16_t AXP192::Read13Bit( uint8_t Addr)
     uint16_t Data = 0;
     uint8_t buf[2];
     ReadBuff(Addr,2,buf);
-    Data = ((buf[0] << 5) + buf[1]); //
+    Data = ((buf[0] << 5) + buf[1]);
     return Data;
 }
 
@@ -157,6 +160,7 @@ void AXP192::ScreenBreath(uint8_t brightness)
     Write1Byte( 0x28 , ((buf & 0x0f) | (brightness << 4)) );
 }
 
+// Return True = Battery Exist
 bool AXP192::GetBatState()
 {
     if( Read8bit(0x01) | 0x20 )
@@ -164,6 +168,19 @@ bool AXP192::GetBatState()
     else
         return false;
 }
+
+// Input Power Status 
+uint8_t AXP192::GetInputPowerStatus()
+{
+    return Read8bit(0x00);
+}
+
+// Battery Charging Status 
+uint8_t AXP192::GetBatteryChargingStatus()
+{
+    return Read8bit(0x01);
+}
+
 //---------coulombcounter_from_here---------
 //enable: void EnableCoulombcounter(void); 
 //disable: void DisableCOulombcounter(void);
@@ -190,7 +207,7 @@ void  AXP192::StopCoulombcounter(void)
 
 void  AXP192::ClearCoulombcounter(void)
 {
-    Write1Byte( 0xB8 , 0xA0 );
+    Write1Byte( 0xB8, Read8bit(0xB8) | 0x20);    // Only set the Clear Flag
 }
 
 uint32_t AXP192::GetCoulombchargeData(void)
@@ -205,18 +222,28 @@ uint32_t AXP192::GetCoulombdischargeData(void)
 
 float AXP192::GetCoulombData(void)
 {
+    uint32_t coin = GetCoulombchargeData();
+    uint32_t coout = GetCoulombdischargeData();
+    uint32_t valueDifferent = 0;
+    bool bIsNegative = false;
 
-  uint32_t coin = 0;
-  uint32_t coout = 0;
+    if (coin > coout)
+    {    // Expected, in always more then out
+        valueDifferent = coin - coout;
+    }
+    else
+    {    // Warning: Out is more than In, the battery is not started at 0% 
+        // just Flip the output sign later
+        bIsNegative = true;
+        valueDifferent = coout - coin;
+    }
+    //c = 65536 * current_LSB * (coin - coout) / 3600 / ADC rate
+    //Adc rate can be read from 84H, change this variable if you change the ADC reate
+    float ccc = (65536 * 0.5 * valueDifferent) / 3600.0 / 200.0;  // Note the ADC has defaulted to be 200 Hz
 
-  coin = GetCoulombchargeData();
-  coout = GetCoulombdischargeData();
-
-  //c = 65536 * current_LSB * (coin - coout) / 3600 / ADC rate
-  //Adc rate can be read from 84H ,change this variable if you change the ADC reate
-  float ccc = 65536 * 0.5 * (coin - coout) / 3600.0 / 25.0;
-  return ccc;
-
+    if( bIsNegative )
+        ccc = 0.0 - ccc;    // Flip it back to negative
+    return ccc;
 }
 //----------coulomb_end_at_here----------
 
@@ -312,7 +339,7 @@ uint16_t AXP192::GetVapsData(void)
 
 void AXP192::SetSleep(void)
 {
-    Write1Byte(0x31 , Read8bit(0x31) | ( 1 << 3)); // Power off voltag 3.0v
+    Write1Byte(0x31 , Read8bit(0x31) | ( 1 << 3)); // Power off voltage 3.0v
     Write1Byte(0x90 , Read8bit(0x90) | 0x07); // GPIO1 floating
     Write1Byte(0x82, 0x00); // Disable ADCs
     Write1Byte(0x12, Read8bit(0x12) & 0xA1); // Disable all outputs but DCDC1
@@ -357,17 +384,21 @@ void AXP192::LightSleep(uint64_t time_in_us)
     esp_light_sleep_start();
 }
 
-// 0 not press, 0x01 long press, 0x02 press
+// Return 0 = not press, 0x01 = long press(1.5s), 0x02 = short press
 uint8_t AXP192::GetBtnPress()
 {
-    uint8_t state = Read8bit(0x46);
+    uint8_t state = Read8bit(0x46);  // IRQ 3 status.  
     if(state) 
     {
-        Write1Byte( 0x46 , 0x03 );
+        Write1Byte( 0x46 , 0x03 );   // Write 1 back to clear IRQ
     }
     return state;
 }
 
+// Low Volt Level 1, when APS Volt Output < 3.4496 V
+// Low Volt Level 2, when APS Volt Output < 3.3992 V, then this flag is SET (0x01)
+// Flag will reset once battery volt is charged above Low Volt Level 1
+// Note: now AXP192 have the Shutdown Voltage of 3.0V (B100) Def in REG 31H
 uint8_t AXP192::GetWarningLevel(void)
 {
     return Read8bit(0x47) & 0x01;
@@ -463,6 +494,7 @@ void AXP192::SetCoulombClear()
     Write1Byte(0xB8,0x20);
 }
 
+// Can turn LCD Backlight OFF for power saving
 void AXP192::SetLDO2( bool State )
 {
     uint8_t buf = Read8bit(0x12);
@@ -491,7 +523,8 @@ void AXP192::SetLDO3(bool State)
     Write1Byte( 0x12 , buf );
 }
 
-
+// Not recommend to set charge current > 100mA, since Battery is only 80mAh.
+// more then 1C charge-rate may shorten battery life-span.
 void AXP192::SetChargeCurrent(uint8_t current)
 {
     uint8_t buf = Read8bit(0x33);
@@ -499,12 +532,47 @@ void AXP192::SetChargeCurrent(uint8_t current)
     Write1Byte(0x33, buf);
 }
 
+// Cut all power, except for LDO1 (RTC)
 void AXP192::PowerOff()
 {
-    Write1Byte(0x32, Read8bit(0x32) | 0x80);
+    Write1Byte(0x32, Read8bit(0x32) | 0x80);     // MSB for Power Off
 }
 
 void AXP192::SetAdcState(bool state)
 {
-    Write1Byte(0x82, state ? 0xff : 0x00);
+    Write1Byte(0x82, state ? 0xff : 0x00);  // Enable / Disable all ADCs
+}
+
+// AXP192 have a 6 byte storage, when the power is still valid, the data will not be lost
+void AXP192::Read6BytesStorage( uint8_t *bufPtr )
+{
+    // Address from 0x06 - 0x0B
+    Wire1.beginTransmission(0x34);
+    Wire1.write(0x06);
+    Wire1.endTransmission();
+    Wire1.requestFrom(0x34, 6);
+    for( int i = 0; i < 6; ++i )
+    {
+        bufPtr[i] = Wire1.read();
+    }
+}
+
+// AXP192 have a 6 byte storage, when the power is still valid, the data will not be lost
+void AXP192::Write6BytesStorage( uint8_t *bufPtr )
+{
+    // Address from 0x06 - 0x0B
+    Wire1.beginTransmission(0x34);
+    Wire1.write(0x06);
+    Wire1.write(bufPtr[0]);
+    Wire1.write(0x07);
+    Wire1.write(bufPtr[1]);
+    Wire1.write(0x08);
+    Wire1.write(bufPtr[2]);
+    Wire1.write(0x09);
+    Wire1.write(bufPtr[3]);
+    Wire1.write(0x0A);
+    Wire1.write(bufPtr[4]);
+    Wire1.write(0x0B);
+    Wire1.write(bufPtr[5]);
+    Wire1.endTransmission();
 }
