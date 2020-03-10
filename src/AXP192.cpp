@@ -55,7 +55,7 @@ void AXP192::begin(bool disableLDO2, bool disableLDO3, bool disableRTC, bool dis
     Write1Byte(0x32, 0x46);
 
     // Set Power off voltage 3.0v
-    Write1Byte(0x31 , Read8bit(0x31) | ( 1 << 3));
+    Write1Byte(0x31 , Read8bit(0x31) & 0xf8 | (1 << 2));
 }
 
 void AXP192::Write1Byte( uint8_t Addr ,  uint8_t Data )
@@ -339,7 +339,7 @@ uint16_t AXP192::GetVapsData(void)
 
 void AXP192::SetSleep(void)
 {
-    Write1Byte(0x31 , Read8bit(0x31) | ( 1 << 3)); // Power off voltage 3.0v
+    Write1Byte(0x31 , Read8bit(0x31) | ( 1 << 3)); // Turn on short press to wake up
     Write1Byte(0x90 , Read8bit(0x90) | 0x07); // GPIO1 floating
     Write1Byte(0x82, 0x00); // Disable ADCs
     Write1Byte(0x12, Read8bit(0x12) & 0xA1); // Disable all outputs but DCDC1
