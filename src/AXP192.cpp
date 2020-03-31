@@ -55,7 +55,7 @@ void AXP192::begin(bool disableLDO2, bool disableLDO3, bool disableRTC, bool dis
     Write1Byte(0x32, 0x46);
 
     // Set Power off voltage 3.0v
-    Write1Byte(0x31 , Read8bit(0x31) & 0xf8 | (1 << 2));
+    Write1Byte(0x31 , (Read8bit(0x31) & 0xf8) | (1 << 2));
 }
 
 void AXP192::Write1Byte( uint8_t Addr ,  uint8_t Data )
