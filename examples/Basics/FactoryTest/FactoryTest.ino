@@ -1,8 +1,6 @@
 /*
     note: need add library FastLED from library manage
     Github: https://github.com/FastLED/FastLED
-
-    note: Change Partition Scheme(Default -> NoOTA or MinimalSPIFFS)
 */
 #include <M5StickC.h>
 #include <math.h>
@@ -26,24 +24,24 @@ extern const unsigned char icon_ble[4608];
 extern const unsigned char icon_wifi[4608];
 extern const unsigned char icon_ble_disconnect[4608];
 extern const unsigned char ImageData[768];
-extern const unsigned char stick1[12960];
-extern const unsigned char stick2[12960];
-extern const unsigned char stick3[12960];
-extern const unsigned char stick4[12960];
-extern const unsigned char stick5[12960];
-extern const unsigned char stick6[12960];
-extern const unsigned char stick7[12960];
-extern const unsigned char stick8[12960];
-extern const unsigned char stick9[12960];
-extern const unsigned char stick10[12960];
-extern const unsigned char stick11[12960];
-extern const unsigned char stick12[12960];
-extern const unsigned char stick13[12960];
-extern const unsigned char stick14[12960];
-extern const unsigned char stick15[12960];
-extern const unsigned char stick16[12960];
-extern const unsigned char stick17[12960];
-extern const unsigned char stick18[12960];
+extern const unsigned char stick1[];
+extern const unsigned char stick2[];
+extern const unsigned char stick3[];
+extern const unsigned char stick4[];
+extern const unsigned char stick5[];
+extern const unsigned char stick6[];
+extern const unsigned char stick7[];
+extern const unsigned char stick8[];
+extern const unsigned char stick9[];
+extern const unsigned char stick10[];
+extern const unsigned char stick11[];
+extern const unsigned char stick12[];
+extern const unsigned char stick13[];
+extern const unsigned char stick14[];
+extern const unsigned char stick15[];
+extern const unsigned char stick16[];
+extern const unsigned char stick17[];
+extern const unsigned char stick18[];
 const unsigned char* Animationptr[18] = {
   stick1,stick2,stick3,stick4,stick5,
   stick6,stick7,stick8,stick9,stick10,
@@ -1259,6 +1257,24 @@ void DisplayWIFI()
     }
 }
 
+unsigned char stick[12960];
+
+void unpack_data(const uint8_t *data, uint8_t *buffer)
+{
+  int size = data[0] + (data[1] << 8);
+
+  for (int i = 2; i < size; i += 3) {
+    // data set
+    *(buffer++) = data[i];
+    *(buffer++) = data[i + 1];
+    for (int j = 0; j < data[i + 2]; j++) {
+      // same data set
+      *(buffer++) = data[i];
+      *(buffer++) = data[i + 1];
+    }
+  }
+}
+
 void setup()
 {
     M5.begin();
@@ -1275,7 +1291,8 @@ void setup()
     Disbuff.setSwapBytes(true);
   for (int n = 0; n < 12; n++)
   {
-    Disbuff.pushImage(40, 0, 81, 80, (uint16_t *)Animationptr[n]);
+    unpack_data(Animationptr[n], stick);
+    Disbuff.pushImage(40, 0, 81, 80, (uint16_t *)stick);
       Displaybuff();
     delay(30);
   }
@@ -1303,7 +1320,8 @@ void setup()
   for (int n = 11; n < 18; n++)
   {
     Disbuff.fillEllipse(80,40,ellips[n-11]/2, ellips[n-11]/2, Disbuff.color565(43,43,43));
-    Disbuff.pushImage(40, 0, 81, 80, (uint16_t *)Animationptr[n]);
+    unpack_data(Animationptr[n], stick);
+    Disbuff.pushImage(40, 0, 81, 80, (uint16_t *)stick);
       Displaybuff();
     delay(20);
   }
