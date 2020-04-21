@@ -1,10 +1,5 @@
-/*
-    note: need add library FastLED from library manage
-    Github: https://github.com/FastLED/FastLED
-*/
 #include <M5StickC.h>
 #include <math.h>
-#include <FastLED.h>
 #include <Wire.h>
 #include <driver/rmt.h>
 #include <driver/i2s.h>
@@ -68,10 +63,6 @@ typedef struct point_2d
     double y;
 } point_2d_t;
 
-
-#define NUM_LEDS 3
-#define DATA_PIN 32
-CRGB leds[NUM_LEDS];
 
 hw_timer_t *timer = NULL;
 volatile SemaphoreHandle_t timerSemaphore;
@@ -1289,13 +1280,13 @@ void setup()
     M5.Lcd.setSwapBytes(false);
     Disbuff.createSprite(160, 80);
     Disbuff.setSwapBytes(true);
-  for (int n = 0; n < 12; n++)
-  {
-    unpack_data(Animationptr[n], stick);
-    Disbuff.pushImage(40, 0, 81, 80, (uint16_t *)stick);
-      Displaybuff();
-    delay(30);
-  }
+    for (int n = 0; n < 12; n++)
+    {
+        unpack_data(Animationptr[n], stick);
+        Disbuff.pushImage(40, 0, 81, 80, (uint16_t *)stick);
+        Displaybuff();
+        delay(30);
+    }
 
     Serial.printf("FUCK STC\r\n");
     if (InitI2SMicroPhone() != true)
@@ -1316,31 +1307,31 @@ void setup()
     }
     checkAXP192();
     checkBM8563();
-  uint16_t ellips[7] = { 70, 78, 86, 93, 100, 108, 116};
-  for (int n = 11; n < 18; n++)
-  {
-    Disbuff.fillEllipse(80,40,ellips[n-11]/2, ellips[n-11]/2, Disbuff.color565(43,43,43));
-    unpack_data(Animationptr[n], stick);
-    Disbuff.pushImage(40, 0, 81, 80, (uint16_t *)stick);
-      Displaybuff();
-    delay(20);
-  }
+    uint16_t ellips[7] = { 70, 78, 86, 93, 100, 108, 116};
+    for (int n = 11; n < 18; n++)
+    {
+        Disbuff.fillEllipse(80,40,ellips[n-11]/2, ellips[n-11]/2, Disbuff.color565(43,43,43));
+        unpack_data(Animationptr[n], stick);
+        Disbuff.pushImage(40, 0, 81, 80, (uint16_t *)stick);
+        Displaybuff();
+        delay(20);
+    }
 
-  int color_bk = 43;
-  for (int n = 116; n < 180; n=n+8)
-  {
-    Disbuff.fillEllipse(80,40,n/2, n/2, Disbuff.color565(color_bk,color_bk,color_bk));
-      Displaybuff();
-    delay(20);
-    color_bk -= 5;
-  }
+    int color_bk = 43;
+    for (int n = 116; n < 180; n=n+8)
+    {
+        Disbuff.fillEllipse(80,40,n/2, n/2, Disbuff.color565(color_bk,color_bk,color_bk));
+        Displaybuff();
+        delay(20);
+        color_bk -= 5;
+    }
 
-  Disbuff.fillRect(0,0,160,80,BLACK);
-  Displaybuff();
-  if (TestMode)
-  {
-    ColorBar();
-  }
+    Disbuff.fillRect(0,0,160,80,BLACK);
+    Displaybuff();
+    if (TestMode)
+    {
+        ColorBar();
+    }
 
     pinMode(10, OUTPUT);
 
