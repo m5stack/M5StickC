@@ -562,7 +562,7 @@ void AXP192::SetAdcRate( uint8_t rate )
 {
     uint8_t buf = Read8bit(0x84);
     buf = (buf & ~(0xc0)) | (rate & 0xc0);
-    Write1Byte(0x33, buf);
+    Write1Byte(0x84, buf);
 }
 
 // AXP192 have a 6 byte storage, when the power is still valid, the data will not be lost
