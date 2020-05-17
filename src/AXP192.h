@@ -80,6 +80,7 @@ public:
     void SetCoulombClear()  __attribute__((deprecated)); // use ClearCoulombcounter instead
     void SetLDO2( bool State );     // Can turn LCD Backlight OFF for power saving
     void SetLDO3( bool State );
+    void SetGPIO0( bool State );
     void SetAdcState(bool State);
     
     // -- Power Off

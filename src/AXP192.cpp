@@ -523,6 +523,21 @@ void AXP192::SetLDO3(bool State)
     Write1Byte( 0x12 , buf );
 }
 
+void AXP192::SetGPIO0(bool State)
+{
+    uint8_t buf = Read8bit(0x90);
+    if ( State == true )
+    {
+        buf &= ~(0x07); // clear last 3 bits
+        buf |= 0x02;    // set as LDO
+    }
+    else
+    {
+        buf |= 0x07;    // set as floating
+    }
+    Write1Byte( 0x90 , buf );
+}
+
 // Not recommend to set charge current > 100mA, since Battery is only 80mAh.
 // more then 1C charge-rate may shorten battery life-span.
 void AXP192::SetChargeCurrent(uint8_t current)
