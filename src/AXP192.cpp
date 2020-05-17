@@ -538,6 +538,14 @@ void AXP192::SetGPIO0(bool State)
     Write1Byte( 0x90 , buf );
 }
 
+// Default is VOLTAGE_4200MV
+void AXP192::SetChargeVoltage(uint8_t voltage)
+{
+    uint8_t buf = Read8bit(0x33);
+    buf = (buf & ~(0x60)) | (voltage & 0x60);
+    Write1Byte(0x33, buf);
+}
+
 // Not recommend to set charge current > 100mA, since Battery is only 80mAh.
 // more then 1C charge-rate may shorten battery life-span.
 void AXP192::SetChargeCurrent(uint8_t current)

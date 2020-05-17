@@ -18,6 +18,11 @@
 #define CURRENT_630MA  (0b0110)
 #define CURRENT_700MA  (0b0111)
 
+#define VOLTAGE_4100MV (0b00 << 5)
+#define VOLTAGE_4150MV (0b01 << 5)
+#define VOLTAGE_4200MV (0b10 << 5)
+#define VOLTAGE_4360MV (0b11 << 5)
+
 class AXP192 {
 public:
     AXP192();
@@ -62,7 +67,7 @@ public:
     uint8_t GetWarningLeve(void) __attribute__((deprecated));
 
 public:
-    // void SetChargeVoltage( uint8_t );
+    void  SetChargeVoltage( uint8_t );
     void  SetChargeCurrent( uint8_t );
     float GetBatVoltage();
     float GetBatCurrent();
