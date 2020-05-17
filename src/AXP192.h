@@ -9,6 +9,11 @@
 #define SLEEP_MIN(us)  (((uint64_t)us) * 60L * 1000000L)
 #define SLEEP_HR(us)   (((uint64_t)us) * 60L * 60L * 1000000L)
 
+#define ADC_RATE_025HZ (0b00 << 6)
+#define ADC_RATE_050HZ (0b01 << 6)
+#define ADC_RATE_100HZ (0b10 << 6)
+#define ADC_RATE_200HZ (0b11 << 6)
+
 #define CURRENT_100MA  (0b0000)
 #define CURRENT_190MA  (0b0001)
 #define CURRENT_280MA  (0b0010)
@@ -87,6 +92,7 @@ public:
     void SetLDO3( bool State );
     void SetGPIO0( bool State );
     void SetAdcState(bool State);
+    void SetAdcRate( uint8_t rate );
     
     // -- Power Off
     void PowerOff();
