@@ -73,6 +73,8 @@ bool TestMode = false;
 
 TFT_eSprite Disbuff = TFT_eSprite(&M5.Lcd);
 
+String imuName = "IMU";
+
 void IRAM_ATTR onTimer()
 {
     portENTER_CRITICAL_ISR(&timerMux);
@@ -342,7 +344,7 @@ bool checkAXP192()
     return true;
 }
 
-bool checkMPU6886()
+bool checkIMU()
 {
 
     return true;
@@ -650,7 +652,7 @@ line_3d_t rect[12] = {
     {.start_point = {-1, 1, -1}, .end_point = {-1, -1, -1}},
 };
 
-void MPU6886Test()
+void IMUTest()
 {
     float accX = 0;
     float accY = 0;
@@ -685,7 +687,7 @@ void MPU6886Test()
     while ((!M5.BtnA.isPressed()) && (!M5.BtnB.isPressed()))
     {
 
-        M5.MPU6886.getAccelData(&accX, &accY, &accZ);
+        M5.IMU.getAccelData(&accX, &accY, &accZ);
         if ((accX < 1) && (accX > -1))
         {
             theta = asin(-accX) * 57.295;
@@ -728,7 +730,7 @@ void MPU6886Test()
         Disbuff.setTextColor(WHITE);
         Disbuff.setTextSize(1);
         Disbuff.fillRect(0,0,52,18,Disbuff.color565(20,20,20));
-        Disbuff.drawString("MPU6886",5,5,1);
+        Disbuff.drawString(imuName,5,5,1);
         Displaybuff();
 
         last_theta = theta;
@@ -1293,9 +1295,20 @@ void setup()
     {
         ErrorMeg(0x51, "MicroPhone error");
     }
-    if (M5.MPU6886.Init() != 0)
+    if (M5.IMU.Init() != 0)
     {
-        ErrorMeg(0x31, "MPU6886 error ");
+        ErrorMeg(0x31, "IMU error ");
+    }
+    else
+    {
+        if(M5.IMU.imuType == M5.IMU.IMU_SH200Q)
+        {
+            imuName = "SH200Q";
+        }
+        else if(M5.IMU.imuType == M5.IMU.IMU_MPU6886)
+        {
+            imuName = "MPU6886";
+        }
     }
     if( InitIRTx() != true )
     {
@@ -1355,7 +1368,7 @@ uint8_t xData, yData;
 void loop()
 {
     delay(100);
-    MPU6886Test();
+    IMUTest();
     DisplayRTC();
     DisplayMicro();
     DisIRSend();
