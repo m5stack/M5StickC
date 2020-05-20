@@ -523,6 +523,29 @@ void AXP192::SetLDO3(bool State)
     Write1Byte( 0x12 , buf );
 }
 
+void AXP192::SetGPIO0(bool State)
+{
+    uint8_t buf = Read8bit(0x90);
+    if ( State == true )
+    {
+        buf &= ~(0x07); // clear last 3 bits
+        buf |= 0x02;    // set as LDO
+    }
+    else
+    {
+        buf |= 0x07;    // set as floating
+    }
+    Write1Byte( 0x90 , buf );
+}
+
+// Default is VOLTAGE_4200MV
+void AXP192::SetChargeVoltage(uint8_t voltage)
+{
+    uint8_t buf = Read8bit(0x33);
+    buf = (buf & ~(0x60)) | (voltage & 0x60);
+    Write1Byte(0x33, buf);
+}
+
 // Not recommend to set charge current > 100mA, since Battery is only 80mAh.
 // more then 1C charge-rate may shorten battery life-span.
 void AXP192::SetChargeCurrent(uint8_t current)
@@ -541,6 +564,13 @@ void AXP192::PowerOff()
 void AXP192::SetAdcState(bool state)
 {
     Write1Byte(0x82, state ? 0xff : 0x00);  // Enable / Disable all ADCs
+}
+
+void AXP192::SetAdcRate( uint8_t rate )
+{
+    uint8_t buf = Read8bit(0x84);
+    buf = (buf & ~(0xc0)) | (rate & 0xc0);
+    Write1Byte(0x84, buf);
 }
 
 // AXP192 have a 6 byte storage, when the power is still valid, the data will not be lost

@@ -9,6 +9,11 @@
 #define SLEEP_MIN(us)  (((uint64_t)us) * 60L * 1000000L)
 #define SLEEP_HR(us)   (((uint64_t)us) * 60L * 60L * 1000000L)
 
+#define ADC_RATE_025HZ (0b00 << 6)
+#define ADC_RATE_050HZ (0b01 << 6)
+#define ADC_RATE_100HZ (0b10 << 6)
+#define ADC_RATE_200HZ (0b11 << 6)
+
 #define CURRENT_100MA  (0b0000)
 #define CURRENT_190MA  (0b0001)
 #define CURRENT_280MA  (0b0010)
@@ -17,6 +22,11 @@
 #define CURRENT_550MA  (0b0101)
 #define CURRENT_630MA  (0b0110)
 #define CURRENT_700MA  (0b0111)
+
+#define VOLTAGE_4100MV (0b00 << 5)
+#define VOLTAGE_4150MV (0b01 << 5)
+#define VOLTAGE_4200MV (0b10 << 5)
+#define VOLTAGE_4360MV (0b11 << 5)
 
 class AXP192 {
 public:
@@ -62,7 +72,7 @@ public:
     uint8_t GetWarningLeve(void) __attribute__((deprecated));
 
 public:
-    // void SetChargeVoltage( uint8_t );
+    void  SetChargeVoltage( uint8_t );
     void  SetChargeCurrent( uint8_t );
     float GetBatVoltage();
     float GetBatCurrent();
@@ -80,7 +90,9 @@ public:
     void SetCoulombClear()  __attribute__((deprecated)); // use ClearCoulombcounter instead
     void SetLDO2( bool State );     // Can turn LCD Backlight OFF for power saving
     void SetLDO3( bool State );
+    void SetGPIO0( bool State );
     void SetAdcState(bool State);
+    void SetAdcRate( uint8_t rate );
     
     // -- Power Off
     void PowerOff();
