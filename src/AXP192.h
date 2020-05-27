@@ -28,7 +28,6 @@
 #define VOLTAGE_4200MV (0b10 << 5)
 #define VOLTAGE_4360MV (0b11 << 5)
 
-
 #define VOLTAGE_OFF_2600MV (0b000)
 #define VOLTAGE_OFF_2700MV (0b001)
 #define VOLTAGE_OFF_2800MV (0b010)
