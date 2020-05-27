@@ -28,6 +28,16 @@
 #define VOLTAGE_4200MV (0b10 << 5)
 #define VOLTAGE_4360MV (0b11 << 5)
 
+
+#define VOLTAGE_OFF_2600MV (0b000)
+#define VOLTAGE_OFF_2700MV (0b001)
+#define VOLTAGE_OFF_2800MV (0b010)
+#define VOLTAGE_OFF_2900MV (0b011)
+#define VOLTAGE_OFF_3000MV (0b100)
+#define VOLTAGE_OFF_3100MV (0b101)
+#define VOLTAGE_OFF_3200MV (0b110)
+#define VOLTAGE_OFF_3300MV (0b111)
+
 class AXP192 {
 public:
     AXP192();
@@ -74,6 +84,7 @@ public:
 public:
     void  SetChargeVoltage( uint8_t );
     void  SetChargeCurrent( uint8_t );
+    void  SetVOff( uint8_t voltage );
     float GetBatVoltage();
     float GetBatCurrent();
     float GetVinVoltage();

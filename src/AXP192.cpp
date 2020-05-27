@@ -555,6 +555,12 @@ void AXP192::SetChargeCurrent(uint8_t current)
     Write1Byte(0x33, buf);
 }
 
+// Set power off voltage
+void AXP192::SetVOff( uint8_t voltage )
+{
+    Write1Byte(0x31 , (Read8bit(0x31) & 0xf8) | voltage);
+}
+
 // Cut all power, except for LDO1 (RTC)
 void AXP192::PowerOff()
 {
