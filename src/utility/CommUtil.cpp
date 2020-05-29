@@ -75,7 +75,7 @@ bool CommUtil::readByte(uint8_t address, uint8_t *result) {
   if ( Wire.requestFrom(address, (uint8_t)1)) {
     *result = Wire.read();                          // Fill Rx buffer with result
     #ifdef I2C_DEBUG_TO_SERIAL
-      Serial.printf("%02x\n", result);
+      Serial.printf("%02x\n", *result);
     #endif
     return true;
   }
