@@ -57,8 +57,10 @@ void setup() {
 void loop() {
   delay(1000);
   M5.Lcd.setCursor(0, 0);
-  M5.Lcd.printf("pin 35 status: %d\r\n", digitalRead(35));
-  M5.Lcd.printf("axp192 btn status: %d\r\n", axp192_getBtnIRQStatus());
-  Serial.printf("pin 35 status: %d\r\n", digitalRead(35));
-  Serial.printf("axp192 btn status: %d\r\n", axp192_getBtnIRQStatus());
+  uint8_t PinStatus = digitalRead(35);
+  uint8_t IRQStatus = axp192_getBtnIRQStatus();
+  M5.Lcd.printf("pin 35 status: %d\r\n", PinStatus);
+  M5.Lcd.printf("axp192 btn status: %d\r\n", IRQStatus);
+  Serial.printf("pin 35 status: %d\r\n", PinStatus);
+  Serial.printf("axp192 btn status: %d\r\n", IRQStatus);
 }
