@@ -78,14 +78,21 @@ String imuName = "IMU";
 void IRAM_ATTR onTimer()
 {
     portENTER_CRITICAL_ISR(&timerMux);
-    digitalWrite(10, TimerCount % 2);
+    digitalWrite(10, TimerCount % 100 );
     TimerCount++;
     portEXIT_CRITICAL_ISR(&timerMux);
 }
 
+void checkAXPPress()
+{
+	if( M5.Axp.GetBtnPress())
+	{
+		ESP.restart();
+	}
+}
+
 void ErrorMeg(uint8_t code, const char *str)
 {
-    printf("ErrorMeg: code=%02X str=%s\n", code, str);
     Disbuff.fillRect(0, 0, 160, 80, BLACK);
     Disbuff.pushImage(0, 16, 48, 48, (uint16_t *)error_48);
     Disbuff.setCursor(100, 10);
@@ -102,7 +109,6 @@ void ErrorMeg(uint8_t code, const char *str)
 
 void ErrorMeg(uint8_t code, const char *str1, const char *str2)
 {
-    printf("ErrorMeg: code=%02X str1=%s str2=%s\n", code, str1, str2);
     Disbuff.fillRect(0, 0, 160, 80, BLACK);
     Disbuff.pushImage(0, 16, 48, 48, (uint16_t *)error_48);
     Disbuff.setCursor(100, 10);
@@ -176,14 +182,6 @@ void ir_tx_callback(rmt_channel_t channel, void *arg)
 
 bool InitIRTx()
 {
-    /*
-    esp_err_t err = esp_pm_lock_create(ESP_PM_APB_FREQ_MAX, 0, "rmt", &rmt_freq_lock);
-    if (err != ESP_OK)
-    {
-        ErrorMeg(0x71, "RMT create fail");
-        return false;
-    }
-    */
     rmt_config_t rmt_tx;
     rmt_tx.rmt_mode = RMT_MODE_TX;
     rmt_tx.channel = RMT_TX_CHANNEL;
@@ -197,7 +195,7 @@ bool InitIRTx()
     rmt_tx.tx_config.carrier_freq_hz = 38000;
     rmt_tx.tx_config.carrier_level = RMT_CARRIER_LEVEL_HIGH;
     rmt_tx.tx_config.carrier_en = true;
-    rmt_tx.tx_config.idle_level = RMT_IDLE_LEVEL_LOW;
+    rmt_tx.tx_config.idle_level = RMT_IDLE_LEVEL_HIGH;
     rmt_tx.tx_config.idle_output_en = true;
     rmt_config(&rmt_tx);
     rmt_driver_install(rmt_tx.channel, 0, 0);
@@ -293,17 +291,22 @@ class MyCallbacks: public BLECharacteristicCallbacks {
 
 bool InitBLEServer()
 {
-    BLEDevice::init("M5-BLE");
-  pServer = BLEDevice::createServer();
-  pServer->setCallbacks(new MyServerCallbacks());
-  pService = pServer->createService(SERVICE_UUID);
-  pTxCharacteristic = pService->createCharacteristic(
+    uint64_t chipid = ESP.getEfuseMac();
+    String blename = "M5-" + String((uint32_t)(chipid >> 32), HEX);
+
+    BLEDevice::init(blename.c_str());
+
+    pServer = BLEDevice::createServer();
+
+    pServer->setCallbacks(new MyServerCallbacks());
+    pService = pServer->createService(SERVICE_UUID);
+    pTxCharacteristic = pService->createCharacteristic(
                       CHARACTERISTIC_RX_UUID,
                       BLECharacteristic::PROPERTY_NOTIFY
                     );
 
-  pTxCharacteristic->addDescriptor(new BLE2902());
-  BLECharacteristic * pRxCharacteristic = pService->createCharacteristic(
+    pTxCharacteristic->addDescriptor(new BLE2902());
+    BLECharacteristic * pRxCharacteristic = pService->createCharacteristic(
                         CHARACTERISTIC_TX_UUID,
                         BLECharacteristic::PROPERTY_WRITE
                       );
@@ -431,11 +434,7 @@ bool CheckGrove()
 
 void ColorBar()
 {
-    float color_r, color_g, color_b;
-
-    color_r = 0;
-    color_g = 0;
-    color_b = 255;
+    float color_r = 0, color_g = 0, color_b = 255;
 
     for (int i = 0; i < 384; i=i+4)
     {
@@ -455,11 +454,9 @@ void ColorBar()
         {
             color_r = 0;
             color_g = 255 - ((i - 256) * 2);
-            ;
             color_b = (i - 256) * 2;
-            ;
         }
-        Disbuff.fillRect(0, 0, 160, 80, Disbuff.color565(color_r, color_g, color_b));
+        // Disbuff.fillRect(0, 0, 160, 80, Disbuff.color565(color_r, color_g, color_b));
         if (TestMode)
         {
             Disbuff.setTextColor(RED);
@@ -495,9 +492,9 @@ void ColorBar()
         }
         for (int n = 0; n < 160; n++)
         {
-            color_r = (color_r < 255) ? color_r + 1.6 : 255U;
-            color_g = (color_g < 255) ? color_g + 1.6 : 255U;
-            color_b = (color_b < 255) ? color_b + 1.6 : 255U;
+            color_r = (color_r < 255) ? color_r + 1.6 : 255;
+            color_g = (color_g < 255) ? color_g + 1.6 : 255;
+            color_b = (color_b < 255) ? color_b + 1.6 : 255;
             Disbuff.drawLine(n, i * 20, n, (i + 1) * 20, Disbuff.color565(color_r, color_g, color_b));
         }
     }
@@ -729,7 +726,7 @@ void IMUTest()
         //Disbuff
         Disbuff.setTextColor(WHITE);
         Disbuff.setTextSize(1);
-        Disbuff.fillRect(0,0,52,18,Disbuff.color565(20,20,20));
+        Disbuff.fillRect(0,0,52,18,Disbuff.color565(40,40,40));
         Disbuff.drawString(imuName,5,5,1);
         Displaybuff();
 
@@ -737,10 +734,12 @@ void IMUTest()
         last_phi = phi;
 
         M5.update();
+        checkAXPPress();
     }
     while ((M5.BtnA.isPressed()) || (M5.BtnB.isPressed()))
     {
         M5.update();
+        checkAXPPress();
         delay(10);
     }
 }
@@ -764,11 +763,13 @@ void DisplayI2CENV()
         Displaybuff();
         M5.update();
         delay(100);
+        checkAXPPress();
     }
 
     while ((M5.BtnA.isPressed()) || (M5.BtnB.isPressed()))
     {
         M5.update();
+        checkAXPPress();
         delay(10);
     }
 }
@@ -857,7 +858,7 @@ void Drawdisplay(void *arg)
         xSemaphoreGive(xSemaphore);
         Disbuff.setTextColor(WHITE);
         Disbuff.setTextSize(1);
-        Disbuff.fillRect(0,0,70,18,Disbuff.color565(20,20,20));
+        Disbuff.fillRect(0,0,70,18,Disbuff.color565(40,40,40));
         Disbuff.drawString("MicroPhone",5,5,1);
         Disbuff.pushSprite(0, 0);
     }
@@ -889,6 +890,7 @@ void DisplayMicro()
     {
         M5.update();
         delay(10);
+        checkAXPPress();
     }
 }
 
@@ -912,15 +914,17 @@ void DisplayRTC()
         Disbuff.setTextColor(WHITE);
         Disbuff.setCursor(6, 40);
         Disbuff.printf("%02d:%02d:%02d", time.Hours, time.Minutes, time.Seconds);
-        Disbuff.fillRect(0,0,160,18,Disbuff.color565(20,20,20));
+        Disbuff.fillRect(0,0,160,18,Disbuff.color565(40,40,40));
         Disbuff.setTextSize(1);
         Disbuff.drawString("BMP8563 RTC Time",32,5,1);
         Displaybuff();
         M5.update();
+        checkAXPPress();
         delay(100);
     }
     while ((M5.BtnA.isPressed()) || (M5.BtnB.isPressed()))
     {
+        checkAXPPress();
         M5.update();
         delay(10);
     }
@@ -1060,12 +1064,14 @@ void DisplayIOPort()
         */
         M5.update();
         delay(100);
+        checkAXPPress();
 
     }
     while ((M5.BtnA.isPressed()) || (M5.BtnB.isPressed()))
     {
         M5.update();
         delay(10);
+        checkAXPPress();
     }
     InitI2SMicroPhone();
 }
@@ -1108,13 +1114,14 @@ void DisIRSend()
             senddata[0]++;
             ir_uart_tx( senddata ,2, true);
         }
-
+        checkAXPPress();
         M5.update();
         delay(100);
     }
     while ((M5.BtnA.isPressed()) || (M5.BtnB.isPressed()))
     {
         M5.update();
+        checkAXPPress();
         delay(10);
     }
     Disbuff.setTextColor(WHITE);
@@ -1125,7 +1132,10 @@ void DisPlayBLESend()
     uint8_t senddata[2]={0};
 
     pService->start();
-  pServer->getAdvertising()->start();
+    pServer->getAdvertising()->start();
+
+	uint64_t chipid = ESP.getEfuseMac();
+    String blename = "M5-" + String((uint32_t)(chipid >> 32), HEX);
 
     while ((!M5.BtnA.isPressed()) && (!M5.BtnB.isPressed()))
     {
@@ -1183,11 +1193,13 @@ void DisPlayBLESend()
         
         M5.update();
         delay(100);
+        checkAXPPress();
     }
     while ((M5.BtnA.isPressed()) || (M5.BtnB.isPressed()))
     {
         M5.update();
         delay(10);
+        checkAXPPress();
     }
     Disbuff.setTextColor(WHITE);
     pService->stop();
@@ -1233,11 +1245,10 @@ void DisplayWIFI()
                 }
             }
         }
-        Disbuff.fillRect(0,0,160,18,Disbuff.color565(20,20,20));
+        Disbuff.fillRect(0,0,160,18,Disbuff.color565(40,40,40));
         Disbuff.setTextSize(1);
         Disbuff.drawString("Wifi Test",32,5,1);
     
-        
         Displaybuff();
         
         M5.update();
@@ -1290,7 +1301,6 @@ void setup()
         delay(30);
     }
 
-    Serial.printf("FUCK STC\r\n");
     if (InitI2SMicroPhone() != true)
     {
         ErrorMeg(0x51, "MicroPhone error");
@@ -1351,7 +1361,7 @@ void setup()
     timerSemaphore = xSemaphoreCreateBinary();
     timer = timerBegin(0, 80, true);
     timerAttachInterrupt(timer, &onTimer, true);
-    timerAlarmWrite(timer, 500000, true);
+    timerAlarmWrite(timer, 50000, true);
     timerAlarmEnable(timer);
 
     xSemaphore = xSemaphoreCreateMutex();
