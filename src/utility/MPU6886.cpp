@@ -143,7 +143,25 @@ void MPU6886::getAhrsData(float *pitch,float *roll,float *yaw){
   getGyroData(&gyroX,&gyroY,&gyroZ);
   getAccelData(&accX,&accY,&accZ);
   
-  MahonyAHRSupdateIMU(gyroX * DEG_TO_RAD, gyroY * DEG_TO_RAD, gyroZ * DEG_TO_RAD, accX, accY, accZ,pitch,roll,yaw);
+  MahonyAHRSupdateIMU(gyroX * DEG_TO_RAD, gyroY * DEG_TO_RAD, gyroZ * DEG_TO_RAD, accX, accY, accZ,pitch,roll,yaw,0.0f); // 0 frequency internal defined value
+
+}
+
+void MPU6886::getAhrsData(float *pitch,float *roll,float *yaw, float samplefrequency){
+
+  float accX = 0; 
+  float accY = 0;
+  float accZ = 0;
+
+  float gyroX = 0;
+  float gyroY = 0;
+  float gyroZ = 0;
+
+
+  getGyroData(&gyroX,&gyroY,&gyroZ);
+  getAccelData(&accX,&accY,&accZ);
+  
+  MahonyAHRSupdateIMU(gyroX * DEG_TO_RAD, gyroY * DEG_TO_RAD, gyroZ * DEG_TO_RAD, accX, accY, accZ,pitch,roll,yaw,samplefrequency);
 
 }
 

@@ -82,6 +82,7 @@ class MPU6886 {
       void SetAccelFsr(Ascale scale);
 
       void getAhrsData(float *pitch,float *roll,float *yaw);
+      void getAhrsData(float *pitch,float *roll,float *yaw,float samplefrequency);
 
     public:
       float aRes, gRes;
