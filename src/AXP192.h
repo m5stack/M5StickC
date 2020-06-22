@@ -34,11 +34,12 @@ public:
     /**
      * LDO2: Display backlight
      * LDO3: Display Control
-     * RTC: Don't set GPIO1 as LDO
+     * RTC: Always ON, Switch RTC charging.
      * DCDC1: Main rail. When not set the controller shuts down.
      * DCDC3: Use unknown
+     * LDO0: MIC
      */
-    void  begin(bool disableLDO2 = false, bool disableLDO3 = false, bool disableRTC = false, bool disableDCDC1 = false, bool disableDCDC3 = false);
+    void  begin(bool disableLDO2 = false, bool disableLDO3 = false, bool disableRTC = false, bool disableDCDC1 = false, bool disableDCDC3 = false, bool disableLDO0 = false);
     void  ScreenBreath(uint8_t brightness);
     bool  GetBatState();
   
