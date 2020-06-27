@@ -34,6 +34,8 @@ int MPU6886::Init(void){
   unsigned char regdata;
   
   Wire1.begin(21,22);
+    
+  //You can change register bits adding ou changing this values below;
   
   I2C_Read_NBytes(MPU6886_ADDRESS, MPU6886_WHOAMI, 1, tempdata);
   if(tempdata[0] != 0x19)
