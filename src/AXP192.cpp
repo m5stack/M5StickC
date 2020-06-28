@@ -5,7 +5,7 @@ AXP192::AXP192()
   
 }
 
-void AXP192::begin(bool disableLDO2, bool disableLDO3, bool disableRTC, bool disableDCDC1, bool disableDCDC3)
+void AXP192::begin(bool disableLDO2, bool disableLDO3, bool disableRTC, bool disableDCDC1, bool disableDCDC3, bool disableLDO0)
 {  
     Wire1.begin(21, 22);
     Wire1.setClock(400000);
@@ -33,13 +33,15 @@ void AXP192::begin(bool disableLDO2, bool disableLDO3, bool disableRTC, bool dis
     // 128ms power on, 4s power off
     Write1Byte(0x36, 0x0C);
 
-    if(!disableRTC)
+    if(!disableLDO0)
     {
-        // Set RTC voltage to 3.3V
-        Write1Byte(0x91, 0xF0);
+        // Set MIC voltage to 2.8V
+        Write1Byte(0x91, 0xA0);
 
         // Set GPIO0 to LDO
         Write1Byte(0x90, 0x02);
+    }else{
+        Write1Byte(0x90, 0x07); // GPIO0 floating
     }
 
     // Disable vbus hold limit
@@ -340,7 +342,7 @@ uint16_t AXP192::GetVapsData(void)
 void AXP192::SetSleep(void)
 {
     Write1Byte(0x31 , Read8bit(0x31) | ( 1 << 3)); // Turn on short press to wake up
-    Write1Byte(0x90 , Read8bit(0x90) | 0x07); // GPIO1 floating
+    Write1Byte(0x90 , Read8bit(0x90) | 0x07); // GPIO0 floating
     Write1Byte(0x82, 0x00); // Disable ADCs
     Write1Byte(0x12, Read8bit(0x12) & 0xA1); // Disable all outputs but DCDC1
 }
