@@ -70,6 +70,7 @@ class MPU6886 {
     public:
       MPU6886();
       int Init(void);
+      void enableWakeOnMotion(Ascale ascale, uint8_t thresh_num_lsb);
       void getAccelAdc(int16_t* ax, int16_t* ay, int16_t* az);
       void getGyroAdc(int16_t* gx, int16_t* gy, int16_t* gz);
       void getTempAdc(int16_t *t);
