@@ -1,5 +1,7 @@
 #include <Arduino.h>
 #include <M5StickC.h>
+#include <driver/rtc_io.h> // from ESP-IDF
+
 
 void mpu6886_wake_on_motion_isr(void); // declaration of ISR
 
