@@ -12,37 +12,28 @@ volatile uint32_t g_wom_last_millis = 0;
 void IRAM_ATTR mpu6886_wake_on_motion_isr(void) {
     g_wom_count++;
     g_wom_last_millis = millis();
-    // ESP_LOGE("ISR", "UNSAFE DEBUG!");
 }
 
 
-/* Method to print the reason by which ESP32
-   has been awoken from sleep */
+/* Method to print the reason by which ESP32 has been awoken from sleep */
 void get_wakeup_reason_string(char *cbuf, int cbuf_len){
-  esp_sleep_wakeup_cause_t wakeup_reason;
-  wakeup_reason = esp_sleep_get_wakeup_cause();
-
-  switch(wakeup_reason)
-  {
-    case ESP_SLEEP_WAKEUP_EXT0     : snprintf(cbuf, cbuf_len, "ext0");             break;
-    case ESP_SLEEP_WAKEUP_EXT1     : snprintf(cbuf, cbuf_len, "ext1");             break;
-    case ESP_SLEEP_WAKEUP_TIMER    : snprintf(cbuf, cbuf_len, "timer");            break;
-    case ESP_SLEEP_WAKEUP_TOUCHPAD : snprintf(cbuf, cbuf_len, "touchpad");         break;
-    case ESP_SLEEP_WAKEUP_ULP      : snprintf(cbuf, cbuf_len, "ULP");              break;
-    default                        : snprintf(cbuf, cbuf_len, "%d",wakeup_reason); break;
-  }
+    esp_sleep_wakeup_cause_t wakeup_reason;
+    wakeup_reason = esp_sleep_get_wakeup_cause();
+    switch(wakeup_reason) {
+        case ESP_SLEEP_WAKEUP_EXT0     : snprintf(cbuf, cbuf_len, "ext0");             break;
+        case ESP_SLEEP_WAKEUP_EXT1     : snprintf(cbuf, cbuf_len, "ext1");             break;
+        case ESP_SLEEP_WAKEUP_TIMER    : snprintf(cbuf, cbuf_len, "timer");            break;
+        case ESP_SLEEP_WAKEUP_TOUCHPAD : snprintf(cbuf, cbuf_len, "touchpad");         break;
+        case ESP_SLEEP_WAKEUP_ULP      : snprintf(cbuf, cbuf_len, "ULP");              break;
+        default                        : snprintf(cbuf, cbuf_len, "%d",wakeup_reason); break;
+    }
 }
 
-#define WAKE_REASON_BUF_LEN 100
-RTC_DATA_ATTR int bootCount = 0;
-void setup() {
-    // esp_err_t ret;
-    rtc_gpio_deinit(GPIO_NUM_35);
-    char wake_reason_buf[WAKE_REASON_BUF_LEN];
 
-    //Increment boot number and print it every reboot
-    ++bootCount;
-    Serial.println("Boot number: " + String(bootCount));
+RTC_DATA_ATTR int bootCount = 0;
+#define WAKE_REASON_BUF_LEN 100
+void setup() {
+    char wake_reason_buf[WAKE_REASON_BUF_LEN];
 
     // put your setup code here, to run once:
     M5.begin();
@@ -59,6 +50,7 @@ void setup() {
     M5.Lcd.setCursor( 0, 40); M5.Lcd.printf("P: %.3f mw", M5.Axp.GetBatPower());
 
 
+
 #ifdef WOM_GPIO_DEBUG_TEST
     pinMode(GPIO_NUM_26, OUTPUT);
     pinMode(GPIO_NUM_36, INPUT);
@@ -67,28 +59,26 @@ void setup() {
 
 #ifdef WOM_ATTACH_ISR
     // set up ISR to trigger on GPIO35
-    rtc_gpio_deinit(GPIO_NUM_35);
     delay(100);
     pinMode(GPIO_NUM_35, INPUT);
     delay(100);
     attachInterrupt(GPIO_NUM_35, mpu6886_wake_on_motion_isr, FALLING);
 #endif // #ifdef WOM_ATTACH_ISR
 
+    //Increment boot number and print it every reboot
+    ++bootCount;
+    Serial.println("Boot number: " + String(bootCount));
 
     // set up mpu6886 for low-power operation
-    M5.IMU.Init(); // basic init
-    // mpu6886_wake_on_motion_setup(10);
+    M5.Mpu6886.Init(); // basic init
     M5.Mpu6886.enableWakeOnMotion(M5.Mpu6886.AFS_16G, 10);
-
 
     // wait until IMU ISR hasn't triggered for X milliseconds
     while(1) {
-        noInterrupts();
         uint32_t since_last_wom_millis = millis() - g_wom_last_millis;
         if(since_last_wom_millis > 5000) {
             break;
         }
-        interrupts();
         Serial.printf("waiting : %d", since_last_wom_millis);
         delay(1000);
     }
@@ -101,7 +91,6 @@ void setup() {
 
     //Go to sleep now
     Serial.println("Going to sleep now");
-    rtc_gpio_init(GPIO_NUM_35); // initialize rtc_gpio pin for waking up
     M5.Axp.SetSleep(); // conveniently turn off screen, etc.
     delay(100);
     esp_deep_sleep_start();
