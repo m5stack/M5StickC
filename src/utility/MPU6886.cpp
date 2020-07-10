@@ -149,9 +149,9 @@ void MPU6886::enableWakeOnMotion(Ascale ascale, uint8_t thresh_num_lsb) {
               registers 0x20, 0x21, and 0x22 based on empirical tests
     */
     regdata = thresh_num_lsb; // set accel motion threshold for X, Y, and Z axes
-    I2C_Write_NBytes(MPU6886_ADDRESS, 0x20, 1, &regdata);
-    I2C_Write_NBytes(MPU6886_ADDRESS, 0x21, 1, &regdata);
-    I2C_Write_NBytes(MPU6886_ADDRESS, 0x22, 1, &regdata);
+    I2C_Write_NBytes(MPU6886_ADDRESS, MPU6886_ACCEL_WOM_X_THR, 1, &regdata);
+    I2C_Write_NBytes(MPU6886_ADDRESS, MPU6886_ACCEL_WOM_Y_THR, 1, &regdata);
+    I2C_Write_NBytes(MPU6886_ADDRESS, MPU6886_ACCEL_WOM_Z_THR, 1, &regdata);
 
     /* Step 5: Enable Accelerometer Hardware Intelligence
         • In ACCEL_INTEL_CTRL register (0x69) set ACCEL_INTEL_EN = ACCEL_INTEL_MODE = 1;
@@ -178,7 +178,7 @@ void MPU6886::enableWakeOnMotion(Ascale ascale, uint8_t thresh_num_lsb) {
         • In PWR_MGMT_1 register (0x6B) set CYCLE = 1
     */
     I2C_Read_NBytes(MPU6886_ADDRESS, MPU6886_PWR_MGMT_1, 1, &regdata);
-    regdata = regdata | 0x00100000; // enable accelerometer low-power mode
+    regdata = regdata | 0b00100000; // enable accelerometer low-power mode
     I2C_Write_NBytes(MPU6886_ADDRESS, MPU6886_PWR_MGMT_1, 1, &regdata);
 }
 
