@@ -335,3 +335,26 @@ void MPU6886::getTempData(float *t){
   
   *t = (float)temp / 326.8 + 25.0;
 }
+
+void MPU6886::SetINTPinActiveLogic(uint8_t level) {
+  uint8_t tempdata;
+  I2C_Read_NBytes(MPU6886_ADDRESS, MPU6886_INT_PIN_CFG, 1, &tempdata);
+  tempdata &= 0x7f;
+  tempdata |= level ? 0x00 : (0x01 << 7);
+  I2C_Write_NBytes(MPU6886_ADDRESS, MPU6886_INT_PIN_CFG, 1, &tempdata);
+}
+
+void MPU6886::DisableAllIRQ() {
+  uint8_t tempdata = 0x00;
+  I2C_Write_NBytes(MPU6886_ADDRESS, MPU6886_INT_ENABLE, 1, &tempdata);
+  I2C_Read_NBytes(MPU6886_ADDRESS, MPU6886_INT_PIN_CFG, 1, &tempdata);
+  tempdata |= 0x01 << 6;
+  // int pin is configured as open drain
+  I2C_Write_NBytes(MPU6886_ADDRESS, MPU6886_INT_PIN_CFG, 1, &tempdata);
+}
+
+void MPU6886::ClearAllIRQ() {
+  uint8_t tempdata = 0x00;
+  I2C_Read_NBytes(MPU6886_ADDRESS, MPU6886_FIFO_WM_INT_STATUS, 1, &tempdata);
+  I2C_Read_NBytes(MPU6886_ADDRESS, MPU6886_INT_STATUS, 1, &tempdata);
+}

@@ -18,6 +18,8 @@
 #define MPU6886_SMPLRT_DIV        0x19
 #define MPU6886_INT_PIN_CFG       0x37
 #define MPU6886_INT_ENABLE        0x38
+#define MPU6886_FIFO_WM_INT_STATUS 0x39
+#define MPU6886_INT_STATUS        0x3A
 #define MPU6886_ACCEL_WOM_X_THR   0x20
 #define MPU6886_ACCEL_WOM_Y_THR   0x21
 #define MPU6886_ACCEL_WOM_Z_THR   0x22
@@ -87,6 +89,10 @@ class MPU6886 {
       void SetAccelFsr(Ascale scale);
 
       void getAhrsData(float *pitch,float *roll,float *yaw);
+
+      void SetINTPinActiveLogic(uint8_t level);
+      void DisableAllIRQ();
+      void ClearAllIRQ();
 
     public:
       float aRes, gRes;
