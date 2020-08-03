@@ -55,6 +55,12 @@ public:
     uint8_t GetInputPowerStatus();
     uint8_t GetBatteryChargingStatus();
 
+    void  DisableAllIRQ(void);
+    void  ClearAllIRQ(void);
+    void  EnablePressIRQ(bool short_press, bool long_press);
+    void  GetPressIRQ(bool *short_press, bool* long_press);
+    void  ClearPressIRQ(bool short_press, bool long_press);
+
     void  EnableCoulombcounter(void);
     void  DisableCoulombcounter(void);
     void  StopCoulombcounter(void);

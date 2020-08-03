@@ -574,6 +574,51 @@ void AXP192::SetAdcState(bool state)
     Write1Byte(0x82, state ? 0xff : 0x00);  // Enable / Disable all ADCs
 }
 
+void AXP192::DisableAllIRQ() 
+{
+    Write1Byte(0x40, 0x00);
+    Write1Byte(0x41, 0x00);
+    Write1Byte(0x42, 0x00);
+    Write1Byte(0x43, 0x00);
+    Write1Byte(0x4a, 0x00);
+}
+
+void AXP192::EnablePressIRQ(bool short_press, bool long_press)
+{
+    uint8_t value = Read8bit(0x42);
+    value &= 0xfc;
+    value |= short_press ? (0x01 << 1) : 0x00;
+    value |= long_press ? (0x01 << 0) : 0x00;
+    Write1Byte(0x42, value);
+}
+
+void AXP192::ClearAllIRQ()
+{
+    Write1Byte(0x44, 0xff);
+    Write1Byte(0x45, 0xff);
+    Write1Byte(0x46, 0xff);
+    Write1Byte(0x47, 0xff);
+    Write1Byte(0x4D, 0xff);
+    
+}
+
+void AXP192::GetPressIRQ(bool *short_press, bool* long_press)
+{
+    uint8_t status = 0x00;
+    status = Read8bit(0x46);
+    *short_press = (status & (0x01 << 1)) ? true : false;
+    *long_press = (status & (0x01 << 0)) ? true : false;
+    
+}
+
+void AXP192::ClearPressIRQ(bool short_press, bool long_press) 
+{
+    uint8_t value = 0x00;
+    value |= short_press ? (0x01 << 1) : 0x00;
+    value |= long_press ? (0x01 << 0) : 0x00;
+    Write1Byte(0x46, value);
+}
+
 void AXP192::SetAdcRate( uint8_t rate )
 {
     uint8_t buf = Read8bit(0x84);
