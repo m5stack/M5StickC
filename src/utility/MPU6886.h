@@ -18,6 +18,10 @@
 #define MPU6886_SMPLRT_DIV        0x19
 #define MPU6886_INT_PIN_CFG       0x37
 #define MPU6886_INT_ENABLE        0x38
+#define MPU6886_ACCEL_WOM_X_THR   0x20
+#define MPU6886_ACCEL_WOM_Y_THR   0x21
+#define MPU6886_ACCEL_WOM_Z_THR   0x22
+
 #define MPU6886_ACCEL_XOUT_H      0x3B
 #define MPU6886_ACCEL_XOUT_L      0x3C
 #define MPU6886_ACCEL_YOUT_H      0x3D
@@ -70,6 +74,7 @@ class MPU6886 {
     public:
       MPU6886();
       int Init(void);
+      void enableWakeOnMotion(Ascale ascale, uint8_t thresh_num_lsb);
       void getAccelAdc(int16_t* ax, int16_t* ay, int16_t* az);
       void getGyroAdc(int16_t* gx, int16_t* gy, int16_t* gz);
       void getTempAdc(int16_t *t);
