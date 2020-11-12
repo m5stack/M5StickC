@@ -353,7 +353,7 @@ void resetMaxScore()
 void setup() {
   // put your setup code here, to run once:
   M5.begin();
-  EEPROM.begin();
+  EEPROM.begin(1000);
   pinMode(M5_BUTTON_HOME, INPUT);
   //resetMaxScore();
   Serial.println("last score:");
