@@ -14,55 +14,70 @@
 
 extern const unsigned char Logodata[25600];
 extern const unsigned char error_48[4608];
+extern const unsigned char warning_48[4608];
 extern const unsigned char icon_ir[4608];
 extern const unsigned char icon_ble[4608];
 extern const unsigned char icon_wifi[4608];
 extern const unsigned char icon_ble_disconnect[4608];
 extern const unsigned char ImageData[768];
-extern const unsigned char stick1[];
-extern const unsigned char stick2[];
-extern const unsigned char stick3[];
-extern const unsigned char stick4[];
-extern const unsigned char stick5[];
-extern const unsigned char stick6[];
-extern const unsigned char stick7[];
-extern const unsigned char stick8[];
-extern const unsigned char stick9[];
-extern const unsigned char stick10[];
-extern const unsigned char stick11[];
-extern const unsigned char stick12[];
-extern const unsigned char stick13[];
-extern const unsigned char stick14[];
-extern const unsigned char stick15[];
-extern const unsigned char stick16[];
-extern const unsigned char stick17[];
-extern const unsigned char stick18[];
+extern const unsigned char stick1[12960];
+extern const unsigned char stick2[12960];
+extern const unsigned char stick3[12960];
+extern const unsigned char stick4[12960];
+extern const unsigned char stick5[12960];
+extern const unsigned char stick6[12960];
+extern const unsigned char stick7[12960];
+extern const unsigned char stick8[12960];
+extern const unsigned char stick9[12960];
+extern const unsigned char stick10[12960];
+extern const unsigned char stick11[12960];
+extern const unsigned char stick12[12960];
+extern const unsigned char stick13[12960];
+extern const unsigned char stick14[12960];
+extern const unsigned char stick15[12960];
+extern const unsigned char stick16[12960];
+extern const unsigned char stick17[12960];
+extern const unsigned char stick18[12960];
+
 const unsigned char* Animationptr[18] = {
-  stick1,stick2,stick3,stick4,stick5,
-  stick6,stick7,stick8,stick9,stick10,
-  stick11,stick12,stick13,stick14,stick15,
-  stick16,stick17,stick18
+	stick1,stick2,stick3,stick4,stick5,
+	stick6,stick7,stick8,stick9,stick10,
+	stick11,stick12,stick13,stick14,stick15,
+	stick16,stick17,stick18
 };
 
-typedef struct point_3d
+typedef struct
 {
     double x;
     double y;
     double z;
 } point_3d_t;
 
-typedef struct line_3d
+typedef struct
 {
     point_3d_t start_point;
     point_3d_t end_point;
 } line_3d_t;
 
-typedef struct point_2d
+typedef struct
 {
     double x;
     double y;
 } point_2d_t;
 
+double r_rand = PI / 180;
+
+double r_alpha = 19.47 * PI / 180;
+double r_gamma = 20.7 * PI / 180;
+
+double sin_alpha = sin(19.47 * PI / 180);
+double cos_alpha = cos(19.47 * PI / 180);
+double sin_gamma = sin(20.7 * PI / 180);
+double cos_gamma = cos(20.7 * PI / 180);
+
+//#define NUM_LEDS 3
+//#define DATA_PIN 32
+//CRGB leds[NUM_LEDS];
 
 hw_timer_t *timer = NULL;
 volatile SemaphoreHandle_t timerSemaphore;
@@ -72,8 +87,6 @@ volatile uint8_t TimerCount = 0;
 bool TestMode = false;
 
 TFT_eSprite Disbuff = TFT_eSprite(&M5.Lcd);
-
-String imuName = "IMU";
 
 void IRAM_ATTR onTimer()
 {
@@ -91,36 +104,68 @@ void checkAXPPress()
 	}
 }
 
-void ErrorMeg(uint8_t code, const char *str)
+void ErrorMeg(uint8_t code, const char *str, int iconNum, bool modal)
 {
     Disbuff.fillRect(0, 0, 160, 80, BLACK);
-    Disbuff.pushImage(0, 16, 48, 48, (uint16_t *)error_48);
-    Disbuff.setCursor(100, 10);
+    switch(iconNum)
+    {
+        case 0: 
+            Disbuff.pushImage(0, 16, 48, 48, (uint16_t *)error_48);
+            Disbuff.drawString("ERROR", 55, 10, 2);
+            break;
+        case 1: 
+            Disbuff.pushImage(0, 16, 48, 48, (uint16_t *)warning_48);
+            Disbuff.drawString("WARNING", 55, 10, 2);
+            break;
+    }
+    Disbuff.setCursor(120, 10);
     Disbuff.setTextFont(2);
     Disbuff.printf("%02X", code);
-    Disbuff.drawString("ERROR", 55, 10, 2);
     Disbuff.drawString("-----------------", 55, 30, 1);
     Disbuff.drawString(str, 55, 45, 1);
     Disbuff.drawString("check Hardware ", 55, 60, 1);
     Disbuff.pushSprite(0, 0);
-    while (1)
-        ;
+    if( modal )
+    {
+        while (1)
+        {
+            M5.update();
+            delay(10);
+            if( M5.BtnA.wasPressed()||M5.BtnB.wasPressed())break;
+        }
+    }
 }
 
-void ErrorMeg(uint8_t code, const char *str1, const char *str2)
+void ErrorMeg(uint8_t code, const char *str1, const char *str2, int iconNum, bool modal)
 {
     Disbuff.fillRect(0, 0, 160, 80, BLACK);
-    Disbuff.pushImage(0, 16, 48, 48, (uint16_t *)error_48);
-    Disbuff.setCursor(100, 10);
+    switch(iconNum)
+    {
+        case 0: 
+            Disbuff.pushImage(0, 16, 48, 48, (uint16_t *)error_48);
+            Disbuff.drawString("ERROR", 55, 10, 2);
+            break;
+        case 1: 
+            Disbuff.pushImage(0, 16, 48, 48, (uint16_t *)warning_48);
+            Disbuff.drawString("WARNING", 55, 10, 2);
+            break;
+    }
+    Disbuff.setCursor(120, 10);
     Disbuff.setTextFont(2);
     Disbuff.printf("%02X", code);
-    Disbuff.drawString("ERROR", 55, 10, 2);
-    Disbuff.drawString(str1, 55, 30, 1);
-    Disbuff.drawString(str2, 55, 45, 1);
-    Disbuff.drawString("Check Hardware", 55, 60, 1);
+    Disbuff.drawString("-----------------", 55, 30, 1);
+    Disbuff.drawString(str1, 55, 45, 1);
+    Disbuff.drawString(str2, 55, 60, 1);
     Disbuff.pushSprite(0, 0);
-    while (1)
-        ;
+    if( modal )
+    {
+        while (1)
+        {
+            M5.update();
+            delay(10);
+            if( M5.BtnA.wasPressed()||M5.BtnB.wasPressed())break;
+        }
+    }
 }
 
 #define PIN_CLK 0
@@ -182,6 +227,7 @@ void ir_tx_callback(rmt_channel_t channel, void *arg)
 
 bool InitIRTx()
 {
+    /*
     rmt_config_t rmt_tx;
     rmt_tx.rmt_mode = RMT_MODE_TX;
     rmt_tx.channel = RMT_TX_CHANNEL;
@@ -193,15 +239,19 @@ bool InitIRTx()
     rmt_tx.tx_config.loop_en = false;
     rmt_tx.tx_config.carrier_duty_percent = 50;
     rmt_tx.tx_config.carrier_freq_hz = 38000;
-    rmt_tx.tx_config.carrier_level = RMT_CARRIER_LEVEL_HIGH;
+    rmt_tx.tx_config.carrier_level = RMT_CARRIER_LEVEL_LOW;
     rmt_tx.tx_config.carrier_en = true;
     rmt_tx.tx_config.idle_level = RMT_IDLE_LEVEL_HIGH;
     rmt_tx.tx_config.idle_output_en = true;
     rmt_config(&rmt_tx);
     rmt_driver_install(rmt_tx.channel, 0, 0);
-
+    */
+    ledcSetup(15,38000,8);
+    ledcAttachPin(9,15);
+    ledcWrite(15,0);
     return true;
 }
+
 
 bool ir_uart_tx(const uint8_t *src, uint8_t len, bool wait_tx_done)
 {
@@ -209,7 +259,7 @@ bool ir_uart_tx(const uint8_t *src, uint8_t len, bool wait_tx_done)
     if(src == NULL || recvFlag == true) {
     return false;
     }
-    */
+    
     if (src == NULL)
     {
         return false;
@@ -256,13 +306,16 @@ bool ir_uart_tx(const uint8_t *src, uint8_t len, bool wait_tx_done)
     }
 
     esp_pm_lock_acquire(rmt_freq_lock);
-    rmt_write_items(RMT_TX_CHANNEL, tx_buffer, 10 * len, wait_tx_done);
+    rmt_write_items(RMT_TX_CHANNEL, tx_buffer, 10 * len, true);
+    free(tx_buffer);
+    */
+    ledcWrite(15,50);
     return true;
 }
 
-#define SERVICE_UUID      "1bc68b2a-f3e3-11e9-81b4-2a2ae2dbcce4"
-#define CHARACTERISTIC_RX_UUID  "1bc68da0-f3e3-11e9-81b4-2a2ae2dbcce4"
-#define CHARACTERISTIC_TX_UUID  "1bc68efe-f3e3-11e9-81b4-2a2ae2dbcce4"
+#define SERVICE_UUID 			"1bc68b2a-f3e3-11e9-81b4-2a2ae2dbcce4"
+#define CHARACTERISTIC_RX_UUID 	"1bc68da0-f3e3-11e9-81b4-2a2ae2dbcce4"
+#define CHARACTERISTIC_TX_UUID 	"1bc68efe-f3e3-11e9-81b4-2a2ae2dbcce4"
 
 BLEServer *pServer = NULL;
 BLEService *pService = NULL;
@@ -291,26 +344,28 @@ class MyCallbacks: public BLECharacteristicCallbacks {
 
 bool InitBLEServer()
 {
-    uint64_t chipid = ESP.getEfuseMac();
+	uint64_t chipid = ESP.getEfuseMac();
     String blename = "M5-" + String((uint32_t)(chipid >> 32), HEX);
 
     BLEDevice::init(blename.c_str());
+	//BLEDevice::setPower(ESP_PWR_LVL_N12);
+	pServer = BLEDevice::createServer();
 
-    pServer = BLEDevice::createServer();
+	pServer->setCallbacks(new MyServerCallbacks());
+	pService = pServer->createService(SERVICE_UUID);
+	pTxCharacteristic = pService->createCharacteristic(
+											CHARACTERISTIC_RX_UUID,
+											BLECharacteristic::PROPERTY_NOTIFY
+										);
 
-    pServer->setCallbacks(new MyServerCallbacks());
-    pService = pServer->createService(SERVICE_UUID);
-    pTxCharacteristic = pService->createCharacteristic(
-                      CHARACTERISTIC_RX_UUID,
-                      BLECharacteristic::PROPERTY_NOTIFY
-                    );
+	pTxCharacteristic->addDescriptor(new BLE2902());
+	BLECharacteristic * pRxCharacteristic = pService->createCharacteristic(
+												CHARACTERISTIC_TX_UUID,
+												BLECharacteristic::PROPERTY_WRITE
+											);
+  	pRxCharacteristic->setCallbacks(new MyCallbacks());
 
-    pTxCharacteristic->addDescriptor(new BLE2902());
-    BLECharacteristic * pRxCharacteristic = pService->createCharacteristic(
-                        CHARACTERISTIC_TX_UUID,
-                        BLECharacteristic::PROPERTY_WRITE
-                      );
-    pRxCharacteristic->setCallbacks(new MyCallbacks());
+
 
     return true;
 
@@ -333,21 +388,31 @@ bool checkAXP192()
     float temp = M5.Axp.GetTempInAXP192();
     if ((temp < 5) || (temp > 90))
     {
-        ErrorMeg(0x21, "AXP find error");
+        ErrorMeg(0x21, "AXP find error",0,true);
         return false;
     }
 
     float VBat = M5.Axp.GetBatVoltage();
-    if ((VBat < 3.0) || (VBat > 4.4))
+    if ((VBat < 3.1) || (VBat > 4.4))
     {
-        ErrorMeg(0x22, "Bat Vol error ");
+        ErrorMeg(0x22, "Low Battery","please charge!",1,false);
+        char strbuff[64];
+        while(1)
+        {
+            VBat = M5.Axp.GetBatVoltage();
+            sprintf(strbuff,"charging %.2fV",VBat);
+            ErrorMeg(0x22, "Low Battery","please charge!",1,false);
+            if (VBat > 3.2) break;
+
+            delay(10);
+        }
         return false;
     }
 
     return true;
 }
 
-bool checkIMU()
+bool checkMPU6886()
 {
 
     return true;
@@ -367,7 +432,7 @@ bool checkBM8563()
         i++;
         if (i > 200)
         {
-            ErrorMeg(0x41, "RTC error ");
+            ErrorMeg(0x41, "RTC error ", 0, true);
         }
         if (sec != time.Seconds)
         {
@@ -398,11 +463,11 @@ bool checkOUTIO()
 
     if ( sumadc1 < 3000 )
     {
-        ErrorMeg(0x61, "5V or 26 error");
+        ErrorMeg(0x61, "5V or 26 error",0 ,true);
     }
     if ( sumadc2 < 2500 )
     {
-        ErrorMeg(0x62, "3V3 or 36 error");
+        ErrorMeg(0x62, "3V3 or 36 error",0 ,true);
     }
     return true;
 }
@@ -424,7 +489,7 @@ bool CheckGrove()
             count ++;
             if( count > 5 )
             {
-                ErrorMeg(0x91, "Grove error");
+                ErrorMeg(0x91, "Grove error",0 ,true);
                 return false;
             }
         }
@@ -434,7 +499,13 @@ bool CheckGrove()
 
 void ColorBar()
 {
-    float color_r = 0, color_g = 0, color_b = 255;
+    float color_r, color_g, color_b;
+
+    color_r = 0;
+    color_g = 0;
+    color_b = 255;
+
+    M5.Axp.ScreenBreath(12);
 
     for (int i = 0; i < 384; i=i+4)
     {
@@ -454,9 +525,11 @@ void ColorBar()
         {
             color_r = 0;
             color_g = 255 - ((i - 256) * 2);
+            ;
             color_b = (i - 256) * 2;
+            ;
         }
-        // Disbuff.fillRect(0, 0, 160, 80, Disbuff.color565(color_r, color_g, color_b));
+        Disbuff.fillRect(0, 0, 160, 80, Disbuff.color565(color_r, color_g, color_b));
         if (TestMode)
         {
             Disbuff.setTextColor(RED);
@@ -492,9 +565,9 @@ void ColorBar()
         }
         for (int n = 0; n < 160; n++)
         {
-            color_r = (color_r < 255) ? color_r + 1.6 : 255;
-            color_g = (color_g < 255) ? color_g + 1.6 : 255;
-            color_b = (color_b < 255) ? color_b + 1.6 : 255;
+            color_r = (color_r < 255) ? color_r += 1.6 : 255U;
+            color_g = (color_g < 255) ? color_g += 1.6 : 255U;
+            color_b = (color_b < 255) ? color_b += 1.6 : 255U;
             Disbuff.drawLine(n, i * 20, n, (i + 1) * 20, Disbuff.color565(color_r, color_g, color_b));
         }
     }
@@ -504,7 +577,8 @@ void ColorBar()
         Disbuff.drawString("Test Mode", 0, 0, 1);
     }
     Displaybuff();
-    delay(500);
+    delay(2000);
+    M5.Axp.ScreenBreath(12);
 
     for (int i = 0; i < 4; i++)
     {
@@ -533,24 +607,15 @@ void ColorBar()
         }
         for (int n = 0; n < 160; n++)
         {
-            color_r = (color_r > 2) ? color_r - 1.5 : 0U;
-            color_g = (color_g > 2) ? color_g - 1.5 : 0U;
-            color_b = (color_b > 2) ? color_b - 1.5 : 0U;
+            color_r = (color_r > 2) ? color_r -= 1.5 : 0U;
+            color_g = (color_g > 2) ? color_g -= 1.5 : 0U;
+            color_b = (color_b > 2) ? color_b -= 1.5 : 0U;
             Disbuff.drawLine(159 - n, i * 20, 159 - n, (i + 1) * 20, Disbuff.color565(color_r, color_g, color_b));
         }
     }
     Displaybuff();
-    delay(500);
+    delay(2000);
 }
-double r_rand = PI / 180;
-
-double r_alpha = 19.47 * PI / 180;
-double r_gamma = 20.7 * PI / 180;
-
-double sin_alpha = sin(19.47 * PI / 180);
-double cos_alpha = cos(19.47 * PI / 180);
-double sin_gamma = sin(20.7 * PI / 180);
-double cos_gamma = cos(20.7 * PI / 180);
 
 bool point3Dto2D(point_3d_t *source, point_2d_t *point)
 {
@@ -601,7 +666,7 @@ void RotatePoint(point_3d_t *point, double x, double y, double z)
     }
 }
 
-void RotatePoint(point_3d_t* point, point_3d_t* point_new, double x, double y, double z)
+void RotatePoint(point_3d_t *point, point_3d_t *point_new, double x, double y, double z)
 {
     if (x != 0)
     {
@@ -649,14 +714,14 @@ line_3d_t rect[12] = {
     {.start_point = {-1, 1, -1}, .end_point = {-1, -1, -1}},
 };
 
-void IMUTest()
+void MPU6886Test()
 {
     float accX = 0;
     float accY = 0;
     float accZ = 0;
 
-    double theta = 0, last_theta = 0;
-    double phi = 0, last_phi = 0;
+    double theta, last_theta = 0;
+    double phi, last_phi = 0;
     double alpha = 0.2;
 
     line_3d_t x = {
@@ -684,7 +749,8 @@ void IMUTest()
     while ((!M5.BtnA.isPressed()) && (!M5.BtnB.isPressed()))
     {
 
-        M5.IMU.getAccelData(&accX, &accY, &accZ);
+		M5.Imu.getAccelData(&accX, &accY, &accZ);
+        //M5.MPU6886.getAccelData(&accX, &accY, &accZ);
         if ((accX < 1) && (accX > -1))
         {
             theta = asin(-accX) * 57.295;
@@ -726,20 +792,20 @@ void IMUTest()
         //Disbuff
         Disbuff.setTextColor(WHITE);
         Disbuff.setTextSize(1);
-        Disbuff.fillRect(0,0,52,18,Disbuff.color565(40,40,40));
-        Disbuff.drawString(imuName,5,5,1);
+        Disbuff.fillRect(0,0,52,18,Disbuff.color565(20,20,20));
+        Disbuff.drawString("MPU6886",5,5,1);
         Displaybuff();
 
         last_theta = theta;
         last_phi = phi;
 
         M5.update();
-        checkAXPPress();
+		checkAXPPress();
     }
     while ((M5.BtnA.isPressed()) || (M5.BtnB.isPressed()))
     {
         M5.update();
-        checkAXPPress();
+		checkAXPPress();
         delay(10);
     }
 }
@@ -763,13 +829,13 @@ void DisplayI2CENV()
         Displaybuff();
         M5.update();
         delay(100);
-        checkAXPPress();
+		checkAXPPress();
     }
 
     while ((M5.BtnA.isPressed()) || (M5.BtnB.isPressed()))
     {
         M5.update();
-        checkAXPPress();
+		checkAXPPress();
         delay(10);
     }
 }
@@ -785,7 +851,7 @@ void MicRecordfft(void *arg)
 {
     int16_t *buffptr;
     size_t bytesread;
-    uint16_t count_n = 0;
+    uint16_t count_n = 0, count_i = 0, count_x = 0, count_y = 0;
     float adc_data;
     double data = 0;
     uint16_t ydata;
@@ -815,6 +881,7 @@ void MicRecordfft(void *arg)
                 fft_dis_buff[posData][80 - count_n] = ydata;
             }
         }
+        
         posData++;
         if (posData >= 161)
         {
@@ -827,7 +894,8 @@ void MicRecordfft(void *arg)
 
 void Drawdisplay(void *arg)
 {
-    uint16_t count_x = 0, count_y = 0;
+    uint16_t count_n = 0, count_x = 0, count_y = 0;
+    uint16_t ydata;
     uint16_t colorPos;
     while (1)
     {
@@ -849,16 +917,16 @@ void Drawdisplay(void *arg)
 
                 Disbuff.drawPixel(count_x, count_y, Disbuff.color565(ImageData[colorPos * 3 + 0], ImageData[colorPos * 3 + 1], ImageData[colorPos * 3 + 2]));
                 /*
-        disbuff[ count_y * 160 + count_x ].r =  ImageData[ colorPos * 3 + 0 ];
-        disbuff[ count_y * 160 + count_x ].g =  ImageData[ colorPos * 3 + 1 ];
-        disbuff[ count_y * 160 + count_x ].b =  ImageData[ colorPos * 3 + 2 ];
-        */
+				disbuff[ count_y * 160 + count_x ].r =  ImageData[ colorPos * 3 + 0 ];
+				disbuff[ count_y * 160 + count_x ].g =  ImageData[ colorPos * 3 + 1 ];
+				disbuff[ count_y * 160 + count_x ].b =  ImageData[ colorPos * 3 + 2 ];
+				*/
             }
         }
         xSemaphoreGive(xSemaphore);
         Disbuff.setTextColor(WHITE);
         Disbuff.setTextSize(1);
-        Disbuff.fillRect(0,0,70,18,Disbuff.color565(40,40,40));
+        Disbuff.fillRect(0,0,70,18,Disbuff.color565(20,20,20));
         Disbuff.drawString("MicroPhone",5,5,1);
         Disbuff.pushSprite(0, 0);
     }
@@ -882,6 +950,7 @@ void DisplayMicro()
         //delay(100);
         xSemaphoreTake(start_dis, portMAX_DELAY);
         xSemaphoreTake(start_fft, portMAX_DELAY);
+		//checkAXPPress();
     }
     //xSemaphoreTake( start_dis , portMAX_DELAY  );
     //xSemaphoreTake( start_fft , portMAX_DELAY  );
@@ -890,7 +959,7 @@ void DisplayMicro()
     {
         M5.update();
         delay(10);
-        checkAXPPress();
+		checkAXPPress();
     }
 }
 
@@ -914,17 +983,17 @@ void DisplayRTC()
         Disbuff.setTextColor(WHITE);
         Disbuff.setCursor(6, 40);
         Disbuff.printf("%02d:%02d:%02d", time.Hours, time.Minutes, time.Seconds);
-        Disbuff.fillRect(0,0,160,18,Disbuff.color565(40,40,40));
+        Disbuff.fillRect(0,0,160,18,Disbuff.color565(20,20,20));
         Disbuff.setTextSize(1);
         Disbuff.drawString("BMP8563 RTC Time",32,5,1);
         Displaybuff();
         M5.update();
-        checkAXPPress();
+		checkAXPPress();
         delay(100);
     }
     while ((M5.BtnA.isPressed()) || (M5.BtnB.isPressed()))
     {
-        checkAXPPress();
+		checkAXPPress();
         M5.update();
         delay(10);
     }
@@ -1038,16 +1107,16 @@ void DisplayIOPort()
         
         Disbuff.setCursor(5, 50);
         Disbuff.printf("%d", pin36_adc);
-        if( pin36_adc > 1100 )
+        //if( pin36_adc > 1100 )
         {
             Disbuff.setTextColor(GREEN);
             Disbuff.printf("3V3 OK");
         }
-        else
-        {
-            Disbuff.setTextColor(RED);
-            Disbuff.printf("3V3 Err");
-        }
+        //else
+        //{
+        //    Disbuff.setTextColor(RED);
+        //    Disbuff.printf("3V3 Err");
+        //}
         Disbuff.setTextColor(WHITE);
         
         Displaybuff();
@@ -1064,21 +1133,23 @@ void DisplayIOPort()
         */
         M5.update();
         delay(100);
-        checkAXPPress();
+		checkAXPPress();
 
     }
     while ((M5.BtnA.isPressed()) || (M5.BtnB.isPressed()))
     {
         M5.update();
         delay(10);
-        checkAXPPress();
+		checkAXPPress();
     }
     InitI2SMicroPhone();
 }
 
 void DisIRSend()
 {
-    uint8_t senddata[2]={0};
+    uint8_t senddata[20]={0};
+    memset(senddata,0x00,sizeof(uint8_t)*20);
+    
     while ((!M5.BtnA.isPressed()) && (!M5.BtnB.isPressed()))
     {
         Disbuff.fillRect(0, 0, 160, 80, BLACK);
@@ -1112,18 +1183,20 @@ void DisIRSend()
         {
             senddata[1] = 0;
             senddata[0]++;
-            ir_uart_tx( senddata ,2, true);
+            ir_uart_tx( senddata ,20, true);
         }
-        checkAXPPress();
+		checkAXPPress();
         M5.update();
         delay(100);
+        ledcWrite(15,0);
     }
     while ((M5.BtnA.isPressed()) || (M5.BtnB.isPressed()))
     {
         M5.update();
-        checkAXPPress();
+		checkAXPPress();
         delay(10);
     }
+    ledcWrite(15,0);
     Disbuff.setTextColor(WHITE);
 }
 
@@ -1132,7 +1205,7 @@ void DisPlayBLESend()
     uint8_t senddata[2]={0};
 
     pService->start();
-    pServer->getAdvertising()->start();
+	pServer->getAdvertising()->start();
 
 	uint64_t chipid = ESP.getEfuseMac();
     String blename = "M5-" + String((uint32_t)(chipid >> 32), HEX);
@@ -1183,7 +1256,8 @@ void DisPlayBLESend()
             Disbuff.printf("BLE disconnect\n");
             Disbuff.setCursor(12, 35);
             Disbuff.setTextColor(Disbuff.color565(18,150,219));
-            Disbuff.printf("BLE Name:M5-BLE\n");
+			
+            Disbuff.printf(String("Name:"+blename+"\n").c_str());
             Disbuff.setCursor(12, 50);
             Disbuff.printf("UUID:1bc68b2a\n");
             Disbuff.pushImage(110, 16, 48, 48, (uint16_t *)icon_ble_disconnect);
@@ -1193,13 +1267,13 @@ void DisPlayBLESend()
         
         M5.update();
         delay(100);
-        checkAXPPress();
+		checkAXPPress();
     }
     while ((M5.BtnA.isPressed()) || (M5.BtnB.isPressed()))
     {
         M5.update();
         delay(10);
-        checkAXPPress();
+		checkAXPPress();
     }
     Disbuff.setTextColor(WHITE);
     pService->stop();
@@ -1245,10 +1319,10 @@ void DisplayWIFI()
                 }
             }
         }
-        Disbuff.fillRect(0,0,160,18,Disbuff.color565(40,40,40));
+        Disbuff.fillRect(0,0,160,18,Disbuff.color565(20,20,20));
         Disbuff.setTextSize(1);
         Disbuff.drawString("Wifi Test",32,5,1);
-    
+		
         Displaybuff();
         
         M5.update();
@@ -1261,23 +1335,6 @@ void DisplayWIFI()
     }
 }
 
-unsigned char stick[12960];
-
-void unpack_data(const uint8_t *data, uint8_t *buffer)
-{
-  int size = data[0] + (data[1] << 8);
-
-  for (int i = 2; i < size; i += 3) {
-    // data set
-    *(buffer++) = data[i];
-    *(buffer++) = data[i + 1];
-    for (int j = 0; j < data[i + 2]; j++) {
-      // same data set
-      *(buffer++) = data[i];
-      *(buffer++) = data[i + 1];
-    }
-  }
-}
 
 void setup()
 {
@@ -1293,68 +1350,57 @@ void setup()
     M5.Lcd.setSwapBytes(false);
     Disbuff.createSprite(160, 80);
     Disbuff.setSwapBytes(true);
-    for (int n = 0; n < 12; n++)
-    {
-        unpack_data(Animationptr[n], stick);
-        Disbuff.pushImage(40, 0, 81, 80, (uint16_t *)stick);
-        Displaybuff();
-        delay(30);
-    }
-
+	for (int n = 0; n < 12; n++)
+	{
+		Disbuff.pushImage(40, 0, 81, 80, (uint16_t *)Animationptr[n]);
+    	Displaybuff();
+		delay(30);
+	}
+    //Serial.printf("FUCK STC\r\n");
     if (InitI2SMicroPhone() != true)
     {
-        ErrorMeg(0x51, "MicroPhone error");
+        ErrorMeg(0x51, "MicroPhone error",0 ,true);
     }
-    if (M5.IMU.Init() != 0)
+    if (M5.Imu.Init() != 0)
     {
-        ErrorMeg(0x31, "IMU error ");
-    }
-    else
-    {
-        if(M5.IMU.imuType == M5.IMU.IMU_SH200Q)
-        {
-            imuName = "SH200Q";
-        }
-        else if(M5.IMU.imuType == M5.IMU.IMU_MPU6886)
-        {
-            imuName = "MPU6886";
-        }
+        ErrorMeg(0x31, "MPU6886 error ",0 ,true);
     }
     if( InitIRTx() != true )
     {
-        ErrorMeg(0x72, "RMT Init error");
+        ErrorMeg(0x72, "RMT Init error",0 ,true);
     }
     if( InitBLEServer() != true )
     {
-        ErrorMeg(0x81, "BLE init error");
+        ErrorMeg(0x81, "BLE init error",0 ,true);
     }
     checkAXP192();
     checkBM8563();
-    uint16_t ellips[7] = { 70, 78, 86, 93, 100, 108, 116};
-    for (int n = 11; n < 18; n++)
-    {
-        Disbuff.fillEllipse(80,40,ellips[n-11]/2, ellips[n-11]/2, Disbuff.color565(43,43,43));
-        unpack_data(Animationptr[n], stick);
-        Disbuff.pushImage(40, 0, 81, 80, (uint16_t *)stick);
-        Displaybuff();
-        delay(20);
-    }
+	uint16_t ellips[7] = { 70, 78, 86, 93, 100, 108, 116};
+	uint16_t* picptr = (uint16_t*)stick10;
+	for (int n = 11; n < 18; n++)
+	{
+		Disbuff.fillEllipse(80,40,ellips[n-11]/2, ellips[n-11]/2, Disbuff.color565(43,43,43));
+		Disbuff.pushImage(40, 0, 81, 80, (uint16_t *)Animationptr[n]);
+    	Displaybuff();
+		delay(20);
+	}
 
-    int color_bk = 43;
-    for (int n = 116; n < 180; n=n+8)
-    {
-        Disbuff.fillEllipse(80,40,n/2, n/2, Disbuff.color565(color_bk,color_bk,color_bk));
-        Displaybuff();
-        delay(20);
-        color_bk -= 5;
-    }
+	int color_bk = 43;
+	for (int n = 116; n < 180; n=n+8)
+	{
+		Disbuff.fillEllipse(80,40,n/2, n/2, Disbuff.color565(color_bk,color_bk,color_bk));
+    	Displaybuff();
+		delay(20);
+		color_bk -= 5;
+	}
 
-    Disbuff.fillRect(0,0,160,80,BLACK);
-    Displaybuff();
-    if (TestMode)
-    {
-        ColorBar();
-    }
+	Disbuff.fillRect(0,0,160,80,BLACK);
+	Displaybuff();
+	if (TestMode)
+	{
+		ColorBar();
+    
+	}
 
     pinMode(10, OUTPUT);
 
@@ -1378,15 +1424,21 @@ uint8_t xData, yData;
 void loop()
 {
     delay(100);
-    IMUTest();
+    MPU6886Test();
     DisplayRTC();
     DisplayMicro();
     DisIRSend();
-    DisPlayBLESend();
+
     //DisplayWIFI();
     if (TestMode)
     {
         DisplayI2CENV();
         DisplayIOPort();
+		DisPlayBLESend();
     }
+	else
+	{
+		DisPlayBLESend();
+	}
+	
 }
