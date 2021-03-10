@@ -123,7 +123,7 @@ extern M5StickC M5;
 #define sh200q Sh200Q
 
 #else
-#error “This library only supports boards with ESP32 processor.”	
+#error "This library only supports boards with ESP32 processor.”	
 #endif
 
 #endif
