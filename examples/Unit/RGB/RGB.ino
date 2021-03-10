@@ -24,6 +24,17 @@ int delayval = 150; // delay for half a second
 void setup() {
   M5.begin();
   pixels.begin(); // This initializes the NeoPixel library.
+ 
+  M5.Lcd.setRotation(3);
+  M5.Lcd.fillScreen(BLACK);
+  M5.Lcd.setTextSize(6);
+  M5.Lcd.setCursor(30, 20);
+  M5.Lcd.setTextColor(RED);
+  M5.Lcd.printf("R");
+  M5.Lcd.setTextColor(GREEN);
+  M5.Lcd.printf("G");
+  M5.Lcd.setTextColor(BLUE);
+  M5.Lcd.printf("B");
 }
 
 void loop() {

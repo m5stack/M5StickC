@@ -6,15 +6,12 @@
 void setup()
 {
   M5.begin();
-  Serial.begin(115200);
-  Wire.begin();
-  pinMode(5, INPUT);
-  digitalWrite(5, HIGH);
+  Wire.begin(32,33);
   M5.Lcd.fillScreen(BLACK);
   M5.Lcd.setRotation(3);
   M5.Lcd.setCursor(1, 10);
   M5.Lcd.setTextColor(YELLOW);
-  M5.Lcd.setTextSize(2);
+  M5.Lcd.setTextSize(1);
   M5.Lcd.printf("IIC Address: 0x5F\n");
   M5.Lcd.printf(">>");
 }
