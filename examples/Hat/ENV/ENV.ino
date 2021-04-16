@@ -6,7 +6,7 @@
 #include <M5StickC.h>
 #include "DHT12.h"
 #include <Wire.h>
-#include "Adafruit_Sensor.h"
+#include <Adafruit_Sensor.h>
 #include <Adafruit_BMP280.h>
 #include "bmm150.h"
 #include "bmm150_defs.h"
