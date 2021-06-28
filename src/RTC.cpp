@@ -19,7 +19,7 @@ void RTC::begin(void) {
 void RTC::GetBm8563Time(void){
   Wire1.beginTransmission(0x51);
   Wire1.write(0x02);
-  Wire1.endTransmission();
+  Wire1.endTransmission(false);
   Wire1.requestFrom(0x51,7); 
   while(Wire1.available()){
     
@@ -113,7 +113,7 @@ void RTC::GetTime(RTC_TimeTypeDef* RTC_TimeStruct){
 
     Wire1.beginTransmission(0x51);
     Wire1.write(0x02);
-    Wire1.endTransmission();
+    Wire1.endTransmission(false);
     Wire1.requestFrom(0x51,3); 
 
     while(Wire1.available()){
@@ -153,7 +153,7 @@ void RTC::GetData(RTC_DateTypeDef* RTC_DateStruct){
 
   Wire1.beginTransmission(0x51);
   Wire1.write(0x05);
-  Wire1.endTransmission();
+  Wire1.endTransmission(false);
   Wire1.requestFrom(0x51,4); 
 
   while(Wire1.available()){
