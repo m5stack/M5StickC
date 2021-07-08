@@ -49,10 +49,6 @@ class M5Display : public TFT_eSPI {
   inline void setHighlightColor(uint16_t color) { highlightcolor = color; istransparent = false; }
   void qrcode(const char *string, uint16_t x = 5, uint16_t y = 45, uint8_t width = 70, uint8_t version = 7);
   void qrcode(const String &string, uint16_t x = 5, uint16_t y = 45, uint8_t width = 70, uint8_t version = 7);
-  /*
-  void clearDisplay(uint32_t color=ILI9341_BLACK) { fillScreen(color); }
-  void clear(uint32_t color=ILI9341_BLACK) { fillScreen(color); }
-  void display() {}
 
   inline void startWrite(void){
   #if defined (SPI_HAS_TRANSACTION) && defined (SUPPORT_TRANSACTIONS) && !defined(ESP32_PARALLEL)
@@ -70,6 +66,18 @@ class M5Display : public TFT_eSPI {
   inline void writePixels(uint16_t * colors, uint32_t len){
       SPI.writePixels((uint8_t*)colors , len * 2);
   }
+  
+  void drawJpg(const uint8_t *jpg_data, size_t jpg_len, uint16_t x = 0,
+               uint16_t y = 0, uint16_t maxWidth = 0, uint16_t maxHeight = 0,
+               uint16_t offX = 0, uint16_t offY = 0,
+               jpeg_div_t scale = JPEG_DIV_NONE);
+  
+  /*
+  void clearDisplay(uint32_t color=ILI9341_BLACK) { fillScreen(color); }
+  void clear(uint32_t color=ILI9341_BLACK) { fillScreen(color); }
+  void display() {}
+
+
   void progressBar(int x, int y, int w, int h, uint8_t val);
 
   #define setFont setFreeFont
@@ -86,10 +94,7 @@ class M5Display : public TFT_eSPI {
   void drawBitmap(int16_t x0, int16_t y0, int16_t w, int16_t h, uint8_t *data);
   void drawBitmap(int16_t x0, int16_t y0, int16_t w, int16_t h, const uint16_t *data, uint16_t transparent);
 
-  void drawJpg(const uint8_t *jpg_data, size_t jpg_len, uint16_t x = 0,
-               uint16_t y = 0, uint16_t maxWidth = 0, uint16_t maxHeight = 0,
-               uint16_t offX = 0, uint16_t offY = 0,
-               jpeg_div_t scale = JPEG_DIV_NONE);
+
 
   void drawJpg(fs::FS &fs, const char *path, uint16_t x = 0, uint16_t y = 0,
                    uint16_t maxWidth = 0, uint16_t maxHeight = 0,
