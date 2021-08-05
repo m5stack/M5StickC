@@ -1,16 +1,16 @@
 /*
 *******************************************************************************
 * Copyright (c) 2021 by M5Stack
-*                  Equipped with M5Stick-C sample source code
-*                          配套  M5Stick-C 示例源代码
-* Visit the website for more information：https://docs.m5stack.com/en/core/m5stickc
-* 获取更多资料请访问：https://docs.m5stack.com/zh_CN/core/m5stickc
+*                  Equipped with M5Core2 sample source code
+*                          配套  M5Core2 示例源代码
+* Visit the website for more information：https://docs.m5stack.com/en/core/core2
+* 获取更多资料请访问：https://docs.m5stack.com/zh_CN/core/core2
 *
 * describe：WiFi connect.  wifi连接
 * date：2021/7/27
 *******************************************************************************
 */
-#include <M5StickC.h>
+#include <M5StickC.h>>
 #include <WiFi.h>
 #include <ESPmDNS.h>
 #include <WiFiClient.h>
@@ -38,7 +38,7 @@ WebServer webServer(80);
 Preferences preferences;
 
 void setup() {
-  M5.begin(); //Init M5StickC.  初始化 M5StickC
+  M5.begin(); //Init M5Core2.  初始化M5Core2
   M5.Lcd.setTextColor(YELLOW);  //Set the font color to yellow.  设置字体颜色为黄色
   M5.Lcd.setRotation(3);
   preferences.begin("wifi-config");
@@ -57,7 +57,7 @@ void setup() {
 void loop() {
   if (settingMode) {
   }
-  webServer.handleClient(); //检查有没有设备通过网络向M5StickC网络服务器发送请求
+  webServer.handleClient(); //检查有没有设备通过网络向M5Core2网络服务器发送请求
 }
 
 boolean restoreConfig() { /* Check whether there is wifi configuration information storage, if there is 1 return, if no return 0.
