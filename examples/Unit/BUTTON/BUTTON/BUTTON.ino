@@ -9,9 +9,9 @@
 * describe：Button.  按键
 * date：2021/8/9
 *******************************************************************************
-  Please connect to Port A,Read the button status of BUTTON Unit and display it on the screen
+  Please connect to Port,Read the button status of BUTTON Unit and display it on the screen
 
-  请连接端口A,读取按键的状态并在显示屏上显示
+  请连接端口,读取按键的状态并在显示屏上显示
 */
 #include <M5StickC.h>
 
@@ -19,7 +19,7 @@ int last_value = 0;
 int cur_value = 0;
 
 void setup() {
-  M5.begin(); //Init M5Stack.  初始化M5Stack
+  M5.begin(); //Init M5StickC.  M5StickC
   M5.Lcd.setRotation(3);  //Rotate the screen.  旋转屏幕
   pinMode(33, INPUT); //set pin mode to input.设置引脚模式为输入模式
   M5.Lcd.setTextColor(YELLOW);  //Set the font color to yellow.  设置字体颜色为黄色
