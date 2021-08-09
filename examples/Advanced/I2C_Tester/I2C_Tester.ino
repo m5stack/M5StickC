@@ -22,7 +22,7 @@ void setup()
   Wire.begin(); //Init wire and join the I2C network.  初始化wire，并且加入到I2C网络
   //Wire.begin(21, 22); //Detect internal I2C, if this sentence is not added, it will detect external I2C.  检测内部I2C,若不加此句为检测外部I2C
   M5.Lcd.setTextColor(YELLOW);  //Set the font color to yellow.  设置字体颜色为黄色
-  M5.Lcd.setRotation(3);  //Rotate the screen.  旋转屏幕
+  M5.Lcd.getTextDatum(3);  //Rotate the screen.  旋转屏幕
   M5.Lcd.println("M5StickC I2C Tester"); //Print a string on the screen.  在屏幕上打印字符串
 
   delay(3000);
