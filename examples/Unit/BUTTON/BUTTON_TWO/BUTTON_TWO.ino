@@ -31,7 +31,7 @@ void setup() {
 void loop() {
   cur_value1 = digitalRead(33); // read the value of BUTTON.  读取33号引脚的值
   cur_value2 = digitalRead(32);
-  M5.Lcd.setCursor(35,10); M5.Lcd.print("Btn.1  Btn.2");
+  M5.Lcd.setCursor(35,10); M5.Lcd.print("Btn.1  Btn.2");   //Set the cursor position to (35,10).  将光标位置设置为(35,10)
   M5.Lcd.setCursor(0,25); M5.Lcd.print("Value: ");
   M5.Lcd.setCursor(0,45); M5.Lcd.print("State: ");
   if(cur_value1 != last_value1){
