@@ -9,8 +9,8 @@
 * describe：Angle.  角度计
 * date：2021/8/9
 *******************************************************************************
-  Description: Read the Angle of the angometer and convert it to digital display
-  读取角度计的角度，并转换为数字量显示
+  Description: Please connect to Port A,Read the Angle of the angometer and convert it to digital display
+  请连接端口A,读取角度计的角度，并转换为数字量显示
 */
 
 #include <M5StickC.h>
