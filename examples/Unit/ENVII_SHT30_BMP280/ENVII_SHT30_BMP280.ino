@@ -1,13 +1,22 @@
 /*
-    Description: Use ENV II Unit to read temperature, humidity, atmospheric pressure, and display the data on the screen.
-    Please install library before compiling:  
-    Adafruit BMP280: https://github.com/adafruit/Adafruit_BMP280_Library
+*******************************************************************************
+* Copyright (c) 2021 by M5Stack
+*                  Equipped with M5Stick-C sample source code
+*                          配套  M5Stick-C 示例源代码
+* Visit the website for more information：https://docs.m5stack.com/en/core/m5stickc
+* 获取更多资料请访问：https://docs.m5stack.com/zh_CN/core/m5stickc
+*
+* describe：ENVII_SHT30_BMP280.  环境传感器
+* date：2021/8/11
+*******************************************************************************
+  Please connect to Port A(33、32),Read temperature, humidity and atmospheric pressure and display them on the display screen
+  请连接端口A(33、32),读取温度、湿度和大气压强并在显示屏上显示
 */
+
 #include <M5StickC.h>
-#include <Wire.h>
 #include "Adafruit_Sensor.h"
 #include <Adafruit_BMP280.h>
-#include "SHT3X.h"
+#include "UNIT_ENV.h"
 SHT3X sht30;
 Adafruit_BMP280 bme;
 
@@ -16,40 +25,22 @@ float hum = 0.0;
 float pressure = 0.0;
 
 void setup() {
-  M5.begin();
-  Wire.begin(32,33);
-  M5.Lcd.setTextSize(1);
-  Serial.println(F("ENV Unit(SHT30 and BMP280) test..."));
-
-  while (!bme.begin(0x76)){  
-    Serial.println("Could not find a valid BMP280 sensor, check wiring!");
-    M5.Lcd.println("Could not find a valid BMP280 sensor, check wiring!");
-  }
-  M5.Lcd.fillRect(0, 0, 80, 160, BLACK);
+  M5.begin(); //Init M5StickC.  初始化 M5StickC
+  M5.Lcd.setRotation(3);  //Rotate the screen.  旋转屏幕
+  M5.lcd.println(F("ENV Unit(SHT30 and BMP280) test...\n"));
+  Wire.begin(32, 33);  //Initialize pin 32,33.  初始化32,33引脚
 }
 
 void loop() {
-  pressure = bme.readPressure();
-  if(sht30.get()==0){
-    tmp = sht30.cTemp;
-    hum = sht30.humidity;
+  while (!bme.begin(0x76)){ //初始化bme传感器.  Init the sensor of bme
+    M5.Lcd.println("Could not find a valid BMP280 sensor, check wiring!");
   }
-  Serial.printf("Temperatura: %2.2f*C  Humedad: %0.2f%%  Pressure: %0.2fPa\r\n", tmp, hum, pressure); 
- 
-  M5.Lcd.setTextColor(WHITE, BLACK);
-  M5.Lcd.setCursor(2, 0);
-  M5.Lcd.printf("Temp:");
-  M5.Lcd.setCursor(5, 10);
-  M5.Lcd.printf("%2.1f", tmp);
-  M5.Lcd.setCursor(2, 25);
-  M5.Lcd.printf("Humi:");
-  M5.Lcd.setCursor(5, 35);
-  M5.Lcd.printf("%2.0f%%",hum);
-  M5.Lcd.setCursor(2, 50);
-  M5.Lcd.printf("Pressure:");
-  M5.Lcd.setCursor(5, 60);
-  M5.Lcd.printf("%2.0fPa", pressure);
-  
-  delay(100);
-
+  pressure = bme.readPressure();  //Stores the pressure gained by BMP.  存储bmp获取到的压强
+  sht30.get();  //Obtain the data of shT30.  获取sht30的数据
+  tmp = sht30.cTemp;  //Store the temperature obtained from shT30.  将sht30获取到的温度存储
+  hum = sht30.humidity; //Store the humidity obtained from the SHT30.  将sht30获取到的湿度存储
+  M5.lcd.setCursor(0,20);
+  M5.lcd.fillRect(0,20,100,60,BLACK); //Fill the screen with black (to clear the screen).  将屏幕填充满黑色(用来清屏)
+  M5.Lcd.printf("Temp: %2.1f  \r\nHumi: %2.0f%%  \r\nPressure:%2.0fPa\r\n", tmp, hum, pressure);
+  delay(2000);
 }
