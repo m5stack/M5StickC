@@ -9,8 +9,8 @@
 * describe：COLOR_TCS3472.  颜色识别
 * date：2021/8/11
 *******************************************************************************
-  Please connect to Port A(22、21),Use COLOR Unit to read C, R, G, B values
-  请连接端口A(22、21),使用COLOR Unit读取C, R, G, B值
+  Please connect to Port A(33、32),Use COLOR Unit to read C, R, G, B values
+  请连接端口A(33、32),使用COLOR Unit读取C, R, G, B值
 */
 
 #include <M5StickC.h>
