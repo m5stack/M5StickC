@@ -1,14 +1,14 @@
 /*
 *******************************************************************************
 * Copyright (c) 2021 by M5Stack
-*                  Equipped with Atom-Lite/Matrix sample source code
-*                          配套  Atom-Lite/Matrix 示例源代码
-* Visit the website for more information：https://docs.m5stack.com/en/products
-* 获取更多资料请访问：https://docs.m5stack.com/zh_CN/products
+*                  Equipped with M5Stick-C sample source code
+*                          配套  M5Stick-C 示例源代码
+* Visit the website for more information：https://docs.m5stack.com/en/core/m5stickc
+* 获取更多资料请访问：https://docs.m5stack.com/zh_CN/core/m5stickc
 *
 * describe：SPIFFS write & read.  闪存文件读写
 * date：2021/8/4
-******************************************************************************
+*******************************************************************************
 */
 
 #include <M5StickC.h>
