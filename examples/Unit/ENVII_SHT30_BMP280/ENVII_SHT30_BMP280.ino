@@ -9,8 +9,8 @@
 * describe：ENVII_SHT30_BMP280.  环境传感器
 * date：2021/8/11
 *******************************************************************************
-  Please connect to Port A(33、32),Read temperature, humidity and atmospheric pressure and display them on the display screen
-  请连接端口A(33、32),读取温度、湿度和大气压强并在显示屏上显示
+  Please connect to Port,Read temperature, humidity and atmospheric pressure and display them on the display screen
+  请连接端口,读取温度、湿度和大气压强并在显示屏上显示
 */
 
 #include <M5StickC.h>

@@ -9,8 +9,8 @@
 * describe：RGB.  多彩灯
 * date：2021/8/11
 *******************************************************************************
-  Please connect to Port A(32),Control RGB Unit to scroll through three colors of red, green and blue
-  请连接端口A(32),控制RGB单元滚动红、绿、蓝三种颜色.
+  Please connect to Port ,Control RGB Unit to scroll through three colors of red, green and blue
+  请连接端口,控制RGB单元滚动红、绿、蓝三种颜色.
 */
 
 #include <M5StickC.h>

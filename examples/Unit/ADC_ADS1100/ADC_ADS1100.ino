@@ -9,8 +9,8 @@
 * describe: ADC.  A/D转换器
 * date：2021/8/18
 *******************************************************************************
-  Please connect to Port A,Use ADC Unit to convert 0 ~ 12V analog voltage into 16-bit data and display it on the screen.
-  请连接端口A,利用ADC单元将0 ~ 12V模拟电压转换成16位数据显示在屏幕上。
+  Please connect to Port,Use ADC Unit to convert 0 ~ 12V analog voltage into 16-bit data and display it on the screen.
+  请连接端口,利用ADC单元将0 ~ 12V模拟电压转换成16位数据显示在屏幕上。
 */
 
 #include <M5StickC.h>

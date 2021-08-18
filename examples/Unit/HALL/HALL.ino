@@ -9,8 +9,8 @@
 * describe: Hall.  霍尔传感器
 * date：2021/8/18
 *******************************************************************************
-  Please connect to Port B,Displays a string on the screen.
-  请连接端口B,在屏幕上显示字符串。
+  Please connect to Port ,Displays a string on the screen.
+  请连接端口,在屏幕上显示字符串。
   Low-level signal can be generated when the magnet S pole is close to the front of the sensor
   当磁体S极靠近传感器前端时，会产生低电平信号
   OR the N pole is close to the back, and the internal LED indicator will light up, the screen wiil display 0.

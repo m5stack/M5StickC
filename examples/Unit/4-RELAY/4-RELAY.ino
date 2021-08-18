@@ -9,8 +9,8 @@
 * describe：4-Relay.  4个继电器
 * date：2021/8/10
 *******************************************************************************
-  Please connect to port A,Control 4 relays and demonstrate the asynchronous control relay LED
-  请连接A端口，控制4继电器，并演示异步控制继电器LED
+  Please connect to port,Control 4 relays and demonstrate the asynchronous control relay LED
+  请连接端口，控制4继电器，并演示异步控制继电器LED
 -------------------------------------------------------------------------------
   RELAY control reg           | 0x10
   -----------------------------------------------------------------------------

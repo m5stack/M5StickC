@@ -9,8 +9,8 @@
 * describe：HEX.  灯板
 * date：2021/8/17
 *******************************************************************************
-  Please connect to Port A, Control HEX Unit to run rainbow light show.
-  请连接端口A,控制HEX Unit 彩虹灯显示。
+  Please connect to Port , Control HEX Unit to run rainbow light show.
+  请连接端口,控制HEX Unit 彩虹灯显示。
 */
 
 #include <M5StickC.h>

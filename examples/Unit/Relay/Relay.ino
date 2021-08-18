@@ -9,8 +9,8 @@
 * describe：Relay.  继电器
 * date：2021/8/16
 *******************************************************************************
-  Please connect to Port (32),Use RELAY to switch on and off the circuit.
-  请连接端口(32),使用继电器开关电路。
+  Please connect to Port ,Use RELAY to switch on and off the circuit.
+  请连接端口,使用继电器开关电路。
 */
 
 #include <M5StickC.h>

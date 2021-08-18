@@ -9,8 +9,8 @@
 * describe: LCD.  显示屏
 * date：2021/8/18
 *******************************************************************************
-  Please connect to Port A,Displays a string on the screen.
-  请连接端口A,在屏幕上显示字符串。
+  Please connect to Port ,Displays a string on the screen.
+  请连接端口,在屏幕上显示字符串。
 */
 #include <M5UnitLCD.h>
 

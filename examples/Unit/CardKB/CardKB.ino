@@ -9,8 +9,8 @@
 * describe：CardKB.  键盘
 * date：2021/8/11
 *******************************************************************************
-  Please connect to Port A,Read the characters entered by CardKB Unit and display them on the screen.
-  请连接端口A,读取CardKB Unit输入的字符并显示在屏幕上。
+  Please connect to Port ,Read the characters entered by CardKB Unit and display them on the screen.
+  请连接端口,读取CardKB Unit输入的字符并显示在屏幕上。
 */
 
 #include <M5StickC.h>

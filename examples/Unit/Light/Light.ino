@@ -9,8 +9,8 @@
 * describe: Light.  环境光传感器
 * date：2021/8/18
 *******************************************************************************
-  Please connect to Port B,Use the Light Unit screen to display the current ambient lighting value
-  请连接端口 B ,使用Light Unit 屏幕显示当前环境光照值。
+  Please connect to Port A,Use the Light Unit screen to display the current ambient lighting value
+  请连接端口 A ,使用Light Unit 屏幕显示当前环境光照值。
 */
 
 #include <M5StickC.h>

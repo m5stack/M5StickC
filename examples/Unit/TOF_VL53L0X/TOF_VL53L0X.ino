@@ -9,8 +9,8 @@
 * describe：ToF.  激光测距
 * date：2021/8/16
 *******************************************************************************
-  Please connect to Port A(22、21),Use ToF Unit to detect distance and display distance data on the screen in real time.
-  请连接端口A(22、21),使用ToF Unit检测距离，并在屏幕上实时显示距离数据。
+  Please connect to Port,Use ToF Unit to detect distance and display distance data on the screen in real time.
+  请连接端口,使用ToF Unit检测距离，并在屏幕上实时显示距离数据。
 */
 
 #include <M5StickC.h>

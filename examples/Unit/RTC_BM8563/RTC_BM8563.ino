@@ -9,8 +9,8 @@
 * describe: RTC.  实时时钟
 * date：2021/8/18
 *******************************************************************************
-  Please connect to Port A,The time is displayed on the screen.
-  请连接端口A,屏幕上显示时间。
+  Please connect to Port,The time is displayed on the screen.
+  请连接端口,屏幕上显示时间。
 */
 
 #include "M5StickC.h"
