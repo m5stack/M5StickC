@@ -32,7 +32,7 @@ int16_t hope = 0.0;
 ammeterGain_t now_gain = PAG_512;
 
 void setup(void) {
-  M5.begin(); //Init M5Stack.  初始化M5Stack
+  M5.begin(); //Init M5StickC.  初始化M5StickC
   Wire.begin();
 
   ammeter.setMode(SINGLESHOT);
