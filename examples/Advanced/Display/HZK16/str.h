@@ -2,6 +2,6 @@
 #define _STR_H_
 
 char* AscStr="ASCII: \nABCDEFG1234567";
-char* GbkStr="采菊东篱下";
+char* GbkStr="采菊东篱下 こんにちは";
 
 #endif
