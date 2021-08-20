@@ -16,8 +16,8 @@
 #include "str.h"
 
 void setup() {
-  M5.begin(); //Init M5Stack.  初始化M5Stack
-  M5.Lcd.setRotation(3);
+  M5.begin(); //Init M5StickC.  初始化M5StickC
+  M5.Lcd.setRotation(3);  //Rotate the screen.  旋转屏幕
   M5.Lcd.loadHzk16(); //Load the Chinese character library (be sure to load before using the Chinese character library).  加载汉字库(务必在使用汉字库前加载)
   M5.Lcd.setTextColor(WHITE, BLACK);//Set the text color to white and the text background color to black (mandatory).  设置文字颜色为白色,文字背景颜色为黑色(必加)
   // Set text with red highlight color

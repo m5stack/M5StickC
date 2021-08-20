@@ -23,7 +23,7 @@ CRGB leds[NUM_LEDS];
 uint8_t gHue = 0; //Initial tone value.  起始色调数值
 
 void setup() {
-  M5.begin(); //Init M5Stack.  初始化M5Stack
+  M5.begin(); //Init M5StickC.  初始化M5StickC
   M5.Lcd.setTextColor(YELLOW);
   M5.Lcd.println("HEX Example");
   M5.Lcd.setTextColor(WHITE);

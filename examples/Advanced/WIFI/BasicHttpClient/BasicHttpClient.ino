@@ -22,7 +22,7 @@ HTTPClient http;
 void setup() {
   M5.begin(); //Init M5Stick.  初始化 M5Stick
   M5.Lcd.setRotation(3);  //Rotate the screen.  旋转屏幕
-  wifiMulti.addAP("M5-2.4G", "Office@888888");  //Storage wifi configuration information.  存储wifi配置信息
+  wifiMulti.addAP("M5", "41231243");  //Storage wifi configuration information.  存储wifi配置信息
   M5.Lcd.print("\nConnecting Wifi...\n"); //print format output string on lcd.  串口格式化输出字符串
 }
 

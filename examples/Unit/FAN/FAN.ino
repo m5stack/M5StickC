@@ -20,7 +20,7 @@ int freq = 10000;
 int ledChannel = 0;
 int resolution = 10;
 void setup() {
-  M5.begin(); //Init M5Stack.  初始化M5Stack
+  M5.begin(); //Init M5StickC.  初始化M5StickC
   M5.Lcd.setRotation(3);  //Rotate the screen.  旋转屏幕
   M5.Lcd.setCursor(65, 10); //Set the cursor at (65,10).  将光标设置在(65,10)处
   M5.Lcd.println("Fan");

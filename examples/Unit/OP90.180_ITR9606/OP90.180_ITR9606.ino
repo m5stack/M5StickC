@@ -18,7 +18,7 @@
 void setup() {
   M5.begin(); //Init M5StickC.  初始化M5StickC
   M5.Lcd.setRotation(3);  //Rotate the screen.  旋转屏幕
-  M5.Lcd.setCursor(30, 10); //Set the cursor at (80,10).  将光标设置在(80,10)处
+  M5.Lcd.setCursor(30, 10); //Set the cursor at (30,10).  将光标设置在(30,10)处
   M5.Lcd.println("90/180 OPTICAL");
   pinMode(33,INPUT_PULLUP); //Set pin 33 to input pull-up mode.  设置33号引脚为输入上拉模式
 }

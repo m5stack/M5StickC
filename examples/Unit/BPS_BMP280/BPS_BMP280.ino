@@ -20,7 +20,7 @@
 Adafruit_BMP280 bme;
 
 void setup() {
-  M5.begin(); //Init M5StackC.  初始化 M5StackC
+  M5.begin(); //Init M5StickC.  初始化 M5StickC
   M5.Lcd.setRotation(3);  //Rotate the screen.  旋转屏幕
   Wire.begin(); //Wire init, adding the I2C bus.  Wire初始化, 加入i2c总线
   while (!bme.begin(0x76)){ //Init this sensor,True if the init was successful, otherwise false.   初始化传感器,如果初始化成功返回1
@@ -35,7 +35,7 @@ void loop() {
   pressure = bme.readPressure();
   Temp = bme.readTemperature();
   M5.Lcd.setCursor(0, 0); //将光标设置在(0 ,0).  Set the cursor to (0,0)
-  M5.Lcd.setTextSize(2);  //设置字体大小为3.  Set the font size to 3
+  M5.Lcd.setTextSize(2);  //设置字体大小为2.  Set the font size to 2
   M5.Lcd.printf("Pre:%2.0fPa\nTem:%2.0f^C", pressure,Temp);
   delay(100);
 }
