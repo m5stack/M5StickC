@@ -19,7 +19,7 @@ void setup() {
   M5.begin(); //Init M5StickC.  初始化M5StickC
   M5.Lcd.setRotation(3); //Rotating display.  旋转显示屏
   Wire.begin(32, 33);
-  M5.Lcd.setCursor(0, 0, 4);  //Set the cursor at (105,0) and set the font to a 4 point font.  将光标设置在(105,0)处,且设置字体为4号字体
+  M5.Lcd.setCursor(0, 0, 4);  //Set the cursor at (0,0) and set the font to a 4 point font.  将光标设置在(0,0)处,且设置字体为4号字体
   M5.Lcd.print("Ultrasonic\nDistance:");
 }
 
