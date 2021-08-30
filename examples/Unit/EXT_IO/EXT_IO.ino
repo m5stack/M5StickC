@@ -33,7 +33,7 @@ void setup()
   ioCon1.twiRead(res);
   Serial.printf("res:%d\r\n", res);
 
-  ioCon1.portMode0(ALLOUTPUT); //Set the port as all output.  设置所有引脚为输出模式
+  ioCon1.portMode(ALLOUTPUT); //Set the port as all output.  设置所有引脚为输出模式
 }
 
 void loop()
@@ -44,16 +44,16 @@ void loop()
   delay(1000);
 
   // write 0-7 HIGH.  设置0~7号引脚为高电平
-  Serial.println(ioCon1.digitalWritePort0(0xff));
+  Serial.println(ioCon1.digitalWritePort(0xff));
   delay(200);
 
   // write 0-7 LOW.  设置0~7号引脚为低电平
-  Serial.println(ioCon1.digitalWritePort0(0x00));
+  Serial.println(ioCon1.digitalWritePort(0x00));
   delay(200);
 
   //// write Port, the same read
   for (byte i = 0; i < 8; i++) {
-    ioCon1.digitalWritePort0((1 << i));
+    ioCon1.digitalWritePort((1 << i));
     delay(200);
   }
 }
