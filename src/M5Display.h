@@ -30,8 +30,8 @@ class M5Display : public TFT_eSPI {
  public:
   M5Display();
   void begin();
-  void sleep();
-  void setBrightness(uint8_t brightness);
+  // void sleep();
+  // void setBrightness(uint8_t brightness);
   void drawBitmap(int16_t x0, int16_t y0, int16_t w, int16_t h, const uint16_t *data);
   void drawBitmap(int16_t x0, int16_t y0, int16_t w, int16_t h, const uint8_t *data);
   void drawBitmap(int16_t x0, int16_t y0, int16_t w, int16_t h, uint16_t *data);
