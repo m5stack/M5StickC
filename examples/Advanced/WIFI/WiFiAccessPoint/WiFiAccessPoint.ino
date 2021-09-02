@@ -1,8 +1,8 @@
 /*
 *******************************************************************************
 * Copyright (c) 2021 by M5Stack
-*                  Equipped with M5Stick-C sample source code
-*                          配套  M5Stick-C 示例源代码
+*                  Equipped with M5StickC sample source code
+*                          配套  M5StickC 示例源代码
 * Visit the website for more information：https://docs.m5stack.com/en/core/m5stickc
 * 获取更多资料请访问：https://docs.m5stack.com/zh_CN/core/m5stickc
 *
@@ -11,8 +11,8 @@
 *******************************************************************************
   WiFiAccessPoint.ino creates a WiFi access point and provides a web server on it.
   创建一个WiFi接入点，并在其上提供一个网络服务器
-  And can send requests to M5Stick-C through the web page
-  并可通过网页向M5Stick-C发送请求
+  And can send requests to M5StickC through the web page
+  并可通过网页向M5StickC发送请求
 */
 
 #include <M5StickC.h>
@@ -27,7 +27,7 @@ const char *password = "66666666";
 WiFiServer server(80);
 
 void setup() {
-  M5.begin(); //Init M5Stick-C.  初始化M5Stick-C
+  M5.begin(); //Init M5StickC.  初始化M5StickC
   M5.lcd.rotation(3);
   M5.lcd.println("WIFI ACCESS POINT");  //Screen print string.  屏幕打印字符串
   M5.lcd.printf("Please connect:%s \nThen access to:",ssid);

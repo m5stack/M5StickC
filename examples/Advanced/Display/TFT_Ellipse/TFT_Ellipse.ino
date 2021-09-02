@@ -1,8 +1,8 @@
 /*
 *******************************************************************************
 * Copyright (c) 2021 by M5Stack
-*                  Equipped with M5Stick-C sample source code
-*                          配套  M5Stick-C 示例源代码
+*                  Equipped with M5StickC sample source code
+*                          配套  M5StickC 示例源代码
 * Visit the website for more information：https://docs.m5stack.com/en/core/m5stickc
 * 获取更多资料请访问：https://docs.m5stack.com/zh_CN/core/m5stickc
 *
@@ -13,7 +13,7 @@
 #include <M5StickC.h>
 
 void setup(void) {
-  M5.begin(); //Init M5Stick-C.  初始化M5Stick-C
+  M5.begin(); //Init M5StickC.  初始化M5StickC
 }
 
 void loop() {
