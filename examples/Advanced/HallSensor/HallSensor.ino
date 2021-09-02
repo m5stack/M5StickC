@@ -1,8 +1,8 @@
 /*
 *******************************************************************************
 * Copyright (c) 2021 by M5Stack
-*                  Equipped with M5Stick-C sample source code
-*                          配套  M5Stick-C 示例源代码
+*                  Equipped with M5StickC sample source code
+*                          配套  M5StickC 示例源代码
 * Visit the website for more information：https://docs.m5stack.com/en/core/m5stickc
 * 获取更多资料请访问：https://docs.m5stack.com/zh_CN/core/m5stickc
 *
@@ -35,7 +35,7 @@ float HallOffset = 0; ////Store the initial value of magnetic force.  存储磁�
 
 void setup()
 {
-  M5.begin(); //Init M5Stick-C.  初始化M5Stick-C
+  M5.begin(); //Init M5StickC.  初始化M5StickC
   M5.Lcd.printf("\nESP32 Hall sensor:"); //Screen printout.  屏幕打印输出
   HallOffset = ESP32_hallRead(); // callibrate the output value to the magnetic field at start up.  在启动时将输出值校准到磁场
 }

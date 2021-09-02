@@ -1,6 +1,18 @@
 /*
-    Description: Read the microphone data of the PDM Unit and display the audio frequency spectrum.
-    Note: Remove the M5GO base when using this example, otherwise it will not work properly,PDM Unit connected PORT-A
+*******************************************************************************
+* Copyright (c) 2021 by M5Stack
+*                  Equipped with M5StickC sample source code
+*                          配套  M5StickC 示例源代码
+* Visit the website for more information：https://docs.m5stack.com/en/unit/pdm
+* 获取更多资料请访问：https://docs.m5stack.com/zh_CN/unit/pdm
+*
+* describe: pdm.  麦克风
+* date：2021/8/27
+*******************************************************************************
+  Please connect to Port A,Read the microphone data of the PDM Unit and display the audio frequency spectrum.
+  请连接端口A,读取PDM Unit的麦克风数据，显示音频频谱。
+  Note: Remove the M5GO base when using this example, otherwise it will not work properly
+  注意:在使用本示例时删除M5GO base，否则它将无法正常工作
 */
 
 #include <M5StickC.h>
@@ -16,61 +28,39 @@ TFT_eSprite DisFFTbuff =  TFT_eSprite(&M5.Lcd);
 static QueueHandle_t fftvalueQueue = nullptr;
 static QueueHandle_t i2sstateQueue = nullptr;
 
-void header(const char *string, uint16_t color)
-{
-    M5.Lcd.fillScreen(color);
-    M5.Lcd.setTextSize(1);
-    M5.Lcd.setTextColor(WHITE, BLACK);
-    M5.Lcd.fillRect(0, 0, 160, 15, BLACK);
-    M5.Lcd.setTextDatum(TC_DATUM);
-    M5.Lcd.drawString(string, 80, 3, 2); 
-    
-}
-
-
-typedef struct
-{
-    uint8_t state;
-    void* audioPtr;
-    uint32_t audioSize;
+typedef struct{
+  uint8_t state;
+  void* audioPtr;
+  uint32_t audioSize;
 }i2sQueueMsg_t;
 
+bool InitI2SSpakerOrMic(int mode){
+  i2s_config_t i2s_config = {
+    .mode = (i2s_mode_t)(I2S_MODE_MASTER),  // Set the I2S operating mode.  设置I2S工作模式
+    .sample_rate = 44100, // Set the I2S sampling rate.  设置I2S采样率
+    .bits_per_sample = I2S_BITS_PER_SAMPLE_16BIT, // Fixed 12-bit stereo MSB.  固定为12位立体声MSB
+    .channel_format = I2S_CHANNEL_FMT_ONLY_RIGHT, // Set the channel format.  设置频道格式
+    .communication_format = I2S_COMM_FORMAT_I2S,  // Set the format of the communication.  设置通讯格式
+    .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1, // Set the interrupt flag.  设置中断的标志
+    .dma_buf_count = 2, //DMA buffer count.  DMA缓冲区计数
+    .dma_buf_len = 128, //DMA buffer length.  DMA缓冲区长度
+  };
+  if (mode == MODE_MIC)
+  {
+    i2s_config.mode = (i2s_mode_t)(I2S_MODE_MASTER | I2S_MODE_RX | I2S_MODE_PDM);
+  }
 
-bool InitI2SSpakerOrMic(int mode)
-{
+  i2s_driver_install(I2S_NUM_0, &i2s_config, 0, NULL);   // Install and drive I2S.  安装并驱动I2S
+  i2s_pin_config_t pin_config;
+  pin_config.bck_io_num   = I2S_PIN_NO_CHANGE;
+  pin_config.ws_io_num    = PIN_CLK;
+  pin_config.data_out_num = I2S_PIN_NO_CHANGE;
+  pin_config.data_in_num  = PIN_DATA;
 
+  i2s_set_pin(I2S_NUM_0, &pin_config);
+  i2s_set_clk(I2S_NUM_0, 44100, I2S_BITS_PER_SAMPLE_16BIT, I2S_CHANNEL_MONO);
 
-//    i2s_driver_uninstall(I2S_NUM_0);
-    i2s_config_t i2s_config = {
-        .mode = (i2s_mode_t)(I2S_MODE_MASTER),
-        .sample_rate = 44100,
-        .bits_per_sample = I2S_BITS_PER_SAMPLE_16BIT, // is fixed at 12bit, stereo, MSB
-        .channel_format = I2S_CHANNEL_FMT_ONLY_RIGHT,
-        .communication_format = I2S_COMM_FORMAT_I2S,
-        .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1,
-        .dma_buf_count = 2,
-        .dma_buf_len = 128,
-    };
-    if (mode == MODE_MIC)
-    {
-        i2s_config.mode = (i2s_mode_t)(I2S_MODE_MASTER | I2S_MODE_RX | I2S_MODE_PDM);
-    }
-
-    //Serial.println("Init i2s_driver_install");
-
-    i2s_driver_install(I2S_NUM_0, &i2s_config, 0, NULL);
-    i2s_pin_config_t pin_config;
-    pin_config.bck_io_num   = I2S_PIN_NO_CHANGE;
-    pin_config.ws_io_num    = PIN_CLK;
-    pin_config.data_out_num = I2S_PIN_NO_CHANGE;
-    pin_config.data_in_num  = PIN_DATA;
-
-    //Serial.println("Init i2s_set_pin");
-    i2s_set_pin(I2S_NUM_0, &pin_config);
-    //Serial.println("Init i2s_set_clk");
-    i2s_set_clk(I2S_NUM_0, 44100, I2S_BITS_PER_SAMPLE_16BIT, I2S_CHANNEL_MONO);
-
-    return true;
+  return true;
 }
 
 static void i2sMicroFFTtask(void *arg)
@@ -143,6 +133,7 @@ static void i2sMicroFFTtask(void *arg)
     }
 }
 
+
 void microPhoneSetup()
 {
     fftvalueQueue = xQueueCreate(5, 24 * sizeof(uint8_t));
@@ -196,11 +187,9 @@ void MicroPhoneFFT()
 
 void setup() {
   M5.begin(true, true, false);
-  Wire.begin(32,33);
   M5.Lcd.setRotation(3);
-  header("PDM Unit", BLACK);
+  M5.Lcd.drawString("PDM Unit", 50, 3, 2); 
   microPhoneSetup();
-  
 }
 
 void loop() {

@@ -1,15 +1,15 @@
 /*
 *******************************************************************************
 * Copyright (c) 2021 by M5Stack
-*                  Equipped with M5Stick-C sample source code
-*                          配套  M5Stick-C 示例源代码
+*                  Equipped with M5StickC sample source code
+*                          配套  M5StickC 示例源代码
 * Visit the website for more information：https://docs.m5stack.com/en/core/m5stickc
 * 获取更多资料请访问：https://docs.m5stack.com/zh_CN/core/m5stickc
 *
 * describe：OTA Upload.  隔空传输程序
 * date：2021/7/30
 *******************************************************************************
-  PC and M5Stick-C can only be used on the same wifi.  电脑和M5Stick-C需在同一wifi下才可使用
+  PC and M5StickC can only be used on the same wifi.  电脑和M5StickC需在同一wifi下才可使用
   When the OTA is ready, restart the Arduino client from Tools > Ports > Network ports to instantly transmit the program wirelessly.
   OTA 准备好后重启Arduino客户端在工具->端口->网络端口,即刻无线传输程序
 */
@@ -22,7 +22,7 @@ const char* ssid = "wifi";
 const char* password = "123456123456";
 
 void setup() {
-  M5.begin(); //Init M5Stick-C. 初始化 M5Stick-C
+  M5.begin(); //Init M5StickC. 初始化 M5StickC
   M5.Lcd.setRotation(3);  //Rotate the screen.  旋转屏幕
   WiFi.begin(ssid, password); //Connect wifi and return connection status.  连接wifi并返回连接状态
   M5.lcd.print("Waiting Wifi Connect");

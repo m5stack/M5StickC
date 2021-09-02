@@ -1,67 +1,54 @@
-//SGP30 needs 15 seconds to initialize calibration after power on.
-//The screen will display TVOC and CO2
+/*
+*******************************************************************************
+* Copyright (c) 2021 by M5Stack
+*                  Equipped with M5StickC sample source code
+*                          配套  M5StickC 示例源代码
+* Visit the website for more information：https://docs.m5stack.com/en/unit/tvoc
+* 获取更多资料请访问：https://docs.m5stack.com/zh_CN/unit/tvoc
+*
+* describe: TVOC/eCO2.
+* date：2021/8/26
+*******************************************************************************
+  Description: The screen will display TVOC and CO2.  屏幕将显示TVOC和CO2。
+  Note: SGP30 needs 15 seconds to initialize calibration after power on.  SGP30开机后需要15秒进行初始校准。
+*/
 
 #include <M5StickC.h>
 #include "Adafruit_SGP30.h"
 
 Adafruit_SGP30 sgp;
-int i = 15;
 long last_millis = 0;
-void header(const char *string, uint16_t color)
-{
-    M5.Lcd.fillScreen(color);
-    M5.Lcd.setTextSize(1);
-    M5.Lcd.setTextColor(TFT_WHITE, TFT_BLACK);
-    M5.Lcd.fillRect(0, 0, 80, 20, TFT_BLACK);
-    M5.Lcd.setTextDatum(TC_DATUM);
-    M5.Lcd.drawString(string, 80, 2, 2); 
-}
-
-
 
 void setup() {
-  M5.begin(true, false, false);
-  Wire.begin(32,33);
+  M5.begin(true, true, true);
+  M5.Lcd.setTextSize(2);
   M5.Lcd.setRotation(3);
-  header("SGP30 TEST",TFT_BLACK);
-  Serial.begin(115200);
-  Serial.println("SGP30 test");
-  if (! sgp.begin()){
-    Serial.println("Sensor not found :(");
+  M5.Lcd.setCursor(30,0);
+  M5.Lcd.println("TVOC TEST");
+  if (!sgp.begin()){  //Init the sensor. 初始化传感器
+    M5.Lcd.println("Sensor not found");
     while (1);
   }
-  
-  M5.Lcd.drawString("TVOC:", 40, 25, 2);
-  M5.Lcd.drawString("eCO2:", 40, 45, 2);
-  Serial.print("Found SGP30 serial #");
-  Serial.print(sgp.serialnumber[0], HEX);
-  Serial.print(sgp.serialnumber[1], HEX);
-  Serial.println(sgp.serialnumber[2], HEX);
-  M5.Lcd.drawString("Initialization", 100, 65, 2);
+  M5.Lcd.setCursor(0,20);
+  M5.Lcd.println("\nInitialization...");
 }
 
 void loop() {
-  while(i > 0) {    
+  static int i = 15;
+  while(i > 0) {
     if(millis()- last_millis > 1000) {
       last_millis = millis();
       i--;
-      M5.Lcd.fillRect(30, 65, 20, 15, TFT_BLACK);
-      M5.Lcd.drawNumber(i, 40, 65, 2);
     }
   }
-  M5.Lcd.fillRect(30, 65, 120, 15, TFT_BLACK);
 
-  if (! sgp.IAQmeasure()) {
+  if (! sgp.IAQmeasure()) { //Commands the sensor to take a single eCO2/VOC measurement.  命令传感器进行一次eCO2/VOC测量
     Serial.println("Measurement failed");
     return;
   }
-  M5.Lcd.fillRect(60, 25, 40, 40, TFT_BLACK);
-  M5.Lcd.drawNumber(sgp.TVOC, 80, 25 , 2);
-  M5.Lcd.drawString("ppb", 120, 25, 2);
-  M5.Lcd.drawNumber(sgp.eCO2, 80, 45, 2);
-  M5.Lcd.drawString("ppm", 120, 45, 2);
-  Serial.print("TVOC "); Serial.print(sgp.TVOC); Serial.print(" ppb\t");
-  Serial.print("eCO2 "); Serial.print(sgp.eCO2); Serial.println(" ppm");
- 
-  delay(1000);
+  M5.Lcd.fillRect(0, 20, 160, 80, BLACK);
+  M5.Lcd.setCursor(0,50);
+  M5.Lcd.printf("TVOC:%d ppb\n",sgp.TVOC);
+  M5.Lcd.printf("eCO2:%d ppm\n",sgp.eCO2);
+  delay(500);
 }

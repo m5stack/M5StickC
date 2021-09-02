@@ -1,10 +1,10 @@
 /*
 *******************************************************************************
 * Copyright (c) 2021 by M5Stack
-*                  Equipped with M5Stick-C sample source code
-*                          配套  M5Stick-C 示例源代码
-* Visit the website for more information：https://docs.m5stack.com/cn/unit/fader
-* 获取更多资料请访问：https://docs.m5stack.com/en/unit/fader
+*                  Equipped with M5StickC sample source code
+*                          配套  M5StickC 示例源代码
+* Visit the website for more information：https://docs.m5stack.com/en/unit/fader
+* 获取更多资料请访问：https://docs.m5stack.com/zh_CN/unit/fader
 *
 * describe：UNIT FADER. 滑动电位器/推子
 * date：2021/8/20

@@ -1,16 +1,16 @@
 /*
 *******************************************************************************
 * Copyright (c) 2021 by M5Stack
-*                  Equipped with M5Stick-C sample source code
-*                          配套  M5Stick-C 示例源代码
+*                  Equipped with M5StickC sample source code
+*                          配套  M5StickC 示例源代码
 * Visit the website for more information：https://docs.m5stack.com/en/core/m5stickc
 * 获取更多资料请访问：https://docs.m5stack.com/zh_CN/core/m5stickc
 *
 * describe：WIFI TCP.
 * date：2021/7/29
 *******************************************************************************
-  M5Stick-C will sends a message to a TCP server
-  M5Stick-C 将向TCP服务器发送一条数据
+  M5StickC will sends a message to a TCP server
+  M5StickC 将向TCP服务器发送一条数据
 */
 
 #include <M5StickC.h>
@@ -25,7 +25,7 @@ WiFiMulti WiFiMulti;
 void setup()
 {
   int sum=0;
-  M5.begin();  //Init M5Stick-C.  初始化M5Stick-C
+  M5.begin();  //Init M5StickC.  初始化M5StickC
   M5.Lcd.setRotation(3);  //Rotate the screen.  旋转屏幕
   WiFiMulti.addAP(ssid, password);  //Add wifi configuration information.  添加wifi配置信息
   M5.lcd.printf("Waiting connect to WiFi: %s ...",ssid); //Serial port output format string.  串口输出格式化字符串
@@ -37,7 +37,7 @@ void setup()
   }
   M5.lcd.println("\nWiFi connected");
   M5.lcd.print("IP address: ");
-  M5.lcd.println(WiFi.localIP()); //The serial port outputs the IP address of the M5Stick-C.  串口输出M5Stick-C的IP地址
+  M5.lcd.println(WiFi.localIP()); //The serial port outputs the IP address of the M5StickC.  串口输出M5StickC的IP地址
   delay(500);
 }
 

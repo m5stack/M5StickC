@@ -1,8 +1,8 @@
 /*
 *******************************************************************************
 * Copyright (c) 2021 by M5Stack
-*                  Equipped with M5Stick-C sample source code
-*                          配套  M5Stick-C 示例源代码
+*                  Equipped with M5StickC sample source code
+*                          配套  M5StickC 示例源代码
 * Visit the website for more information：https://docs.m5stack.com/en/core/m5stickc
 * 获取更多资料请访问：https://docs.m5stack.com/zh_CN/core/m5stickc
 *
@@ -18,7 +18,7 @@ This program scans the addresses 1-127 continuosly and shows the devices found o
 
 void setup() 
 {
-  M5.begin(); //Init M5Stick-C(Init of external I2C is also included ).  初始化M5Stick-C(初始化外部I2C也包含在内)
+  M5.begin(); //Init M5StickC(Init of external I2C is also included ).  初始化M5StickC(初始化外部I2C也包含在内)
   Wire.begin(); //Init wire and join the I2C network.  初始化wire，并且加入到I2C网络
   //Wire.begin(21, 22); //Detect internal I2C, if this sentence is not added, it will detect external I2C.  检测内部I2C,若不加此句为检测外部I2C
   M5.Lcd.setTextColor(YELLOW);  //Set the font color to yellow.  设置字体颜色为黄色
