@@ -154,9 +154,11 @@ void AXP192::ReadBuff( uint8_t Addr , uint8_t Size , uint8_t *Buff )
 
 void AXP192::ScreenBreath(uint8_t brightness)
 {
-    if (brightness > 12) 
+    if (brightness > 12)
     {
         brightness = 12;
+    }else if(brightness < 7){
+        brightness = 7;
     }
     uint8_t buf = Read8bit( 0x28 );
     Write1Byte( 0x28 , ((buf & 0x0f) | (brightness << 4)) );
