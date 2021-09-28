@@ -1356,7 +1356,6 @@ void setup()
     	Displaybuff();
 		delay(30);
 	}
-    //Serial.printf(" STC\r\n");
     if (InitI2SMicroPhone() != true)
     {
         ErrorMeg(0x51, "MicroPhone error",0 ,true);
