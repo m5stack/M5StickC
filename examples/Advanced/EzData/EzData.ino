@@ -16,7 +16,7 @@
 // Configure the name and password of the connected wifi and your token.  配置所连接wifi的名称、密码以及你的token
 const char* ssid = "Explore-F";
 const char* password = "xingchentansuo123";
-const char* token = "xaOdLXdUciNUXQ9DsGQRwE5gyIsFLCnI";
+const char* token = "";
 
 void setup() {
   M5.begin();   //Initialize M5Stack
