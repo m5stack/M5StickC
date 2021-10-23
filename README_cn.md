@@ -22,7 +22,7 @@
 
 **Arduino IDE 环境搭建**: [点击这里](https://docs.m5stack.com/zh_CN/arduino/arduino_development)
 
-**M5StickC Arduino API**: [点击这里](https://docs.m5stack.com/en/api/stickc/system_m5stickc)
+**M5StickC Arduino API**: [点击这里](https://docs.m5stack.com/zh_CN/api/stickc/system_m5stickc)
 
 **引脚地图**: [点击这里](https://docs.m5stack.com/zh_CN/core/m5stickc)
 
