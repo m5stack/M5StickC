@@ -157,8 +157,8 @@ void AXP192::ScreenBreath(uint8_t brightness)
     if (brightness > 12)
     {
         brightness = 12;
-    }else if(brightness < 7){
-        brightness = 7;
+    }else if(brightness < 0){
+        brightness = 0;
     }
     uint8_t buf = Read8bit( 0x28 );
     Write1Byte( 0x28 , ((buf & 0x0f) | (brightness << 4)) );
