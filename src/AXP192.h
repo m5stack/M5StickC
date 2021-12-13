@@ -1,8 +1,8 @@
 #ifndef __AXP192_H__
 #define __AXP192_H__
 
-#include <Wire.h>
 #include <Arduino.h>
+#include <Wire.h>
 
 #define SLEEP_MSEC(us) (((uint64_t)us) * 1000L)
 #define SLEEP_SEC(us)  (((uint64_t)us) * 1000000L)
@@ -14,14 +14,14 @@
 #define ADC_RATE_100HZ (0b10 << 6)
 #define ADC_RATE_200HZ (0b11 << 6)
 
-#define CURRENT_100MA  (0b0000)
-#define CURRENT_190MA  (0b0001)
-#define CURRENT_280MA  (0b0010)
-#define CURRENT_360MA  (0b0011)
-#define CURRENT_450MA  (0b0100)
-#define CURRENT_550MA  (0b0101)
-#define CURRENT_630MA  (0b0110)
-#define CURRENT_700MA  (0b0111)
+#define CURRENT_100MA (0b0000)
+#define CURRENT_190MA (0b0001)
+#define CURRENT_280MA (0b0010)
+#define CURRENT_360MA (0b0011)
+#define CURRENT_450MA (0b0100)
+#define CURRENT_550MA (0b0101)
+#define CURRENT_630MA (0b0110)
+#define CURRENT_700MA (0b0111)
 
 #define VOLTAGE_4100MV (0b00 << 5)
 #define VOLTAGE_4150MV (0b01 << 5)
@@ -38,7 +38,7 @@
 #define VOLTAGE_OFF_3300MV (0b111)
 
 class AXP192 {
-public:
+   public:
     AXP192();
     /**
      * LDO2: Display backlight
@@ -48,26 +48,29 @@ public:
      * DCDC3: Use unknown
      * LDO0: MIC
      */
-    void  begin(bool disableLDO2 = false, bool disableLDO3 = false, bool disableRTC = false, bool disableDCDC1 = false, bool disableDCDC3 = false, bool disableLDO0 = false);
-    void  ScreenBreath(uint8_t brightness);
-    bool  GetBatState();
-  
+    void begin(bool disableLDO2 = false, bool disableLDO3 = false,
+               bool disableRTC = false, bool disableDCDC1 = false,
+               bool disableDCDC3 = false, bool disableLDO0 = false);
+    void ScreenBreath(uint8_t brightness);
+    void ScreenSwitch(bool state);
+    bool GetBatState();
+
     uint8_t GetInputPowerStatus();
     uint8_t GetBatteryChargingStatus();
 
-    void  DisableAllIRQ(void);
-    void  ClearAllIRQ(void);
-    void  EnablePressIRQ(bool short_press, bool long_press);
-    void  GetPressIRQ(bool *short_press, bool* long_press);
-    void  ClearPressIRQ(bool short_press, bool long_press);
+    void DisableAllIRQ(void);
+    void ClearAllIRQ(void);
+    void EnablePressIRQ(bool short_press, bool long_press);
+    void GetPressIRQ(bool *short_press, bool *long_press);
+    void ClearPressIRQ(bool short_press, bool long_press);
 
-    void  EnableCoulombcounter(void);
-    void  DisableCoulombcounter(void);
-    void  StopCoulombcounter(void);
-    void  ClearCoulombcounter(void);
-    uint32_t GetCoulombchargeData(void);        // Raw Data for Charge
-    uint32_t GetCoulombdischargeData(void);     // Raw Data for Discharge
-    float GetCoulombData(void);                 // total in - total out and calc
+    void EnableCoulombcounter(void);
+    void DisableCoulombcounter(void);
+    void StopCoulombcounter(void);
+    void ClearCoulombcounter(void);
+    uint32_t GetCoulombchargeData(void);     // Raw Data for Charge
+    uint32_t GetCoulombdischargeData(void);  // Raw Data for Discharge
+    float GetCoulombData(void);              // total in - total out and calc
 
     uint16_t GetVbatData(void) __attribute__((deprecated));
     uint16_t GetIchargeData(void) __attribute__((deprecated));
@@ -81,16 +84,16 @@ public:
     uint16_t GetVapsData(void) __attribute__((deprecated));
     uint8_t GetBtnPress(void);
 
-      // -- sleep
+    // -- sleep
     void SetSleep(void);
     void DeepSleep(uint64_t time_in_us = 0);
     void LightSleep(uint64_t time_in_us = 0);
     uint8_t GetWarningLeve(void) __attribute__((deprecated));
 
-public:
-    void  SetChargeVoltage( uint8_t );
-    void  SetChargeCurrent( uint8_t );
-    void  SetVOff( uint8_t voltage );
+   public:
+    void SetChargeVoltage(uint8_t);
+    void SetChargeCurrent(uint8_t);
+    void SetVOff(uint8_t voltage);
     float GetBatVoltage();
     float GetBatCurrent();
     float GetVinVoltage();
@@ -103,31 +106,31 @@ public:
     float GetAPSVoltage();
     float GetBatCoulombInput();
     float GetBatCoulombOut();
-    uint8_t GetWarningLevel(void);    
-    void SetCoulombClear()  __attribute__((deprecated)); // use ClearCoulombcounter instead
-    void SetLDO2( bool State );     // Can turn LCD Backlight OFF for power saving
-    void SetLDO3( bool State );
-    void SetGPIO0( bool State );
+    uint8_t GetWarningLevel(void);
+    void SetCoulombClear()
+        __attribute__((deprecated));  // use ClearCoulombcounter instead
+    void SetLDO2(bool State);  // Can turn LCD Backlight OFF for power saving
+    void SetLDO3(bool State);
+    void SetGPIO0(bool State);
     void SetAdcState(bool State);
-    void SetAdcRate( uint8_t rate );
-    
+    void SetAdcRate(uint8_t rate);
+
     // -- Power Off
     void PowerOff();
 
     // Power Maintained Storage
-    void Read6BytesStorage( uint8_t *bufPtr );
-    void Write6BytesStorage( uint8_t *bufPtr );
+    void Read6BytesStorage(uint8_t *bufPtr);
+    void Write6BytesStorage(uint8_t *bufPtr);
 
-    
-private:
-    void Write1Byte( uint8_t Addr ,  uint8_t Data );
-    uint8_t Read8bit( uint8_t Addr );
-    uint16_t Read12Bit( uint8_t Addr);
-    uint16_t Read13Bit( uint8_t Addr);
-    uint16_t Read16bit( uint8_t Addr );
-    uint32_t Read24bit( uint8_t Addr );
-    uint32_t Read32bit( uint8_t Addr );
-    void ReadBuff( uint8_t Addr , uint8_t Size , uint8_t *Buff );
-}; 
+   private:
+    void Write1Byte(uint8_t Addr, uint8_t Data);
+    uint8_t Read8bit(uint8_t Addr);
+    uint16_t Read12Bit(uint8_t Addr);
+    uint16_t Read13Bit(uint8_t Addr);
+    uint16_t Read16bit(uint8_t Addr);
+    uint32_t Read24bit(uint8_t Addr);
+    uint32_t Read32bit(uint8_t Addr);
+    void ReadBuff(uint8_t Addr, uint8_t Size, uint8_t *Buff);
+};
 
 #endif
