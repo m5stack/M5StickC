@@ -11,7 +11,7 @@
     "url": "https://github.com/m5stack/M5StickC.git"
   },
   "version": "0.2.5",
-  "framework": "arduino",
+  "frameworks": "arduino",
   "platforms": "espressif32",
   "headers": "M5StickC.h"
 }
