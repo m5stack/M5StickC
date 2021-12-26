@@ -172,7 +172,6 @@ void setup() {
   M5.Lcd.setTextColor(WHITE);
   InitWifi();
   pinMode(36, INPUT);
-  dacWrite(25, 0);
   // tell FastLED about the LED strip configuration
   FastLED.addLeds<LED_TYPE,DATA_PIN,COLOR_ORDER>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
   //FastLED.addLeds<LED_TYPE,DATA_PIN,CLK_PIN,COLOR_ORDER>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
