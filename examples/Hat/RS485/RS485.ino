@@ -7,9 +7,6 @@ AutoSend Hello M5! AutoReceive and diaplay on screen */
 void setup() {
 
   M5.begin(true,true,true);
-
-  Serial.begin(115200);
-
   // Serial2.begin(unsigned long baud, uint32_t config, int8_t rxPin, int8_t txPin, bool invert)
   Serial2.begin(115200, SERIAL_8N1, 26, 0);
   // pinMode(5, OUTPUT);
