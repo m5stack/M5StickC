@@ -14,7 +14,6 @@ static TaskHandle_t FastLEDshowTaskHandle = 0;
 static TaskHandle_t userTaskHandle = 0;
 
 void setup() {
-  Serial.begin(115200);
   M5.begin();
   //M5.Lcd.clear(BLACK);
   M5.Lcd.setRotation(3);
