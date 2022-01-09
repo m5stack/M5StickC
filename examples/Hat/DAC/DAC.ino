@@ -14,7 +14,6 @@ Adafruit_MCP4725 dac;
 
 void setup(void) {
     M5.begin(true,true,false);
-    Serial.begin(115200);
     Serial.println("Hello!");
     M5.Lcd.fillScreen(BLACK);
     M5.Lcd.setTextColor(ORANGE);
