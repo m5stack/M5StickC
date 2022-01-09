@@ -45,7 +45,6 @@ void setup()
   canvas.setTextSize(1);
   canvas.setTextScroll(true);
 
-  Serial.begin(115200);
   delay(300);
   log("PAJ7620U2 Init");
 
