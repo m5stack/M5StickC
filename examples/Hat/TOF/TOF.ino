@@ -9,7 +9,6 @@ VL53L0X sensor;
 TFT_eSprite img = TFT_eSprite(&M5.Lcd); 
 
 void setup() {
-  Serial.begin(115200);
   Wire.begin(0, 26, 100000);
   
   M5.begin();
