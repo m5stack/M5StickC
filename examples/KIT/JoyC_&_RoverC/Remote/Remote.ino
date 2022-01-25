@@ -109,8 +109,8 @@ String ssidname;
 void setup() {
   // put your setup code here, to run once:
     M5.begin();
-    Wire.begin(0,26,10000);
-	EEPROM.begin(EEPROM_SIZE);
+    Wire.begin(0, 26, 100000UL);
+    EEPROM.begin(EEPROM_SIZE);
 
 	M5.Lcd.setRotation(4);
     M5.Lcd.setSwapBytes(false);

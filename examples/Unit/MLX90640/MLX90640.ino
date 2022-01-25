@@ -1,26 +1,26 @@
 /**
-*  The MLX90640 requires some hefty calculations and larger arrays. You will need a microcontroller with
-*  20,000 bytes or more of RAM.
-*  This relies on the driver written by Melexis and can be found at:
-*  https://github.com/melexis/mlx90640-library
-*/
+ *  The MLX90640 requires some hefty calculations and larger arrays. You will
+ * need a microcontroller with 20,000 bytes or more of RAM. This relies on the
+ * driver written by Melexis and can be found at:
+ *  https://github.com/melexis/mlx90640-library
+ */
 
 #include <M5StickC.h>
 #include <Wire.h>
-#include "Arduino.h"
 
+#include "Arduino.h"
 #include "MLX90640_API.h"
 #include "MLX90640_I2C_Driver.h"
 
 TFT_eSprite img = TFT_eSprite(&M5.Lcd);
 TFT_eSprite msg = TFT_eSprite(&M5.Lcd);
 
-#define TA_SHIFT 8  // Default shift for MLX90640 in open air
-#define COLS 32 
-#define ROWS 24
-#define COLS_3 (COLS * 3 - 2)
-#define ROWS_3 (ROWS * 3 - 2)
-#define pixelsArraySize (COLS * ROWS)
+#define TA_SHIFT          8  // Default shift for MLX90640 in open air
+#define COLS              32
+#define ROWS              24
+#define COLS_3            (COLS * 3 - 2)
+#define ROWS_3            (ROWS * 3 - 2)
+#define pixelsArraySize   (COLS * ROWS)
 #define INTERPOLATED_COLS 32
 #define INTERPOLATED_ROWS 32
 
@@ -28,23 +28,24 @@ float pixels[COLS * ROWS];
 float reversePixels[COLS * ROWS];
 float pixels_3[COLS_3 * ROWS_3];
 
-#define get_pixels(x, y) (pixels[y*COLS + x])
-#define get_pixels_3(x, y) (pixels_3[(y)*3*COLS_3 + x])
+#define get_pixels(x, y)   (pixels[y * COLS + x])
+#define get_pixels_3(x, y) (pixels_3[(y)*3 * COLS_3 + x])
 
 byte speed_setting = 2;  // High is 1 , Low is 2
 bool reverseScreen = false;
-const byte MLX90640_address = 0x33; // Default 7-bit unshifted address of the MLX90640
+const byte MLX90640_address =
+    0x33;  // Default 7-bit unshifted address of the MLX90640
 
 paramsMLX90640 mlx90640;
 
 // low range of the sensor (this will be blue on the screen)
-float mintemp = 24;     // For color mapping
-float min_v = 24;       // Value of current min temp
+float mintemp   = 24;   // For color mapping
+float min_v     = 24;   // Value of current min temp
 float min_cam_v = -40;  // Spec in datasheet
 
 // high range of the sensor (this will be red on the screen)
-float maxtemp = 35;     // For color mapping
-float max_v = 35;       // Value of current max temp
+float maxtemp   = 35;   // For color mapping
+float max_v     = 35;   // Value of current max temp
 float max_cam_v = 300;  // Spec in datasheet
 
 // the colors we will be using
@@ -86,9 +87,9 @@ long loopTime, startTime, endTime, fps;
 
 void setup() {
     M5.begin();
-    
+
     // Increase I2C clock speed to 450kHz
-    Wire.begin(32, 33, 400000);
+    Wire.begin(32, 33, 400000UL);
     M5.Lcd.setRotation(1);
 
     // use show tmp bitmap
@@ -107,7 +108,7 @@ void setup() {
 
     status = MLX90640_ExtractParameters(eeMLX90640, &mlx90640);
     if (status != 0) Serial.println("Parameter extraction failed");
-    
+
     // Setting MLX90640 device at slave address 0x33 to work with 16Hz refresh
     MLX90640_SetRefreshRate(0x33, 0x05);
 
@@ -117,20 +118,20 @@ void setup() {
     M5.Lcd.fillScreen(TFT_BLACK);
 
     for (int icol = 0; icol <= 127; icol++) {
-        M5.Lcd.drawRect(icol, 72, 1, 8, camColors[icol*2]);
+        M5.Lcd.drawRect(icol, 72, 1, 8, camColors[icol * 2]);
     }
 }
 
 void loop() {
-    loopTime = millis();
+    loopTime  = millis();
     startTime = loopTime;
 
     M5.update();
-    if(M5.Axp.GetBtnPress() == 0x02) {
+    if (M5.Axp.GetBtnPress() == 0x02) {
         esp_restart();
     }
 
-    // Reset settings  
+    // Reset settings
     if (M5.BtnA.pressedFor(1000)) {
         mintemp = min_v - 1;
         maxtemp = max_v + 1;
@@ -140,8 +141,7 @@ void loop() {
     if (M5.BtnA.wasPressed()) {
         if (mintemp <= 0) {
             mintemp = maxtemp - 1;
-        }
-        else {
+        } else {
             mintemp--;
         }
     }
@@ -151,7 +151,7 @@ void loop() {
     }
 
     uint16_t mlx90640Frame[834];
-    
+
     // those fun get tmp array, 32*24, 5fps
     for (byte x = 0; x < speed_setting; x++) {
         int status = MLX90640_GetFrameData(MLX90640_address, mlx90640Frame);
@@ -161,25 +161,27 @@ void loop() {
         }
 
         float vdd = MLX90640_GetVdd(mlx90640Frame, &mlx90640);
-        float Ta = MLX90640_GetTa(mlx90640Frame, &mlx90640);
-        float tr = Ta - TA_SHIFT;  // Reflected temperature based on the sensor
-                                   // ambient temperature
+        float Ta  = MLX90640_GetTa(mlx90640Frame, &mlx90640);
+        float tr  = Ta - TA_SHIFT;  // Reflected temperature based on the sensor
+                                    // ambient temperature
         float emissivity = 0.95;
-        MLX90640_CalculateTo(mlx90640Frame, &mlx90640, emissivity, tr, reversePixels);  // save pixels temp to array (pixels)
+        MLX90640_CalculateTo(
+            mlx90640Frame, &mlx90640, emissivity, tr,
+            reversePixels);  // save pixels temp to array (pixels)
     }
 
-    // if want to send tmp array to other device, you can write fun in here: 
+    // if want to send tmp array to other device, you can write fun in here:
     // xxx.send(reversePixels, 32*24);
 
     // Reverse image (order of Integer array)
     for (int x = 0; x < pixelsArraySize; x++) {
-        if (x % COLS == 0)  {
+        if (x % COLS == 0) {
             for (int j = 0 + x, k = (COLS - 1) + x; j < COLS + x; j++, k--) {
                 pixels[j] = reversePixels[k];
             }
         }
     }
-    
+
     max_v = mintemp;
     min_v = maxtemp;
 
@@ -194,41 +196,41 @@ void loop() {
 
     // cover pixels to pixels_3
     cover3();
-    
+
     // show tmp image
     drawpixels(pixels_3, ROWS_3, COLS_3);
-    
+
     loopTime = millis();
-    endTime = loopTime;
-    fps = 1000 / (endTime - startTime);
+    endTime  = loopTime;
+    fps      = 1000 / (endTime - startTime);
 }
 
 // cover 1 --> 3, 32 * 24 --> 94 * 70
 void cover3() {
     uint8_t x, y;
-    uint16_t pos = 0;
-    float x_step = 0.0;
-    float y_step = 0.0;
+    uint16_t pos      = 0;
+    float x_step      = 0.0;
+    float y_step      = 0.0;
     float pixel_value = 0.0;
-    float max_step = 0;
+    float max_step    = 0;
 
-    for(y = 0; y < ROWS - 1; y++) {
-        for(x = 0; x < COLS - 1; x++) {
-            pixel_value = get_pixels(x, y);
-            x_step = (get_pixels(x+1, y) - pixel_value) / 3.0;
-            pos = 3 * x+ COLS_3*(y*3);
-            pixels_3[pos] = pixel_value + x_step;
+    for (y = 0; y < ROWS - 1; y++) {
+        for (x = 0; x < COLS - 1; x++) {
+            pixel_value       = get_pixels(x, y);
+            x_step            = (get_pixels(x + 1, y) - pixel_value) / 3.0;
+            pos               = 3 * x + COLS_3 * (y * 3);
+            pixels_3[pos]     = pixel_value + x_step;
             pixels_3[pos + 1] = pixels_3[pos] + x_step;
-            pixels_3[pos + 2] = pixels_3[pos+1] + x_step;
+            pixels_3[pos + 2] = pixels_3[pos + 1] + x_step;
         }
     }
 
-    for(y = 0; y < ROWS - 1; y++) {
-        for(x = 0; x < COLS_3; x++) {
+    for (y = 0; y < ROWS - 1; y++) {
+        for (x = 0; x < COLS_3; x++) {
             pixel_value = get_pixels_3(x, y);
-            y_step = (get_pixels_3(x, y+1) - pixel_value) / 3.0;
-            pixels_3[(3*y+1)*COLS_3 + x] = pixel_value + y_step;
-            pixels_3[(3*y+2)*COLS_3 + x] = pixel_value + 2*y_step;
+            y_step      = (get_pixels_3(x, y + 1) - pixel_value) / 3.0;
+            pixels_3[(3 * y + 1) * COLS_3 + x] = pixel_value + y_step;
+            pixels_3[(3 * y + 2) * COLS_3 + x] = pixel_value + 2 * y_step;
         }
     }
 }
@@ -236,7 +238,7 @@ void cover3() {
 void drawpixels(float *p, uint8_t rows, uint8_t cols) {
     int colorTemp;
     Serial.printf("%f, %f\r\n", mintemp, maxtemp);
-    
+
     for (int y = 0; y < rows; y++) {
         for (int x = 0; x < cols; x++) {
             float val = get_point(p, rows, cols, x, y);
@@ -250,15 +252,18 @@ void drawpixels(float *p, uint8_t rows, uint8_t cols) {
             }
 
             uint8_t colorIndex = map(colorTemp, mintemp, maxtemp, 0, 255);
-            colorIndex = constrain(colorIndex, 0, 255);  // 0 ~ 255
+            colorIndex         = constrain(colorIndex, 0, 255);  // 0 ~ 255
             // draw the pixels!
             img.drawPixel(x, y, camColors[colorIndex]);
         }
     }
 
-    img.drawCircle(COLS_3 / 2, ROWS_3 / 2, 5, TFT_WHITE);  // update center spot icon
-    img.drawLine(COLS_3 / 2 - 8, ROWS_3 / 2, COLS_3 / 2 + 8, ROWS_3 / 2, TFT_WHITE);  // vertical line
-    img.drawLine(COLS_3 / 2, ROWS_3 / 2 - 8, COLS_3 / 2, ROWS_3 / 2 + 8, TFT_WHITE);  // horizontal line
+    img.drawCircle(COLS_3 / 2, ROWS_3 / 2, 5,
+                   TFT_WHITE);  // update center spot icon
+    img.drawLine(COLS_3 / 2 - 8, ROWS_3 / 2, COLS_3 / 2 + 8, ROWS_3 / 2,
+                 TFT_WHITE);  // vertical line
+    img.drawLine(COLS_3 / 2, ROWS_3 / 2 - 8, COLS_3 / 2, ROWS_3 / 2 + 8,
+                 TFT_WHITE);  // horizontal line
     img.setCursor(COLS_3 / 2 + 6, ROWS_3 / 2 - 12);
     img.setTextColor(TFT_WHITE);
     img.printf("%.2fC", get_point(p, rows, cols, cols / 2, rows / 2));

@@ -2,7 +2,7 @@
 
 void IIC_Servo_Init()	//sda  0     scl  26		
 {
-    Wire.begin(0, 26, 100);
+    Wire.begin(0, 26, 100000UL);
 }
 
 void IIC_Write_1bytes(uint8_t address,uint8_t Register_address,uint8_t data)

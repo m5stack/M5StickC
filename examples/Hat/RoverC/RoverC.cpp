@@ -5,7 +5,7 @@
 
 void RoverC_Init(void)    //sda  0     scl  26
 {
-    Wire.begin(0,26,100);
+    Wire.begin(0,26,100000UL);
 }
 
 void Send_iic(uint8_t Register, uint8_t Speed)
