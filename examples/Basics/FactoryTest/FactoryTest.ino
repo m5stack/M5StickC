@@ -565,9 +565,9 @@ void ColorBar()
         }
         for (int n = 0; n < 160; n++)
         {
-            color_r = (color_r < 255) ? color_r += 1.6 : 255U;
-            color_g = (color_g < 255) ? color_g += 1.6 : 255U;
-            color_b = (color_b < 255) ? color_b += 1.6 : 255U;
+            color_r = (color_r < 255) ? color_r + 1.6 : 255U;
+            color_g = (color_g < 255) ? color_g + 1.6 : 255U;
+            color_b = (color_b < 255) ? color_b + 1.6 : 255U;
             Disbuff.drawLine(n, i * 20, n, (i + 1) * 20, Disbuff.color565(color_r, color_g, color_b));
         }
     }
@@ -607,9 +607,9 @@ void ColorBar()
         }
         for (int n = 0; n < 160; n++)
         {
-            color_r = (color_r > 2) ? color_r -= 1.5 : 0U;
-            color_g = (color_g > 2) ? color_g -= 1.5 : 0U;
-            color_b = (color_b > 2) ? color_b -= 1.5 : 0U;
+            color_r = (color_r > 2) ? color_r - 1.5 : 0U;
+            color_g = (color_g > 2) ? color_g - 1.5 : 0U;
+            color_b = (color_b > 2) ? color_b - 1.5 : 0U;
             Disbuff.drawLine(159 - n, i * 20, 159 - n, (i + 1) * 20, Disbuff.color565(color_r, color_g, color_b));
         }
     }
@@ -720,8 +720,8 @@ void MPU6886Test()
     float accY = 0;
     float accZ = 0;
 
-    double theta, last_theta = 0;
-    double phi, last_phi = 0;
+    double theta = 0, last_theta = 0;
+    double phi = 0, last_phi = 0;
     double alpha = 0.2;
 
     line_3d_t x = {
@@ -851,7 +851,7 @@ void MicRecordfft(void *arg)
 {
     int16_t *buffptr;
     size_t bytesread;
-    uint16_t count_n = 0, count_i = 0, count_x = 0, count_y = 0;
+    uint16_t count_n = 0;
     float adc_data;
     double data = 0;
     uint16_t ydata;
@@ -894,8 +894,7 @@ void MicRecordfft(void *arg)
 
 void Drawdisplay(void *arg)
 {
-    uint16_t count_n = 0, count_x = 0, count_y = 0;
-    uint16_t ydata;
+    uint16_t count_x = 0, count_y = 0;
     uint16_t colorPos;
     while (1)
     {
@@ -1375,7 +1374,6 @@ void setup()
     checkAXP192();
     checkBM8563();
 	uint16_t ellips[7] = { 70, 78, 86, 93, 100, 108, 116};
-	uint16_t* picptr = (uint16_t*)stick10;
 	for (int n = 11; n < 18; n++)
 	{
 		Disbuff.fillEllipse(80,40,ellips[n-11]/2, ellips[n-11]/2, Disbuff.color565(43,43,43));
