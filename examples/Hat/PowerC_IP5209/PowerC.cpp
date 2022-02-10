@@ -2,7 +2,7 @@
 #include "PowerC.h"
 #include "M5StickC.h"
 
-#define POWERC_ADDR 0x38
+#define POWERC_ADDR 0x75
 
 #define POWERC_VOLTAGE_REG 0xA2
 #define POWERC_CURRENT_REG 0XA4
