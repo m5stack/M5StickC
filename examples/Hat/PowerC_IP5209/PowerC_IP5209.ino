@@ -1,5 +1,7 @@
+// Download the required library functions https://github.com/m5stack/M5_IP5209
 #include <M5StickC.h>
 #include <Wire.h>
+
 #include "M5_IP5209.h"
 TFT_eSprite canvas = TFT_eSprite(&M5.Lcd);
 
