@@ -7,7 +7,7 @@
 * 获取更多资料请访问：https://docs.m5stack.com/zh_CN/unit/pdm
 *
 * describe: pdm.  麦克风
-* date：2022/2/22
+* date：2022/3/12
 *******************************************************************************
   Please connect to Port A,Read the microphone data of the PDM Unit and display
 the audio frequency spectrum. 请连接端口A,读取PDM
@@ -46,9 +46,12 @@ bool InitI2SSpakerOrMic(int mode) {
                                         // 固定为12位立体声MSB
         .channel_format =
             I2S_CHANNEL_FMT_ONLY_RIGHT,  // Set the channel format. 设置频道格式
+#if ESP_IDF_VERSION > ESP_IDF_VERSION_VAL(4, 1, 0)
         .communication_format =
             I2S_COMM_FORMAT_STAND_I2S,  // Set the format of the communication.
-                                        // 设置通讯格式
+#else                                   // 设置通讯格式
+        .communication_format = I2S_COMM_FORMAT_I2S,
+#endif
         .intr_alloc_flags =
             ESP_INTR_FLAG_LEVEL1,  // Set the interrupt flag.  设置中断的标志
         .dma_buf_count = 2,        // DMA buffer count.  DMA缓冲区计数
