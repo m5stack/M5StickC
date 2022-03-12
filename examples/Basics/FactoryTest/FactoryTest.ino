@@ -164,11 +164,16 @@ bool InitI2SMicroPhone() {
         .sample_rate = 44100,
         .bits_per_sample =
             I2S_BITS_PER_SAMPLE_16BIT,  // is fixed at 12bit, stereo, MSB
-        .channel_format       = I2S_CHANNEL_FMT_ALL_RIGHT,
-        .communication_format = I2S_COMM_FORMAT_STAND_I2S,
-        .intr_alloc_flags     = ESP_INTR_FLAG_LEVEL1,
-        .dma_buf_count        = 2,
-        .dma_buf_len          = 128,
+        .channel_format = I2S_CHANNEL_FMT_ALL_RIGHT,
+#if ESP_IDF_VERSION > ESP_IDF_VERSION_VAL(4, 1, 0)
+        .communication_format =
+            I2S_COMM_FORMAT_STAND_I2S,  // Set the format of the communication.
+#else                                   // 设置通讯格式
+        .communication_format = I2S_COMM_FORMAT_I2S,
+#endif
+        .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1,
+        .dma_buf_count    = 2,
+        .dma_buf_len      = 128,
     };
 
     i2s_pin_config_t pin_config;
