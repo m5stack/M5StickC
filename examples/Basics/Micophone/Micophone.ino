@@ -11,7 +11,7 @@
 * date：2022/2/22
 *******************************************************************************
 */
-#include <M5StickC.h>
+#include <M5StickCPlus.h>
 #include <driver/i2s.h>
 
 #define PIN_CLK     0
@@ -35,11 +35,12 @@ void i2sInit()  // Init I2S.  初始化I2S
                                         // 固定为12位立体声MSB
         .channel_format =
             I2S_CHANNEL_FMT_ALL_RIGHT,  // Set the channel format.  设置频道格式
-        #if ESP_IDF_VERSION > ESP_IDF_VERSION_VAL(4, 1, 0)
-            .communication_format = I2S_COMM_FORMAT_STAND_I2S,  // Set the format of the communication.
-        #else                                               // 设置通讯格式
-            .communication_format = I2S_COMM_FORMAT_I2S,
-        #endif
+#if ESP_IDF_VERSION > ESP_IDF_VERSION_VAL(4, 1, 0)
+        .communication_format =
+            I2S_COMM_FORMAT_STAND_I2S,  // Set the format of the communication.
+#else                                   // 设置通讯格式
+        .communication_format = I2S_COMM_FORMAT_I2S,
+#endif
         .intr_alloc_flags =
             ESP_INTR_FLAG_LEVEL1,  // Set the interrupt flag.  设置中断的标志
         .dma_buf_count = 2,        // DMA buffer count.  DMA缓冲区计数
@@ -60,6 +61,17 @@ void i2sInit()  // Init I2S.  初始化I2S
     i2s_driver_install(I2S_NUM_0, &i2s_config, 0, NULL);
     i2s_set_pin(I2S_NUM_0, &pin_config);
     i2s_set_clk(I2S_NUM_0, 44100, I2S_BITS_PER_SAMPLE_16BIT, I2S_CHANNEL_MONO);
+}
+
+void showSignal() {
+    int y;
+    for (int n = 0; n < 160; n++) {
+        y = adcBuffer[n] * GAIN_FACTOR;
+        y = map(y, INT16_MIN, INT16_MAX, 10, 70);
+        M5.Lcd.drawPixel(n, oldy[n], WHITE);
+        M5.Lcd.drawPixel(n, y, BLACK);
+        oldy[n] = y;
+    }
 }
 
 void mic_record_task(void *arg) {
@@ -85,17 +97,6 @@ void setup() {
 
     i2sInit();
     xTaskCreate(mic_record_task, "mic_record_task", 2048, NULL, 1, NULL);
-}
-
-void showSignal() {
-    int y;
-    for (int n = 0; n < 160; n++) {
-        y = adcBuffer[n] * GAIN_FACTOR;
-        y = map(y, INT16_MIN, INT16_MAX, 10, 70);
-        M5.Lcd.drawPixel(n, oldy[n], WHITE);
-        M5.Lcd.drawPixel(n, y, BLACK);
-        oldy[n] = y;
-    }
 }
 /* After the program in setup() runs, it runs the program in loop()
 The loop() function is an infinite loop in which the program runs repeatedly
