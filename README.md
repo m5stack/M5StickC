@@ -19,7 +19,7 @@ English | [中文](README_cn.md)
 
 **UIFlow Quick Start**: Please [Click Here](https://docs.m5stack.com/en/quick_start/m5stickc/m5stickc_quick_start_with_uiflow)
 
-**MicroPyhton API**: Please [Click Here](https://docs.m5stack.com/en/mpy/display/m5stack_lvgl)
+**MicroPython API**: Please [Click Here](https://docs.m5stack.com/en/mpy/display/m5stack_lvgl)
 
 **Arduino IDE Development**: Please [Click Here](https://docs.m5stack.com/en/arduino/arduino_development)
 
