@@ -3,21 +3,18 @@
 * Copyright (c) 2021 by M5Stack
 *                  Equipped with M5StickC sample source code
 *                          配套  M5StickC 示例源代码
-* Visit the website for more
-*information：https://docs.m5stack.com/en/core/m5stickc
+* Visit the website for more information：https://docs.m5stack.com/en/core/m5stickc
 * 获取更多资料请访问：https://docs.m5stack.com/zh_CN/core/m5stickc
 *
 * describe：Wifi scan.  wifi扫描
 * date：2022/4/3
 *******************************************************************************
   http://forum.m5stack.com/topic/58/lesson-3-wi-fi-scanner
-  Press the M5 key to start scanning wifi, press the up key to turn up the page,
-press the down key to turn down the page
-  按下M5键以开始扫描wifi,按下上键向上翻页,按下下键向下翻页
+  Press M5 to start/re-scan wifi, press up to turn down the page
+  按下M5键以开始/重新扫描wifi,按下上键向下翻页
 */
 
 #include <M5StickC.h>
-
 #include "WiFi.h"
 
 int n;
@@ -81,7 +78,6 @@ void setup() {
     M5.begin();
     WiFi.mode(WIFI_STA);
     WiFi.disconnect();
-    double vbat = M5.Axp.GetVbatData() * 1.1 / 1000;
     M5.Lcd.setRotation(1);
     M5.Lcd.setTextSize(2);
     M5.Lcd.setTextColor(GREEN);
