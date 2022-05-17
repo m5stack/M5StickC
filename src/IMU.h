@@ -27,6 +27,7 @@ public:
     void getTempData(float *t);
 
     void getAhrsData(float *pitch,float *roll,float *yaw);
+    void getAhrsData(float *pitch,float *roll,float *yaw, float samplefrequency);
 
     ImuType imuType;
     float aRes, gRes;
