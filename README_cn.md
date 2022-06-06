@@ -6,7 +6,7 @@
 
 * **如果查看 M5StickC 的详细介绍文档，[点击这里](https://docs.m5stack.com/#/zh_CN/core/m5stickc)**
 
-* **如果想要购买 M5StickC 的话，[点击这里](https://item.taobao.com/item.htm?spm=a1z10.3-c.w4002-1172588106.12.7807425e3JNPRr&id=588710395351)**
+<!-- * **如果想要购买 M5StickC 的话，[点击这里](https://item.taobao.com/item.htm?spm=a1z10.3-c.w4002-1172588106.12.7807425e3JNPRr&id=588710395351)** -->
 
 ## 描述
 
