@@ -148,6 +148,9 @@ void RTC::SetTime(RTC_TimeTypeDef* RTC_TimeStruct){
 
 
 void RTC::GetData(RTC_DateTypeDef* RTC_DateStruct){
+  GetDate(RTC_DateStruct);
+}
+void RTC::GetDate(RTC_DateTypeDef* RTC_DateStruct){
 
   uint8_t buf[4] = {0};
 
@@ -180,6 +183,9 @@ void RTC::GetData(RTC_DateTypeDef* RTC_DateStruct){
 
 
 void RTC::SetData(RTC_DateTypeDef* RTC_DateStruct){
+  SetDate(RTC_DateStruct);
+}
+void RTC::SetDate(RTC_DateTypeDef* RTC_DateStruct){
 
   if(RTC_DateStruct == NULL)
     return;
