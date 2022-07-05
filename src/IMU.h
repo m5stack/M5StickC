@@ -1,15 +1,14 @@
 #ifndef __IMU_H__
 #define __IMU_H__
 
-#include <Wire.h>
 #include <Arduino.h>
+#include <Wire.h>
+
 #include "utility/MahonyAHRS.h"
 
 class IMU {
-public:
-    enum ImuType {
-        IMU_UNKNOWN = 0, IMU_SH200Q, IMU_MPU6886
-    };
+   public:
+    enum ImuType { IMU_UNKNOWN = 0, IMU_SH200Q, IMU_MPU6886 };
 
     IMU();
 
@@ -26,11 +25,10 @@ public:
     void getGyroData(float *gx, float *gy, float *gz);
     void getTempData(float *t);
 
-    void getAhrsData(float *pitch,float *roll,float *yaw);
+    void getAhrsData(float *pitch, float *roll, float *yaw);
 
     ImuType imuType;
     float aRes, gRes;
-
 };
 
 #endif

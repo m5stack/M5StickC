@@ -3,13 +3,14 @@
 * Copyright (c) 2022 by M5Stack
 *                  Equipped with M5StickC sample source code
 * describe: HAT 8SERVO.
-* date：2022/3/29
+* date: 2022/3/29
 *******************************************************************************
   Control the running and release of the servo.
 */
 
-#include <M5StickC.h>
 #include <M5GFX.h>
+#include <M5StickC.h>
+
 #include "HAT_8SERVO.h"
 M5GFX display;
 M5Canvas canvas(&display);

@@ -1,7 +1,7 @@
 #ifndef __LOCK_H
 #define __LOCK_H
 
-//min may error here
+// min may error here
 #undef min
 #include <mutex>
 

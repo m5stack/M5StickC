@@ -1,11 +1,12 @@
 #include "IMU.h"
-#include <math.h>
+
 #include <Arduino.h>
+#include <math.h>
+
 #include "M5StickC.h"
 #undef IMU
 
-IMU::IMU() {
-}
+IMU::IMU() {}
 
 int IMU::Init(void) {
     int imu_flag = M5.Sh200Q.Init();
@@ -88,20 +89,18 @@ void IMU::getTempData(float *t) {
     }
 }
 
-void IMU::getAhrsData(float *pitch,float *roll,float *yaw){
+void IMU::getAhrsData(float *pitch, float *roll, float *yaw) {
+    float accX = 0;
+    float accY = 0;
+    float accZ = 0;
 
-  float accX = 0; 
-  float accY = 0;
-  float accZ = 0;
+    float gyroX = 0;
+    float gyroY = 0;
+    float gyroZ = 0;
 
-  float gyroX = 0;
-  float gyroY = 0;
-  float gyroZ = 0;
+    getGyroData(&gyroX, &gyroY, &gyroZ);
+    getAccelData(&accX, &accY, &accZ);
 
-
-  getGyroData(&gyroX,&gyroY,&gyroZ);
-  getAccelData(&accX,&accY,&accZ);
-  
-  MahonyAHRSupdateIMU(gyroX * DEG_TO_RAD, gyroY * DEG_TO_RAD, gyroZ * DEG_TO_RAD, accX, accY, accZ,pitch,roll,yaw);
-
+    MahonyAHRSupdateIMU(gyroX * DEG_TO_RAD, gyroY * DEG_TO_RAD,
+                        gyroZ * DEG_TO_RAD, accX, accY, accZ, pitch, roll, yaw);
 }

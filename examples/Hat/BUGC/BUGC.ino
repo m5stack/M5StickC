@@ -3,8 +3,7 @@
 
 BUGC BugC;
 
-void setup() 
-{
+void setup() {
     M5.begin();
     BugC.Init();
     M5.Lcd.setTextColor(TFT_GREEN);
@@ -14,8 +13,7 @@ void setup()
     M5.Axp.SetChargeCurrent(CURRENT_360MA);
 }
 
-void loop() 
-{
+void loop() {
     M5.update();
 
     BugC.BugCSetColor(0x100000, 0x000010);
