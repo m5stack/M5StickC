@@ -6,8 +6,8 @@
 * Visit for more information: https://docs.m5stack.com/en/core/m5stickc
 * 获取更多资料请访问: https://docs.m5stack.com/zh_CN/core/m5stickc
 *
-* describe: Finger Unit example
-* date: 2021/10/28
+* Product:  Finger Unit example
+* Date: 2021/10/28
 *******************************************************************************
 Description: FINGER UNIT use case: Press the left button to enter the
 fingerprint entry mode. Press the middle button to enter the fingerprint

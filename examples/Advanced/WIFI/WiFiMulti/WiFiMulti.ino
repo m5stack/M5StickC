@@ -6,8 +6,8 @@
 * Visit for more information: https://docs.m5stack.com/en/core/m5stickc
 * 获取更多资料请访问: https://docs.m5stack.com/zh_CN/core/m5stickc
 *
-* describe: WIFI Multi.  多wifi择优
-* date: 2021/7/29
+* Describe:  WIFI Multi.  多wifi择优
+* Date: 2021/7/29
 *******************************************************************************
 *  Connect to the best AP based on a given wifi list
 *  根据给定wifi的列表连接到最好的AP

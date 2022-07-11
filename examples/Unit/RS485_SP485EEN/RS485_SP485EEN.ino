@@ -6,8 +6,8 @@
 * Visit for more information: https://docs.m5stack.com/en/unit/rs485
 * 获取更多资料请访问: https://docs.m5stack.com/zh_CN/unit/rs485
 *
-* describe: rs485.
-* date: 2021/8/30
+* Product:  rs485.
+* Date: 2021/8/30
 *******************************************************************************
   Please connect to Port,Use RS485 Unit for serial communication, continuously
 send "Hello", and display the received content on the screen.

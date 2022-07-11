@@ -6,8 +6,8 @@
 * Visit for more information: https://docs.m5stack.com/en/unit/extio
 * 获取更多资料请访问: https://docs.m5stack.com/zh_CN/unit/extio
 *
-* describe: extio.
-* date: 2021/8/30
+* Product:  extio.
+* Date: 2021/8/30
 *******************************************************************************
   Please connect to Port ,Control the 8 extended IOs on the EXT.IO Unit to cycle
 high and low level changes. 请连接端口 ,在EXT.IO

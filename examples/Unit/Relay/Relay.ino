@@ -6,8 +6,8 @@
 * Visit for more information: https://docs.m5stack.com/en/core/m5stickc
 * 获取更多资料请访问: https://docs.m5stack.com/zh_CN/core/m5stickc
 *
-* describe: Relay.  继电器
-* date: 2021/8/16
+* Product:  Relay.  继电器
+* Date: 2021/8/16
 *******************************************************************************
   Please connect to Port ,Use RELAY to switch on and off the circuit.
   请连接端口,使用继电器开关电路。

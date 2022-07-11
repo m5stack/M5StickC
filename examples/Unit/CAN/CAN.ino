@@ -6,8 +6,8 @@
 * Visit for more information: https://docs.m5stack.com/en/unit/can
 * 获取更多资料请访问: https://docs.m5stack.com/zh_CN/unit/can
 *
-* describe: can.
-* date: 2021/9/1
+* Product:  can.
+* Date: 2021/9/1
 *******************************************************************************
   Please connect to PORT,Press buttonA or buttonB to Send message if received
 message, screen will display

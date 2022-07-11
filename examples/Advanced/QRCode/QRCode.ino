@@ -6,8 +6,8 @@
 * Visit for more information: https://docs.m5stack.com/en/core/m5stickc
 * 获取更多资料请访问: https://docs.m5stack.com/zh_CN/core/m5stickc
 *
-* describe: QRcode.  创建二维码
-* date: 2021/7/27
+* Describe:  QRcode.  创建二维码
+* Date: 2021/7/27
 *******************************************************************************
 */
 
@@ -22,4 +22,5 @@ void setup() {
     // characters.  请根据字符数量选择合适的二维码版本
 }
 
-void loop() {}
+void loop() {
+}

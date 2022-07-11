@@ -6,8 +6,8 @@
 * Visit for more information: https://docs.m5stack.com/en/core/m5stickc
 * 获取更多资料请访问: https://docs.m5stack.com/zh_CN/core/m5stickc
 *
-* describe: DAC_MCP4725.  数模转换
-* date: 2021/8/16
+* Product:  DAC_MCP4725.  数模转换
+* Date: 2021/8/16
 *******************************************************************************
   Please connect to Port,Use DAC Unit to output 0 ~ 3.3V voltage with an
 accuracy of 12 bits. 请连接端口,使用DAC Unit 输出12位精度的0 ~ 3.3V电压。

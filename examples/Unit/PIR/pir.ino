@@ -6,8 +6,8 @@
 * Visit for more information: https://docs.m5stack.com/en/core/m5stickc
 * 获取更多资料请访问: https://docs.m5stack.com/zh_CN/core/m5stickc
 *
-* describe: PIR.  人体红外
-* date: 2021/8/11
+* Product:  PIR.  人体红外
+* Date: 2021/8/11
 *******************************************************************************
   Please connect to Port,Human body detection using PIR Unit.
   请连接端口,使用PIR Unit进行人体检测。

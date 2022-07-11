@@ -6,8 +6,8 @@
 * Visit for more information: https://docs.m5stack.com/en/core/m5stickc
 * 获取更多资料请访问: https://docs.m5stack.com/zh_CN/core/m5stickc
 *
-* describe: Hello World.
-* date: 2021/9/3
+* Describe:  Hello World.
+* Date: 2021/9/3
 *******************************************************************************
 */
 #include <M5StickC.h>
@@ -28,4 +28,5 @@ void setup() {
 The loop() function is an infinite loop in which the program runs repeatedly
 在setup()函数中的程序执行完后，会接着执行loop()函数中的程序
 loop()函数是一个死循环，其中的程序会不断的重复运行 */
-void loop() {}
+void loop() {
+}

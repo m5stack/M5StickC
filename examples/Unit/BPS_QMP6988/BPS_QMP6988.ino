@@ -6,8 +6,8 @@
 * Visit for more information: https://docs.m5stack.com/en/core/m5stickc
 * 获取更多资料请访问: https://docs.m5stack.com/zh_CN/core/m5stickc
 *
-* describe: BPS_QMP6988.  压力传感器
-* date: 2021/8/10
+* Product:  BPS_QMP6988.  压力传感器
+* Date: 2021/8/10
 ******************************************************************************
   Please connect to Port A(33、32),Read atmospheric pressure and display them on
 the display screen 请连接端口A(33、32),读取大气压强并在显示屏上显示

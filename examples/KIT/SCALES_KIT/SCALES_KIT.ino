@@ -6,8 +6,8 @@
 * Visit for more information: https://docs.m5stack.com/en/app/scales_kit
 * 获取更多资料请访问: https://docs.m5stack.com/zh_CN/app/scales_kit
 *
-* describe: SCALES KIT WEIGHT UNIT EXAMPLE.
-* date: 2022/02/23
+* Product:  SCALES KIT WEIGHT UNIT EXAMPLE.
+* Date: 2022/02/23
 *******************************************************************************
   Connect WEIGHT UNIT to port A (G33/32), calibration instructions: press button
 A to remove the tare weight when there is no load, press button B, switch the

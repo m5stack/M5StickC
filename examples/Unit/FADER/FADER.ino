@@ -6,8 +6,8 @@
 * Visit for more information: https://docs.m5stack.com/en/unit/fader
 * 获取更多资料请访问: https://docs.m5stack.com/zh_CN/unit/fader
 *
-* describe: UNIT FADER. 滑动电位器/推子
-* date: 2021/8/20
+* Product:  UNIT FADER. 滑动电位器/推子
+* Date: 2021/8/20
 *******************************************************************************
   Connect UNIT FADER to port and push the FADER slider to adjust the input value
 and light brightness 将UNIT FADER连接到端口,

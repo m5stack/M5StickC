@@ -6,8 +6,8 @@
 * Visit for more information: https://docs.m5stack.com/en/core/m5stickc
 * 获取更多资料请访问: https://docs.m5stack.com/zh_CN/core/m5stickc
 *
-* describe: OP 180/90.  非接触式光电限位开关
-* date: 2021/8/16
+* Product:  OP 180/90.  非接触式光电限位开关
+* Date: 2021/8/16
 *******************************************************************************
   Please connect to Port,Detect the current OP 90/180 Unit Photoelectric switch
 status. 请连接端口,检测当前OP 90/180单元光电开关状态。

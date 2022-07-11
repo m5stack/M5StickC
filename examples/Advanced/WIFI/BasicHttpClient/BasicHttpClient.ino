@@ -6,8 +6,8 @@
 * Visit for more information: https://docs.m5stack.com/en/core/m5stickc
 * 获取更多资料请访问: https://docs.m5stack.com/zh_CN/core/m5stickc
 *
-* describe: BasicHTTPClient.
-* date: 2021/8/4
+* Describe:  BasicHTTPClient.
+* Date: 2021/8/4
 ******************************************************************************
 */
 #include <Arduino.h>

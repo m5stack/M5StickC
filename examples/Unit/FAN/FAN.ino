@@ -6,8 +6,8 @@
 * Visit for more information: https://docs.m5stack.com/en/core/m5stickc
 * 获取更多资料请访问: https://docs.m5stack.com/zh_CN/core/m5stickc
 *
-* describe: Fan.  风扇
-* date: 2021/8/11
+* Product:  Fan.  风扇
+* Date: 2021/8/11
 *******************************************************************************
   Please connect to Port, Adjust the speed of FAN Unit through PWM.
   请连接端口,通过PWM调节风扇单元的转速。

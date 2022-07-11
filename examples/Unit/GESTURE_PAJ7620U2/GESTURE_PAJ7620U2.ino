@@ -6,8 +6,8 @@
 * Visit for more information: https://docs.m5stack.com/en/unit/gesture
 * 获取更多资料请访问: https://docs.m5stack.com/zh_CN/unit/gesture
 *
-* describe: GESTURE.  手势传感器
-* date: 2021/11/18
+* Product:  GESTURE.  手势传感器
+* Date: 2021/11/18
 *******************************************************************************
   Please connect to Port  (G32, G33)
   请连接端口 (G32, G33)

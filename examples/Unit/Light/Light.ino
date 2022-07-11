@@ -6,8 +6,8 @@
 * Visit for more information: https://docs.m5stack.com/en/core/m5stickc
 * 获取更多资料请访问: https://docs.m5stack.com/zh_CN/core/m5stickc
 *
-* describe: Light.  环境光传感器
-* date: 2021/8/18
+* Product:  Light.  环境光传感器
+* Date: 2021/8/18
 *******************************************************************************
   Please connect to Port A,Use the Light Unit screen to display the current
 ambient lighting value 请连接端口 A ,使用Light Unit 屏幕显示当前环境光照值。

@@ -6,8 +6,8 @@
 * Visit for more information: https://docs.m5stack.com/en/core/m5stickc
 * 获取更多资料请访问: https://docs.m5stack.com/zh_CN/core/m5stickc
 *
-* describe: RTC.  实时时钟
-* date: 2021/8/18
+* Product:  RTC.  实时时钟
+* Date: 2021/8/18
 *******************************************************************************
   Please connect to Port,The time is displayed on the screen.
   请连接端口,屏幕上显示时间。

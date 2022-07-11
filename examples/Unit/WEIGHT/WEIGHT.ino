@@ -6,8 +6,8 @@
 * Visit for more information: https://docs.m5stack.com/en/core/m5stickc
 * 获取更多资料请访问: https://docs.m5stack.com/zh_CN/core/m5stickc
 *
-* describe: Weight.
-* date: 2021/8/20
+* Product:  Weight.
+* Date: 2021/8/20
 *******************************************************************************
   Please connect to Port,Use WEIGHT Unit to read the analog value returned by
 the pressure sensor, convert it into intuitive weight data and send it to

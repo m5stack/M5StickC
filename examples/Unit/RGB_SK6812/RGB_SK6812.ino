@@ -6,8 +6,8 @@
 * Visit for more information: https://docs.m5stack.com/en/core/m5stickc
 * 获取更多资料请访问: https://docs.m5stack.com/zh_CN/core/m5stickc
 *
-* describe: RGB.  多彩灯
-* date: 2021/8/11
+* Product:  RGB.  多彩灯
+* Date: 2021/8/11
 *******************************************************************************
   Please connect to Port ,Control RGB Unit to scroll through three colors of
 red, green and blue 请连接端口,控制RGB单元滚动红、绿、蓝三种颜色.

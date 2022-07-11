@@ -6,8 +6,8 @@
 * Visit for more information: https://docs.m5stack.com/en/core/m5stickc
 * 获取更多资料请访问: https://docs.m5stack.com/zh_CN/core/m5stickc
 *
-* describe: WIFI TCP.
-* date: 2021/7/29
+* Describe:  WIFI TCP.
+* Date: 2021/7/29
 *******************************************************************************
   M5StickC will sends a message to a TCP server
   M5StickC 将向TCP服务器发送一条数据

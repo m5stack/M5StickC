@@ -6,8 +6,8 @@
 * Visit for more information: https://docs.m5stack.com/en/core/m5stickc
 * 获取更多资料请访问: https://docs.m5stack.com/zh_CN/core/m5stickc
 *
-* describe: ToF.  激光测距
-* date: 2022/6/3
+* Product:  ToF.  激光测距
+* Date: 2022/6/3
 *******************************************************************************
   Please connect to hat,Use ToF Hat to detect distance and display distance
   data on the screen in real time.

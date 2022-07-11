@@ -6,8 +6,8 @@
 * Visit for more information: https://docs.m5stack.com/en/core/m5stickc
 * 获取更多资料请访问: https://docs.m5stack.com/zh_CN/core/m5stickc
 *
-* describe: SPIFFS write & read.  闪存文件读写
-* date: 2021/8/4
+* Describe:  SPIFFS write & read.  闪存文件读写
+* Date: 2021/8/4
 *******************************************************************************
 */
 

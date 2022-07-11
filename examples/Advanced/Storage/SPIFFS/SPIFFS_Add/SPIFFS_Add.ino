@@ -6,8 +6,8 @@
 * Visit for more information: https://docs.m5stack.com/en/core/m5stickc
 * 获取更多资料请访问: https://docs.m5stack.com/zh_CN/core/m5stickc
 *
-* describe: SPIFFS Add(Write is to clean up the contents of the file and write
-*it again.). 向SPIFFS中添加信息(write是将文件内容完全清除重新写) date: 2021/8/4
+* Describe:  SPIFFS Add(Write is to clean up the contents of the file and write
+*it again.). 向SPIFFS中添加信息(write是将文件内容完全清除重新写) Date: 2021/8/4
 ******************************************************************************
 */
 
@@ -71,4 +71,5 @@ void setup() {
     }
 }
 
-void loop() {}
+void loop() {
+}

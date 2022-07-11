@@ -6,8 +6,8 @@
 * Visit for more information: https://docs.m5stack.com/en/core/gray
 * 获取更多资料请访问: https://docs.m5stack.com/zh_CN/core/gray
 *
-* describe: Button_Two.  双按键
-* date: 2021/8/9
+* Product:  Button_Two.  双按键
+* Date: 2021/8/9
 *******************************************************************************
   Please connect to Port,Read the button status of BUTTON Unit and display it on
 the screen

@@ -6,8 +6,8 @@
 * Visit for more information: https://docs.m5stack.com/en/core/m5stickc
 * 获取更多资料请访问: https://docs.m5stack.com/zh_CN/core/m5stickc
 *
-* describe: ToF.  激光测距
-* date: 2021/8/16
+* Product:  ToF.  激光测距
+* Date: 2021/8/16
 *******************************************************************************
   Please connect to Port,Use ToF Unit to detect distance and display distance
 data on the screen in real time. 请连接端口,使用ToF

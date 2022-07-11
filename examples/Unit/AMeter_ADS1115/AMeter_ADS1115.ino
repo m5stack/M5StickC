@@ -6,8 +6,8 @@
 * Visit for more information: https://docs.m5stack.com/en/core/m5stickc
 * 获取更多资料请访问: https://docs.m5stack.com/zh_CN/core/m5stickc
 *
-* describe: Ameter_ADS1115.  电流计
-* date: 2021/8/19
+* Product:  Ameter_ADS1115.  电流计
+* Date: 2021/8/19
 *******************************************************************************
   Please connect to Port A,Measure current and display.
   请连接端口A,测量电流并显示到屏幕上

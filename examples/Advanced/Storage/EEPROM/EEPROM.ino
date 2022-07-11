@@ -6,8 +6,8 @@
 * Visit for more information: https://docs.m5stack.com/en/core/m5stickc
 * 获取更多资料请访问: https://docs.m5stack.com/zh_CN/core/m5stickc
 *
-* describe: EEPROM Read & Write.
-* date: 2021/7/30
+* Describe:  EEPROM Read & Write.
+* Date: 2021/7/30
 *******************************************************************************
   The values stored in the EEPROM will remain in the EEPROM even after the
 M5Stick is disconnected. When a new program is uploaded to the M5Stick, the

@@ -6,8 +6,8 @@
 * Visit for more information: https://docs.m5stack.com/en/core/m5stickc
 * 获取更多资料请访问: https://docs.m5stack.com/zh_CN/core/m5stickc
 *
-* describe: BPS_BMP280.  压力传感器
-* date: 2021/8/10
+* Product:  BPS_BMP280.  压力传感器
+* Date: 2021/8/10
 ******************************************** ***********************************
   Please connect to Port,Read atmospheric pressure and temperature and display
 them on the display screen 请连接端口,读取大气压强和温度并在显示屏上显示

@@ -6,8 +6,8 @@
 * Visit for more information: https://docs.m5stack.com/en/core/m5stickc
 * 获取更多资料请访问: https://docs.m5stack.com/zh_CN/core/m5stickc
 *
-* describe: counter.  计数器
-* date: 2021/8/3
+* Describe:  counter.  计数器
+* Date: 2021/8/3
 *******************************************************************************
 */
 
@@ -48,4 +48,5 @@ void setup() {
     delay(10000);   // delay 10.  延迟10s
     ESP.restart();  // Restart.  重启
 }
-void loop() {}
+void loop() {
+}

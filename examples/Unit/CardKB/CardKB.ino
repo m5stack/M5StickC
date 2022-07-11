@@ -6,8 +6,8 @@
 * Visit for more information: https://docs.m5stack.com/en/core/m5stickc
 * 获取更多资料请访问: https://docs.m5stack.com/zh_CN/core/m5stickc
 *
-* describe: CardKB.  键盘
-* date: 2021/8/11
+* Product:  CardKB.  键盘
+* Date: 2021/8/11
 *******************************************************************************
   Please connect to Port ,Read the characters entered by CardKB Unit and display
 them on the screen. 请连接端口,读取CardKB Unit输入的字符并显示在屏幕上。

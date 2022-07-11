@@ -6,8 +6,8 @@
 * Visit for more information: https://docs.m5stack.com/en/core/m5stickc
 * 获取更多资料请访问: https://docs.m5stack.com/zh_CN/core/m5stickc
 *
-* describe: OTA Upload.  隔空传输程序
-* date: 2021/7/30
+* Describe:  OTA Upload.  隔空传输程序
+* Date: 2021/7/30
 *******************************************************************************
   PC and M5StickC can only be used on the same wifi.
 电脑和M5StickC需在同一wifi下才可使用 When the OTA is ready, restart the Arduino
