@@ -51,7 +51,7 @@ class AXP192 {
     void begin(bool disableLDO2 = false, bool disableLDO3 = false,
                bool disableRTC = false, bool disableDCDC1 = false,
                bool disableDCDC3 = false, bool disableLDO0 = false);
-    void ScreenBreath(uint8_t brightness);
+    void ScreenBreath(int brightness);
     void ScreenSwitch(bool state);
     bool GetBatState();
 

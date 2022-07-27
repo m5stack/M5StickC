@@ -137,26 +137,23 @@ void AXP192::ReadBuff(uint8_t Addr, uint8_t Size, uint8_t *Buff) {
     }
 }
 
-void AXP192::ScreenBreath(uint8_t brightness) {
-    if (brightness > 12) {
-        brightness = 12;
-    } else if (brightness < 7) {
-        brightness = 7;
-    }
+void AXP192::ScreenBreath(int brightness) {
+    if (brightness > 100 || brightness < 0) return;
+    int vol = map(brightness, 0, 100, 2500, 3200);
+    // Serial.printf("brightness:%d\n", brightness);
+    // Serial.printf("vol:%d\n", vol);
+    vol = (vol < 1800) ? 0 : (vol - 1800) / 100;
+    // Serial.printf("vol:%d\n", vol);
+
+    // Serial.printf("vol:%x\n\n", (uint16_t)vol);
     uint8_t buf = Read8bit(0x28);
-    // uint8_t buf = (uint8_t)11;
-    Serial.printf("brightness:%hhu\n", brightness);
-    Serial.printf("brightness:%d\n", brightness);
-    Serial.printf("brightness:%x\n", brightness);
 
-    Serial.printf("buf:%hhu\n", buf);
-    Serial.printf("buf:%d\n", buf);
-    Serial.printf("buf:%x\n", buf);
+    // Serial.printf("buf:%hhu\n", buf);
+    // Serial.printf("buf:%d\n", buf);
+    // Serial.printf("buf:%x\n", buf);
 
-    Serial.printf("result:%hhu\n", ((buf & 0x0f) | (brightness << 4)));
-    Serial.printf("result:%d\n", ((buf & 0x0f) | (brightness << 4)));
-    Serial.printf("result:%x\n", ((buf & 0x0f) | (brightness << 4)));
-    Write1Byte(0x28, ((buf & 0x0f) | (brightness << 4)));
+    // Serial.printf("result:%x\n---\n", ((buf & 0x0f) | ((uint16_t)vol << 4)));
+    Write1Byte(0x28, ((buf & 0x0f) | ((uint16_t)vol << 4)));
 }
 
 void AXP192::ScreenSwitch(bool state) {
