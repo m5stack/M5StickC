@@ -1,6 +1,7 @@
 #include "AXP192.h"
 
-AXP192::AXP192() {}
+AXP192::AXP192() {
+}
 
 void AXP192::begin(bool disableLDO2, bool disableLDO3, bool disableRTC,
                    bool disableDCDC1, bool disableDCDC3, bool disableLDO0) {
@@ -143,6 +144,18 @@ void AXP192::ScreenBreath(uint8_t brightness) {
         brightness = 7;
     }
     uint8_t buf = Read8bit(0x28);
+    // uint8_t buf = (uint8_t)11;
+    Serial.printf("brightness:%hhu\n", brightness);
+    Serial.printf("brightness:%d\n", brightness);
+    Serial.printf("brightness:%x\n", brightness);
+
+    Serial.printf("buf:%hhu\n", buf);
+    Serial.printf("buf:%d\n", buf);
+    Serial.printf("buf:%x\n", buf);
+
+    Serial.printf("result:%hhu\n", ((buf & 0x0f) | (brightness << 4)));
+    Serial.printf("result:%d\n", ((buf & 0x0f) | (brightness << 4)));
+    Serial.printf("result:%x\n", ((buf & 0x0f) | (brightness << 4)));
     Write1Byte(0x28, ((buf & 0x0f) | (brightness << 4)));
 }
 
@@ -166,10 +179,14 @@ bool AXP192::GetBatState() {
 }
 
 // Input Power Status
-uint8_t AXP192::GetInputPowerStatus() { return Read8bit(0x00); }
+uint8_t AXP192::GetInputPowerStatus() {
+    return Read8bit(0x00);
+}
 
 // Battery Charging Status
-uint8_t AXP192::GetBatteryChargingStatus() { return Read8bit(0x01); }
+uint8_t AXP192::GetBatteryChargingStatus() {
+    return Read8bit(0x01);
+}
 
 //---------coulombcounter_from_here---------
 // enable: void EnableCoulombcounter(void);
@@ -180,19 +197,29 @@ uint8_t AXP192::GetBatteryChargingStatus() { return Read8bit(0x01); }
 // get discharge data: uint32_t GetCoulombdischargeData(void);
 // get coulomb val affter calculation: float GetCoulombData(void);
 //------------------------------------------
-void AXP192::EnableCoulombcounter(void) { Write1Byte(0xB8, 0x80); }
+void AXP192::EnableCoulombcounter(void) {
+    Write1Byte(0xB8, 0x80);
+}
 
-void AXP192::DisableCoulombcounter(void) { Write1Byte(0xB8, 0x00); }
+void AXP192::DisableCoulombcounter(void) {
+    Write1Byte(0xB8, 0x00);
+}
 
-void AXP192::StopCoulombcounter(void) { Write1Byte(0xB8, 0xC0); }
+void AXP192::StopCoulombcounter(void) {
+    Write1Byte(0xB8, 0xC0);
+}
 
 void AXP192::ClearCoulombcounter(void) {
     Write1Byte(0xB8, Read8bit(0xB8) | 0x20);  // Only set the Clear Flag
 }
 
-uint32_t AXP192::GetCoulombchargeData(void) { return Read32bit(0xB0); }
+uint32_t AXP192::GetCoulombchargeData(void) {
+    return Read32bit(0xB0);
+}
 
-uint32_t AXP192::GetCoulombdischargeData(void) { return Read32bit(0xB4); }
+uint32_t AXP192::GetCoulombdischargeData(void) {
+    return Read32bit(0xB4);
+}
 
 float AXP192::GetCoulombData(void) {
     uint32_t coin           = GetCoulombchargeData();
@@ -349,7 +376,9 @@ uint8_t AXP192::GetBtnPress() {
 // Low Volt Level 2, when APS Volt Output < 3.3992 V, then this flag is SET
 // (0x01) Flag will reset once battery volt is charged above Low Volt Level 1
 // Note: now AXP192 have the Shutdown Voltage of 3.0V (B100) Def in REG 31H
-uint8_t AXP192::GetWarningLevel(void) { return Read8bit(0x47) & 0x01; }
+uint8_t AXP192::GetWarningLevel(void) {
+    return Read8bit(0x47) & 0x01;
+}
 
 float AXP192::GetBatVoltage() {
     float ADCLSB    = 1.1 / 1000.0;
@@ -424,7 +453,9 @@ float AXP192::GetBatCoulombOut() {
     return ReData * 65536 * 0.5 / 3600 / 25.0;
 }
 
-void AXP192::SetCoulombClear() { Write1Byte(0xB8, 0x20); }
+void AXP192::SetCoulombClear() {
+    Write1Byte(0xB8, 0x20);
+}
 
 // Can turn LCD Backlight OFF for power saving
 void AXP192::SetLDO2(bool State) {
