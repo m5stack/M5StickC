@@ -205,7 +205,7 @@ void MPU6886::getGyroAdc(int16_t* gx, int16_t* gy, int16_t* gz) {
 }
 
 void MPU6886::getTempAdc(int16_t* t) {
-    uint8_t buf[2];
+    uint8_t buf[14];
     I2C_Read_NBytes(MPU6886_ADDRESS, MPU6886_TEMP_OUT_H, 14, buf);
 
     *t = ((uint16_t)buf[6] << 8) | buf[7];
