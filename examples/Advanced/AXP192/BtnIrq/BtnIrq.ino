@@ -6,7 +6,9 @@ static void clear_mpu6880IRQ() {
     M5.Mpu6886.ClearAllIRQ();
 }
 
-static void clear_200qIRQ() { M5.I2C.writeByte(0x6C, 0x13, 0xe0); }
+static void clear_200qIRQ() {
+    M5.I2C.writeByte(0x6C, 0x13, 0xe0);
+}
 
 void setup() {
     M5.begin();

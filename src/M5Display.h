@@ -45,7 +45,9 @@ class M5Display : public TFT_eSPI {
     void writeHzk(char *c);
     // Highlight the text (Once set to be true, the text background will not be
     // transparent any more)
-    inline void highlight(bool isHighlight) { highlighted = isHighlight; }
+    inline void highlight(bool isHighlight) {
+        highlighted = isHighlight;
+    }
     // Set highlight color
     inline void setHighlightColor(uint16_t color) {
         highlightcolor = color;
@@ -115,7 +117,9 @@ class M5Display : public TFT_eSPI {
 
     bool initHzk16(boolean use, const char *HZK16Path, const char *ASC16Path);
 
-    inline bool isHzk16Used() { return hzk16Used; }
+    inline bool isHzk16Used() {
+        return hzk16Used;
+    }
 
     boolean hzk16Used, istransparent, highlighted;
 

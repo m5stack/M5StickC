@@ -13,29 +13,24 @@ void setup() {
 
 void loop() {
     loopTime = millis();
-    if(startTime < (loopTime - 5000))
-    {
-        if(M5.Axp.GetWarningLevel())
-        {
+    if (startTime < (loopTime - 5000)) {
+        if (M5.Axp.GetWarningLevel()) {
             sleep_count++;
             M5.Lcd.fillScreen(WHITE);
             M5.Lcd.setCursor(0, 20, 2);
             M5.Lcd.setTextColor(RED, WHITE);
             M5.Lcd.printf("Warning: low battery");
-            //delay(3000);
-            if(sleep_count >= 2)
-            {
+            // delay(3000);
+            if (sleep_count >= 2) {
                 sleep_count = 0;
                 M5.Axp.SetSleep();
             }
-        }
-        else
-        {
+        } else {
             M5.Lcd.fillScreen(WHITE);
         }
         startTime = loopTime;
     }
-    
+
     M5.Lcd.setCursor(0, 0, 1);
     M5.Lcd.setTextColor(BLACK, WHITE);
     M5.Lcd.printf("vbat:%.3fV\r\n", M5.Axp.GetBatVoltage());

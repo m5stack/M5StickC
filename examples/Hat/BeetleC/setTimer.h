@@ -26,13 +26,21 @@ void setTimer() {
     Serial.println("setTimer");
 }
 
-void timerEnable() { timerAlarmEnable(timer); }
+void timerEnable() {
+    timerAlarmEnable(timer);
+}
 
-void timerDisable() { timerAlarmDisable(timer); }
+void timerDisable() {
+    timerAlarmDisable(timer);
+}
 
-void resetCount(void) { timeCount = 0; }
+void resetCount(void) {
+    timeCount = 0;
+}
 
-int readTimerCount(void) { return timeCount; }
+int readTimerCount(void) {
+    return timeCount;
+}
 
 int timerCounting() {
     if (interruptCounter > 0) {

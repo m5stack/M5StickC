@@ -21,7 +21,8 @@
 
 #include "Arduino.h"
 
-void MLX90640_I2CInit() {}
+void MLX90640_I2CInit() {
+}
 
 // Read a number of words from startAddress. Store into Data array.
 // Returns 0 if successful, -1 if error

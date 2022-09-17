@@ -1,6 +1,8 @@
 #include "CBACK_DRIVER.h"
 
-void CBACK_DRIVER::Init() { Wire.begin(0, 26); }
+void CBACK_DRIVER::Init() {
+    Wire.begin(0, 26);
+}
 
 void CBACK_DRIVER::Write1Byte(uint8_t address, uint8_t Register_address,
                               uint8_t data) {

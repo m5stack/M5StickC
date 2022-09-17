@@ -18,7 +18,9 @@ static void initWifi();
 static esp_err_t http_server_init();
 // the setup routine runs once when M5StickC starts up
 
-void BtnSet() { pinMode(37, INPUT_PULLUP); }
+void BtnSet() {
+    pinMode(37, INPUT_PULLUP);
+}
 
 int readBtn() {
     if (digitalRead(37) == 0) {

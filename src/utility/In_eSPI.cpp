@@ -313,7 +313,9 @@ TFT_eSPI::TFT_eSPI(int16_t w, int16_t h) {
 ** Function name:           begin
 ** Description:             Included for backwards compatibility
 ***************************************************************************************/
-void TFT_eSPI::begin(uint8_t tc) { init(tc); }
+void TFT_eSPI::begin(uint8_t tc) {
+    init(tc);
+}
 
 /***************************************************************************************
 ** Function name:           init (tc is tab colour for ST7735 displays only)
@@ -588,7 +590,9 @@ void TFT_eSPI::commandList(const uint8_t *addr) {
 ** Function name:           spiwrite
 ** Description:             Write 8 bits to SPI port (legacy support only)
 ***************************************************************************************/
-void TFT_eSPI::spiwrite(uint8_t c) { tft_Write_8(c); }
+void TFT_eSPI::spiwrite(uint8_t c) {
+    tft_Write_8(c);
+}
 
 /***************************************************************************************
 ** Function name:           writecommand
@@ -803,7 +807,9 @@ uint16_t TFT_eSPI::readPixel(int32_t x0, int32_t y0) {
 #endif
 }
 
-void TFT_eSPI::setCallback(getColorCallback getCol) { getColor = getCol; }
+void TFT_eSPI::setCallback(getColorCallback getCol) {
+    getColor = getCol;
+}
 
 /***************************************************************************************
 ** Function name:           read byte  - supports class functions
@@ -1587,13 +1593,17 @@ void TFT_eSPI::pushImage(int32_t x, int32_t y, int32_t w, int32_t h,
 ** Description:             Used by 16 bit pushImage() to swap byte order in
 *colours
 ***************************************************************************************/
-void TFT_eSPI::setSwapBytes(bool swap) { _swapBytes = swap; }
+void TFT_eSPI::setSwapBytes(bool swap) {
+    _swapBytes = swap;
+}
 
 /***************************************************************************************
 ** Function name:           getSwapBytes
 ** Description:             Return the swap byte order for colours
 ***************************************************************************************/
-bool TFT_eSPI::getSwapBytes(void) { return _swapBytes; }
+bool TFT_eSPI::getSwapBytes(void) {
+    return _swapBytes;
+}
 
 /***************************************************************************************
 ** Function name:           read rectangle (for SPI Interface II i.e. IM [3:0] =
@@ -2204,13 +2214,17 @@ void TFT_eSPI::setCursor(int16_t x, int16_t y, uint8_t font) {
 ** Function name:           getCursorX
 ** Description:             Get the text cursor x position
 ***************************************************************************************/
-int16_t TFT_eSPI::getCursorX(void) { return cursor_x; }
+int16_t TFT_eSPI::getCursorX(void) {
+    return cursor_x;
+}
 
 /***************************************************************************************
 ** Function name:           getCursorY
 ** Description:             Get the text cursor y position
 ***************************************************************************************/
-int16_t TFT_eSPI::getCursorY(void) { return cursor_y; }
+int16_t TFT_eSPI::getCursorY(void) {
+    return cursor_y;
+}
 
 /***************************************************************************************
 ** Function name:           setTextSize
@@ -2256,13 +2270,17 @@ void TFT_eSPI::setPivot(int16_t x, int16_t y) {
 ** Function name:           getPivotX
 ** Description:             Get the x pivot position
 ***************************************************************************************/
-int16_t TFT_eSPI::getPivotX(void) { return _xpivot; }
+int16_t TFT_eSPI::getPivotX(void) {
+    return _xpivot;
+}
 
 /***************************************************************************************
 ** Function name:           getPivotY
 ** Description:             Get the y pivot position
 ***************************************************************************************/
-int16_t TFT_eSPI::getPivotY(void) { return _ypivot; }
+int16_t TFT_eSPI::getPivotY(void) {
+    return _ypivot;
+}
 
 /***************************************************************************************
 ** Function name:           setBitmapColor
@@ -2287,27 +2305,35 @@ void TFT_eSPI::setTextWrap(boolean wrapX, boolean wrapY) {
 ** Function name:           setTextDatum
 ** Description:             Set the text position reference datum
 ***************************************************************************************/
-void TFT_eSPI::setTextDatum(uint8_t d) { textdatum = d; }
+void TFT_eSPI::setTextDatum(uint8_t d) {
+    textdatum = d;
+}
 
 /***************************************************************************************
 ** Function name:           setTextPadding
 ** Description:             Define padding width (aids erasing old text and
 *numbers)
 ***************************************************************************************/
-void TFT_eSPI::setTextPadding(uint16_t x_width) { padX = x_width; }
+void TFT_eSPI::setTextPadding(uint16_t x_width) {
+    padX = x_width;
+}
 
 /***************************************************************************************
 ** Function name:           getRotation
 ** Description:             Return the rotation value (as used by setRotation())
 ***************************************************************************************/
-uint8_t TFT_eSPI::getRotation(void) { return rotation; }
+uint8_t TFT_eSPI::getRotation(void) {
+    return rotation;
+}
 
 /***************************************************************************************
 ** Function name:           getTextDatum
 ** Description:             Return the text datum value (as used by
 *setTextDatum())
 ***************************************************************************************/
-uint8_t TFT_eSPI::getTextDatum(void) { return textdatum; }
+uint8_t TFT_eSPI::getTextDatum(void) {
+    return textdatum;
+}
 
 /***************************************************************************************
 ** Function name:           width
@@ -2315,14 +2341,18 @@ uint8_t TFT_eSPI::getTextDatum(void) { return textdatum; }
 *rotation)
 ***************************************************************************************/
 // Return the size of the display (per current rotation)
-int16_t TFT_eSPI::width(void) { return _width; }
+int16_t TFT_eSPI::width(void) {
+    return _width;
+}
 
 /***************************************************************************************
 ** Function name:           height
 ** Description:             Return the pixel height of display (per current
 *rotation)
 ***************************************************************************************/
-int16_t TFT_eSPI::height(void) { return _height; }
+int16_t TFT_eSPI::height(void) {
+    return _height;
+}
 
 /***************************************************************************************
 ** Function name:           textWidth
@@ -2434,7 +2464,9 @@ int16_t TFT_eSPI::textWidth(const char *string, uint8_t font) {
 ***************************************************************************************/
 // Returns a value showing which fonts are loaded (bit N set =  Font N loaded)
 
-uint16_t TFT_eSPI::fontsLoaded(void) { return fontsloaded; }
+uint16_t TFT_eSPI::fontsLoaded(void) {
+    return fontsloaded;
+}
 
 /***************************************************************************************
 ** Function name:           fontHeight
@@ -2457,7 +2489,9 @@ int16_t TFT_eSPI::fontHeight(int16_t font) {
     return pgm_read_byte(&fontdata[font].height) * textsize;
 }
 
-int16_t TFT_eSPI::fontHeight(void) { return fontHeight(textfont); }
+int16_t TFT_eSPI::fontHeight(void) {
+    return fontHeight(textfont);
+}
 
 /***************************************************************************************
 ** Function name:           drawChar
@@ -5168,7 +5202,9 @@ void TFT_eSPI::setTextFont(uint8_t f) {
 ***************************************************************************************/
 
 // Alternative to setTextFont() so we don't need two different named functions
-void TFT_eSPI::setFreeFont(uint8_t font) { setTextFont(font); }
+void TFT_eSPI::setFreeFont(uint8_t font) {
+    setTextFont(font);
+}
 
 /***************************************************************************************
 ** Function name:           setTextFont
@@ -5418,7 +5454,9 @@ void writeBlock(uint16_t color, uint32_t repeat) {
 ** Description:             Get the instance of the SPI class (for ESP32 only)
 ***************************************************************************************/
 #ifndef ESP32_PARALLEL
-SPIClass &TFT_eSPI::getSPIinstance(void) { return spi; }
+SPIClass &TFT_eSPI::getSPIinstance(void) {
+    return spi;
+}
 #endif
 
 /***************************************************************************************

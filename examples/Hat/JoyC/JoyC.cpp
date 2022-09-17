@@ -23,7 +23,9 @@
 #define JOYC_RIGHT_ANGLE_REG    0x72
 #define JOYC_RIGHT_DISTANCE_REG 0x76
 
-void JoyC::Init() { Wire.begin(0, 26); }
+void JoyC::Init() {
+    Wire.begin(0, 26);
+}
 
 void JoyC::Write1Byte(uint8_t address, uint8_t Register_address, uint8_t data) {
     Wire.beginTransmission(address);

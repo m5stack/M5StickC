@@ -1,6 +1,7 @@
 #include "RTC.h"
 
-RTC::RTC() {}
+RTC::RTC() {
+}
 
 void RTC::begin(void) {
     Wire1.begin(21, 22);

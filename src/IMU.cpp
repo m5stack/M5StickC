@@ -6,7 +6,8 @@
 #include "M5StickC.h"
 #undef IMU
 
-IMU::IMU() {}
+IMU::IMU() {
+}
 
 int IMU::Init(void) {
     int imu_flag = M5.Sh200Q.Init();

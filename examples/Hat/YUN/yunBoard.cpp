@@ -40,7 +40,9 @@ void led_set(uint8_t num, uint32_t color_in) {
     I2C_writeBytes(YUN_ADDR, LED_REG_ADDR, data_out, 4);
 }
 
-void led_set_all(uint32_t color_in) { led_set(14, color_in); }
+void led_set_all(uint32_t color_in) {
+    led_set(14, color_in);
+}
 
 uint16_t light_get() {
     uint16_t light = 0x00;

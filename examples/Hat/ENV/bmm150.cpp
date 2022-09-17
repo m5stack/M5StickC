@@ -3,7 +3,8 @@
 #include <Arduino.h>
 #include <Wire.h>
 
-BMM150::BMM150() {}
+BMM150::BMM150() {
+}
 
 int8_t BMM150::initialize(void) {
     // Wire.begin();

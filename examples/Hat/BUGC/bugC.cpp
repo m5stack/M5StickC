@@ -10,7 +10,9 @@
 
 #include "M5StickC.h"
 
-void BUGC::Init() { Wire.begin(0, 26); }
+void BUGC::Init() {
+    Wire.begin(0, 26);
+}
 
 void BUGC::Write1Byte(uint8_t address, uint8_t Register_address, uint8_t data) {
     Wire.beginTransmission(address);

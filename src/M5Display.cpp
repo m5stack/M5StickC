@@ -295,7 +295,9 @@ void M5Display::writeHzkGbk(const char *c) {
     }
 }
 
-void M5Display::setTextWrap(boolean w) { textwrap = w; }
+void M5Display::setTextWrap(boolean w) {
+    textwrap = w;
+}
 
 void M5Display::drawBitmap(int16_t x0, int16_t y0, int16_t w, int16_t h,
                            const uint16_t *data) {

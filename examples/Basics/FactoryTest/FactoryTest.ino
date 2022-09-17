@@ -310,9 +310,13 @@ bool deviceConnected    = false;
 bool oldDeviceConnected = false;
 
 class MyServerCallbacks : public BLEServerCallbacks {
-    void onConnect(BLEServer *pServer) { deviceConnected = true; };
+    void onConnect(BLEServer *pServer) {
+        deviceConnected = true;
+    };
 
-    void onDisconnect(BLEServer *pServer) { deviceConnected = false; }
+    void onDisconnect(BLEServer *pServer) {
+        deviceConnected = false;
+    }
 };
 
 uint8_t *data = new uint8_t[128];
@@ -379,7 +383,9 @@ bool checkAXP192() {
     return true;
 }
 
-bool checkMPU6886() { return true; }
+bool checkMPU6886() {
+    return true;
+}
 
 bool checkBM8563() {
     uint8_t i = 0;

@@ -4,7 +4,8 @@
 
 #include "M5StickC.h"
 
-M5StickC::M5StickC() : isInited(0) {}
+M5StickC::M5StickC() : isInited(0) {
+}
 
 void M5StickC::begin(bool LCDEnable, bool PowerEnable, bool SerialEnable) {
     //! Correct init once

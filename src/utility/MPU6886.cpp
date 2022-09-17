@@ -3,7 +3,8 @@
 #include <Arduino.h>
 #include <math.h>
 
-MPU6886::MPU6886() {}
+MPU6886::MPU6886() {
+}
 
 void MPU6886::I2C_Read_NBytes(uint8_t driver_Addr, uint8_t start_Addr,
                               uint8_t number_Bytes, uint8_t* read_Buffer) {
@@ -205,7 +206,7 @@ void MPU6886::getGyroAdc(int16_t* gx, int16_t* gy, int16_t* gz) {
 }
 
 void MPU6886::getTempAdc(int16_t* t) {
-    uint8_t buf[2];
+    uint8_t buf[14];
     I2C_Read_NBytes(MPU6886_ADDRESS, MPU6886_TEMP_OUT_H, 14, buf);
 
     *t = ((uint16_t)buf[6] << 8) | buf[7];
@@ -314,7 +315,7 @@ void MPU6886::getTempData(float* t) {
     int16_t temp = 0;
     getTempAdc(&temp);
 
-    *t = (float)temp / 340.0 + 36.53;
+    *t = (float)temp / 326.8 + 25.0;
 }
 
 void MPU6886::SetINTPinActiveLogic(uint8_t level) {

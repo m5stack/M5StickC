@@ -10,7 +10,8 @@
 // debug for message of I2C ( bypass message to serial)
 //#define  I2C_DEBUG_TO_SERIAL
 
-CommUtil::CommUtil() {}
+CommUtil::CommUtil() {
+}
 
 // Wire.h read and write protocols
 bool CommUtil::writeCommand(uint8_t address, uint8_t subAddress) {

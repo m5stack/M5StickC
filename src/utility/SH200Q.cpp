@@ -3,7 +3,8 @@
 #include <Arduino.h>
 #include <math.h>
 
-SH200Q::SH200Q() {}
+SH200Q::SH200Q() {
+}
 // i2c读写函数说明:
 //读函数
 // I2C_Read_NBytes(uint8_t driver_Addr, uint8_t start_Addr, uint8_t

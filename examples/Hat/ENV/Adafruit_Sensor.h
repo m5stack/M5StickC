@@ -158,8 +158,10 @@ typedef struct {
 class Adafruit_Sensor {
    public:
     // Constructor(s)
-    Adafruit_Sensor() {}
-    virtual ~Adafruit_Sensor() {}
+    Adafruit_Sensor() {
+    }
+    virtual ~Adafruit_Sensor() {
+    }
 
     // These must be defined by the subclass
     virtual void enableAutoRange(bool enabled) {

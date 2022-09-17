@@ -36,4 +36,6 @@ void setup() {
     M5.Lcd.setRotation(3);
 }
 
-void loop() { draw_waveform(); }
+void loop() {
+    draw_waveform();
+}

@@ -18,7 +18,7 @@ BL_DATUM  6 //Bottom left
 BC_DATUM  7 //Bottom centre
 BR_DATUM  8 //Bottom right
 
- 
+
  Needs fonts 2 and 6
 
  Make sure all the display driver and pin comnenctions are correct by
@@ -33,55 +33,54 @@ BR_DATUM  8 //Bottom right
 unsigned long drawTime = 0;
 
 void setup(void) {
-  M5.begin();
-  M5.Lcd.setRotation(3);
+    M5.begin();
+    M5.Lcd.setRotation(3);
 }
 
 void loop() {
+    char tmp[12];
 
-  char tmp[12];
-  
-  M5.Lcd.fillScreen(TFT_BLACK);
-  M5.Lcd.setTextColor(TFT_WHITE, TFT_BLACK);
-  
-  // Datum is middle centre
-  M5.Lcd.setTextDatum(MC_DATUM);
+    M5.Lcd.fillScreen(TFT_BLACK);
+    M5.Lcd.setTextColor(TFT_WHITE, TFT_BLACK);
 
-  // Test floating point drawing function:
-  // drawFloat(value, precision, x, y, font);
-  
-  float test = 67.125;
-  M5.Lcd.drawFloat(test, 3, 80, 20, 6);
-    M5.Lcd.drawString(dtostrf(test,4,3,tmp), 80, 60, 6);
+    // Datum is middle centre
+    M5.Lcd.setTextDatum(MC_DATUM);
 
-  delay(1000);
-  M5.Lcd.fillScreen(TFT_BLACK);
-  
-  test = -0.555555;
-  M5.Lcd.drawFloat(test, 3, 80, 20, 6);
-    M5.Lcd.drawString(dtostrf(test,2,2,tmp), 80, 60, 6);
+    // Test floating point drawing function:
+    // drawFloat(value, precision, x, y, font);
 
-  delay(1000);
-  M5.Lcd.fillScreen(TFT_BLACK);
-  
-  test = 0.123;
-  M5.Lcd.drawFloat(test, 4, 80, 20, 6);
-    M5.Lcd.drawString(dtostrf(test,4,4,tmp), 80, 60, 6);
+    float test = 67.125;
+    M5.Lcd.drawFloat(test, 3, 80, 20, 6);
+    M5.Lcd.drawString(dtostrf(test, 4, 3, tmp), 80, 60, 6);
 
-  delay(1000);
-  M5.Lcd.fillScreen(TFT_BLACK);
+    delay(1000);
+    M5.Lcd.fillScreen(TFT_BLACK);
 
-  // This does not work at the moment....
-  test = 9999999;
-  M5.Lcd.drawFloat(test, 0, 80, 20, 2);
-  M5.Lcd.drawString(dtostrf(test,4,4,tmp), 80, 60, 2);
-  delay(1000);
+    test = -0.555555;
+    M5.Lcd.drawFloat(test, 3, 80, 20, 6);
+    M5.Lcd.drawString(dtostrf(test, 2, 2, tmp), 80, 60, 6);
 
-  //Plot the datum for the last number
-  M5.Lcd.fillCircle(80,40,5,TFT_RED);
-  M5.Lcd.setTextDatum(MC_DATUM);
-  M5.Lcd.setTextColor(TFT_BLACK);
-  M5.Lcd.drawString("X", 80, 40, 2);
- 
-  delay(4000);
+    delay(1000);
+    M5.Lcd.fillScreen(TFT_BLACK);
+
+    test = 0.123;
+    M5.Lcd.drawFloat(test, 4, 80, 20, 6);
+    M5.Lcd.drawString(dtostrf(test, 4, 4, tmp), 80, 60, 6);
+
+    delay(1000);
+    M5.Lcd.fillScreen(TFT_BLACK);
+
+    // This does not work at the moment....
+    test = 9999999;
+    M5.Lcd.drawFloat(test, 0, 80, 20, 2);
+    M5.Lcd.drawString(dtostrf(test, 4, 4, tmp), 80, 60, 2);
+    delay(1000);
+
+    // Plot the datum for the last number
+    M5.Lcd.fillCircle(80, 40, 5, TFT_RED);
+    M5.Lcd.setTextDatum(MC_DATUM);
+    M5.Lcd.setTextColor(TFT_BLACK);
+    M5.Lcd.drawString("X", 80, 40, 2);
+
+    delay(4000);
 }
