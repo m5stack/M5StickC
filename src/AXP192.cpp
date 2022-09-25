@@ -157,14 +157,14 @@ void AXP192::ScreenBreath(int brightness) {
 }
 
 void AXP192::ScreenSwitch(bool state) {
-    uint8_t brightness;
     if (state == false) {
-        brightness = 0;
+        uint8_t buf = Read8bit(0x28);
+        Serial.printf("buf:%d\n", buf);
+        Write1Byte(0x28, ((buf & 0x0f)));
+        Serial.printf("buf:%d\n", Read8bit(0x28));
     } else if (state == true) {
-        brightness = 12;
+        ScreenBreath(80);
     }
-    uint8_t buf = Read8bit(0x28);
-    Write1Byte(0x28, ((buf & 0x0f) | (brightness << 4)));
 }
 
 // Return True = Battery Exist
