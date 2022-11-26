@@ -114,6 +114,7 @@ class AXP192 {
     void SetGPIO0(bool State);
     void SetAdcState(bool State);
     void SetAdcRate(uint8_t rate);
+    void SetPeripherialsPower(uint8_t state);
 
     // -- Power Off
     void PowerOff();

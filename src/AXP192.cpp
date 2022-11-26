@@ -591,3 +591,12 @@ void AXP192::Write6BytesStorage(uint8_t *bufPtr) {
     Wire1.write(bufPtr[5]);
     Wire1.endTransmission();
 }
+
+void AXP192::SetPeripherialsPower(uint8_t state) {
+    if (!state)
+        Write1Byte(0x10, Read8bit(0x10) & 0XFB);
+    else if (state)
+        Write1Byte(0x10, Read8bit(0x10) | 0X04);
+    // uint8_t data;
+    // Set EXTEN to enable 5v boost
+}
