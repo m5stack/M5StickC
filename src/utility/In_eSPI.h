@@ -59,7 +59,7 @@
 // Only load the fonts defined in User_Setup.h (to save space)
 // Set flag so RLE rendering code is optionally compiled
 #ifdef LOAD_GLCD
-#include <Fonts/glcdfont.c>
+#include <Fonts/glcdfont.h>
 #endif
 
 #ifdef LOAD_FONT2
