@@ -206,12 +206,12 @@ void MPU6886::getGyroAdc(int16_t* gx, int16_t* gy, int16_t* gz) {
 
 void MPU6886::getTempAdc(int16_t* t) {
     uint8_t buf[2];
-    I2C_Read_NBytes(MPU6886_ADDRESS, MPU6886_TEMP_OUT_H, 14, buf);
+    I2C_Read_NBytes(MPU6886_ADDRESS, MPU6886_TEMP_OUT_H, 2, buf);
 
-    *t = ((uint16_t)buf[6] << 8) | buf[7];
+    *t = ((uint16_t)buf[0] << 8) | buf[1];
 }
 
-//!俯仰，航向，横滚: pitch，yaw，roll，指三维空间中飞行器的旋转状态。
+//!俯仰，航向，横滚：pitch，yaw，roll，指三维空间中飞行器的旋转状态。
 void MPU6886::getAhrsData(float* pitch, float* roll, float* yaw) {
     float accX = 0;
     float accY = 0;
@@ -314,7 +314,7 @@ void MPU6886::getTempData(float* t) {
     int16_t temp = 0;
     getTempAdc(&temp);
 
-    *t = (float)temp / 340.0 + 36.53;
+    *t = (float)temp / 326.8 + 25.0;
 }
 
 void MPU6886::SetINTPinActiveLogic(uint8_t level) {
