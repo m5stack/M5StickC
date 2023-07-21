@@ -330,6 +330,13 @@ void AXP192::SetSleep(void) {
     Write1Byte(0x12, Read8bit(0x12) & 0xA1);  // Disable all outputs but DCDC1
 }
 
+void AXP192::WakeUpDisplayAfterLightSleep(void) {
+    // LDO2 is LCD Backlight
+    // LDO3 is LCD Power
+    // Enable Ext, LDO3, LDO2, DCDC1
+    Write1Byte(0x12, Read8bit(0x12) | 0x4D);
+}
+
 uint8_t AXP192::GetWarningLeve(void) {
     Wire1.beginTransmission(0x34);
     Wire1.write(0x47);
@@ -352,12 +359,14 @@ void AXP192::DeepSleep(uint64_t time_in_us) {
 }
 
 void AXP192::LightSleep(uint64_t time_in_us) {
+    SetSleep();
     if (time_in_us > 0) {
         esp_sleep_enable_timer_wakeup(time_in_us);
     } else {
         esp_sleep_disable_wakeup_source(ESP_SLEEP_WAKEUP_TIMER);
     }
     esp_light_sleep_start();
+    WakeUpDisplayAfterLightSleep();
 }
 
 // Return 0 = not press, 0x01 = long press(1.5s), 0x02 = short press

@@ -1,4 +1,18 @@
-#include <Arduino.h>
+/*
+*******************************************************************************
+* Copyright (c) 2023 by M5Stack
+*                  Equipped with M5StickC sample source code
+*                          配套  M5StickC 示例源代码
+* Visit for more information: https://docs.m5stack.com/en/core/m5stickc
+* 获取更多资料请访问: https://docs.m5stack.com/zh_CN/core/m5stickc
+*
+* Describe:  Wake-On-Motion.  MPU6886运动唤醒
+* Date: 2023/7/21
+*******************************************************************************
+The device automatically enters deep sleep mode after 5s of inactivity, and
+prompts the cause of wakeup when it wakes up.
+设备在静止状态下停留5s后,自动进入深度睡眠模式,并在唤醒时提示造成唤醒的原因.
+*/
 #include <M5StickC.h>
 #include <driver/rtc_io.h>  // from ESP-IDF
 
@@ -40,12 +54,11 @@ void get_wakeup_reason_string(char *cbuf, int cbuf_len) {
 
 RTC_DATA_ATTR int bootCount = 0;
 #define WAKE_REASON_BUF_LEN 100
+
 void setup() {
     char wake_reason_buf[WAKE_REASON_BUF_LEN];
 
-    // put your setup code here, to run once:
     M5.begin();
-    M5.Axp.ScreenBreath(8);
     M5.Lcd.setRotation(3);
     M5.Lcd.fillScreen(BLACK);
     M5.Lcd.setTextSize(1);
@@ -53,6 +66,7 @@ void setup() {
     get_wakeup_reason_string(wake_reason_buf, WAKE_REASON_BUF_LEN);
     M5.Lcd.setCursor(0, 0);
     M5.Lcd.printf("WOM: BOOT=%d, SRC=%s", bootCount, wake_reason_buf);
+    Serial.printf("WOM: BOOT=%d, SRC=%s\n", bootCount, wake_reason_buf);
     M5.Lcd.setCursor(0, 10);
     M5.Lcd.printf("Battery: ");
     M5.Lcd.setCursor(0, 20);
@@ -89,7 +103,7 @@ void setup() {
         if (since_last_wom_millis > 5000) {
             break;
         }
-        Serial.printf("waiting : %d", since_last_wom_millis);
+        Serial.printf("waiting:%dms, ", since_last_wom_millis);
         delay(1000);
     }
 
@@ -100,11 +114,11 @@ void setup() {
     esp_sleep_enable_ext0_wakeup(GPIO_NUM_35, LOW);  // 1 = High, 0 = Low
 
     // Go to sleep now
-    Serial.println("Going to sleep now");
+    Serial.printf("\nGoing to sleep now\n");
     M5.Axp.SetSleep();  // conveniently turn off screen, etc.
     delay(100);
     esp_deep_sleep_start();
-    Serial.println("This will never be printed");
+    Serial.printf("\nThis will never be printed");
 }
 
 void loop() {
