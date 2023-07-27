@@ -17,6 +17,8 @@
 #ifndef _MLX640_API_H_
 #define _MLX640_API_H_
 
+#include <Arduino.h>
+
 #define SCALEALPHA 0.000001
 
 typedef struct {

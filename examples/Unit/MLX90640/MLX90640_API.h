@@ -17,6 +17,8 @@
 #ifndef _MLX640_API_H_
 #define _MLX640_API_H_
 
+#include <Arduino.h>
+
 typedef struct {
     int16_t kVdd;
     int16_t vdd25;

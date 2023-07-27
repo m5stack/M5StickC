@@ -10,7 +10,7 @@
 * Date: 2022/2/22
 *******************************************************************************
 */
-#include <M5StickCPlus.h>
+#include <M5StickC.h>
 #include <driver/i2s.h>
 
 #define PIN_CLK     0
