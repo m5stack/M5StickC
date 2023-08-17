@@ -139,7 +139,7 @@ void loop() {
             map(line[0][(led_pos + i) % 320], led_max, led_min, 0, 80);
         ir_disdata = map(line[1][(ir_Pos + i) % 320], ir_max, ir_min, 0, 80);
         k_disdata  = map(k_number[(ir_Pos + i) % 320], k_number_max,
-                        k_number_min, 0, 80);
+                         k_number_min, 0, 80);
         {
             Disbuff.drawLine(i, led_last, i + 1, led_disdata, WHITE);
             Disbuff.drawLine(i, ir_last, i + 1, ir_disdata, RED);

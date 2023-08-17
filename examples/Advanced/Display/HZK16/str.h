@@ -2,6 +2,6 @@
 #define _STR_H_
 
 char* AscStr = "ASCII: \nABCDEFG1234567";
-char* GbkStr = "²É¾Õ¶«ÀéÏÂ ¤³¤ó¤Ë¤Á¤Ï";
+char* GbkStr = "ï¿½É¾Õ¶ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ë¤ï¿½ï¿½ï¿½";
 
 #endif

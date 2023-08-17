@@ -139,7 +139,7 @@ int UWB_setupmode()  // AT command
                     "AT+interval=5\r\n");  // Set the calculation precision, the
                                            // larger the response is, the slower
                                            // it will be
-                delay(40);  //设置计算精度，越大响应越慢
+                delay(40);  // 设置计算精度，越大响应越慢
                 Serial2.write(
                     "AT+switchdis=1\r\n");  // Began to distance 开始测距
                 delay(40);
@@ -236,7 +236,7 @@ void UWB_ui_display() {
 
 void setup() {
     M5.begin();
-    Serial2.begin(115200, SERIAL_8N1, 33, 32);  //一般都是16.17
+    Serial2.begin(115200, SERIAL_8N1, 33, 32);  // 一般都是16.17
     delay(100);
     UWB_Timer();
 

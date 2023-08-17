@@ -50,8 +50,8 @@ void setup() {
 
 void loop() {
     uint16_t ir, red;
-    sensor.update();  //更新传感器读取到的数据
-    while (sensor.getRawValues(&ir, &red)) {  //如果获取到数据
+    sensor.update();  // 更新传感器读取到的数据
+    while (sensor.getRawValues(&ir, &red)) {  // 如果获取到数据
         M5.Lcd.setTextFont(4);
         M5.Lcd.setCursor(0, 20);
         M5.Lcd.printf("IR:%d            ", ir);

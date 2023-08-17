@@ -47,7 +47,7 @@
 #define IMU_6886_FIFO_COUNT  0x72
 #define IMU_6886_FIFO_R_W    0x74
 #define IMU_6886_GYRO_OFFSET 0x13
-//#define G (9.8)
+// #define G (9.8)
 #define RtA     57.324841
 #define AtR     0.0174533
 #define Gyro_Gr 0.0010653

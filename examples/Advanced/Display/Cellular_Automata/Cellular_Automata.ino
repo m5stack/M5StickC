@@ -4,9 +4,9 @@
 
 #include <M5StickC.h>
 
-//#define GRIDX 80
-//#define GRIDY 60
-//#define CELLXY 4
+// #define GRIDX 80
+// #define GRIDY 60
+// #define CELLXY 4
 
 #define GRIDX  80
 #define GRIDY  40

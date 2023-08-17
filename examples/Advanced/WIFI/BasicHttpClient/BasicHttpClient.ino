@@ -46,8 +46,8 @@ void loop() {
             if (httpCode ==
                 HTTP_CODE_OK) {  // file found at server.  在服务器上找到文件
                 String payload = http.getString();
-                Serial.println(payload);  //打印在服务器上读取的文件.  Print
-                                          // files read on the server
+                Serial.println(payload);  // 打印在服务器上读取的文件.  Print
+                                          //  files read on the server
             }
         } else {
             M5.Lcd.printf("[HTTP] GET... failed, error: %s\n",

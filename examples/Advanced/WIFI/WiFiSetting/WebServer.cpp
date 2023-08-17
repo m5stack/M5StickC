@@ -28,7 +28,7 @@
 #include "FS.h"
 #include "detail/RequestHandlersImpl.h"
 
-//#define DEBUG_ESP_HTTP_SERVER
+// #define DEBUG_ESP_HTTP_SERVER
 #ifdef DEBUG_ESP_PORT
 #define DEBUG_OUTPUT DEBUG_ESP_PORT
 #else

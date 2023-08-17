@@ -11,7 +11,7 @@
 *******************************************************************************
 */
 #include <ESPmDNS.h>
-#include <M5StickC.h>>
+#include <M5StickC.h>
 #include <Preferences.h>
 #include <WiFi.h>
 #include <WiFiClient.h>

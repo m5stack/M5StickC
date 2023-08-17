@@ -48,7 +48,7 @@ void setup() {
     xTaskCreatePinnedToCore(
         task1,    // Function to implement the task.
                   // 线程对应函数名称(不能有返回值)
-        "task1",  //线程名称
+        "task1",  // 线程名称
         4096,     // The size of the task stack specified as the number of *
                   // bytes.任务堆栈的大小(字节)
         NULL,     // Pointer that will be used as the parameter for the task *

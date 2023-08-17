@@ -20,7 +20,7 @@ FASTLED_USING_NAMESPACE
 #endif
 
 #define DATA_PIN 26
-//#define CLK_PIN   4
+// #define CLK_PIN   4
 #define LED_TYPE    WS2811
 #define COLOR_ORDER GRB
 #define NUM_LEDS    192

@@ -33,7 +33,7 @@ void loop() {
     }
 
     delay(2000);
-    M5.Lcd.fillScreen(BLACK);  //清空屏幕
+    M5.Lcd.fillScreen(BLACK);  // 清空屏幕
 
     for (int i = 0; i < 40; i++) {
         int rx = random(40);

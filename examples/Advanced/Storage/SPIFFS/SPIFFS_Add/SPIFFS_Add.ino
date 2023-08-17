@@ -20,7 +20,7 @@ String file_name =
 bool SPIFFS_FORMAT =
     true;  // Whether to initialize the SPIFFS.  是否初始化SPIFFS
 // You don't need to format the flash file system every time you use it.
-//无需每次使用闪存都进行格式化
+// 无需每次使用闪存都进行格式化
 
 void setup() {
     M5.begin();             // Init M5StickC.  初始化 M5StickC

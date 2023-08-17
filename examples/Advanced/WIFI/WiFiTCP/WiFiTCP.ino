@@ -75,7 +75,7 @@ void loop() {
     int maxloops = 0;
 
     // wait for the server's reply to become available
-    //等待服务器的回复
+    // 等待服务器的回复
     while (!client.available() && maxloops < 1000) {
         maxloops++;
         delay(1);  // delay 1 msec

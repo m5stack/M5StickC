@@ -32,7 +32,7 @@ void setup() {
 void loop() {
     M5.Lcd.setCursor(22, 23);
     if (!mfrc522.PICC_IsNewCardPresent() ||
-        !mfrc522.PICC_ReadCardSerial()) {  //如果没有读取到新的卡片
+        !mfrc522.PICC_ReadCardSerial()) {  // 如果没有读取到新的卡片
         delay(200);
         return;
     }

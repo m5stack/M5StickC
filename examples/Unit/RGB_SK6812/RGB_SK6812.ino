@@ -16,8 +16,8 @@ red, green and blue 请连接端口,控制RGB单元滚动红、绿、蓝三种�
 #include <Adafruit_NeoPixel.h>
 #include <M5StickC.h>
 
-#define PIN       32  //定义NeoPixel的控制引脚
-#define NUMPIXELS 3   //定义NeoPixel控制灯灯数量
+#define PIN       32  // 定义NeoPixel的控制引脚
+#define NUMPIXELS 3   // 定义NeoPixel控制灯灯数量
 
 Adafruit_NeoPixel pixels = Adafruit_NeoPixel(
     NUMPIXELS, PIN,

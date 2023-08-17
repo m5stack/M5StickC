@@ -50,7 +50,7 @@ void loop() {
     client.loop();  // This function is called periodically to allow clients to
                     // process incoming messages and maintain connections to the
                     // server.
-    //定期调用此函数，以允许主机处理传入消息并保持与服务器的连接
+    // 定期调用此函数，以允许主机处理传入消息并保持与服务器的连接
 
     unsigned long now =
         millis();  // Obtain the host startup duration.  获取主机开机时长

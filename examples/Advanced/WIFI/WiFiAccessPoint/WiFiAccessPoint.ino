@@ -27,7 +27,7 @@ WiFiServer server(80);
 
 void setup() {
     M5.begin();  // Init M5StickC.  初始化M5StickC
-    M5.lcd.rotation(3);
+    M5.lcd.setRotation(3);
     M5.lcd.println("WIFI ACCESS POINT");  // Screen print string. 屏幕打印字符串
     M5.lcd.printf("Please connect:%s \nThen access to:", ssid);
     WiFi.softAP(
@@ -73,7 +73,7 @@ void loop() {
                         // HTTP/1.1 200 OK) HTTP的开头总是以响应代码开始(例如
                         // HTTP/1.1 200 OK) and a content-type so the client
                         // knows what's coming, then a blank line:
-                        //然后是content-type，这样客户端就知道接下来会发生什么，然后是空行:
+                        // 然后是content-type，这样客户端就知道接下来会发生什么，然后是空行:
                         client.println("HTTP/1.1 200 OK");
                         client.println("Content-type:text/html");
                         client.println();

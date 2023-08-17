@@ -38,7 +38,7 @@ void setup() {
     M5.begin();             // Init M5StickC.  初始化 M5StickC
     M5.Lcd.setRotation(3);  // Rotate the screen.  旋转屏幕
     M5.Lcd.println("Color View Test!");
-    while (!tcs.begin()) {  //如果color unit未能初始化
+    while (!tcs.begin()) {  // 如果color unit未能初始化
         M5.Lcd.println("No TCS34725 found ... check your connections");
         M5.Lcd.drawString("No Found sensor.", 50, 100, 4);
         delay(1000);
