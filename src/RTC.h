@@ -4,16 +4,16 @@
 #include <Wire.h>
 
 typedef struct {
-    uint8_t Hours;
-    uint8_t Minutes;
-    uint8_t Seconds;
+    int8_t Hours;
+    int8_t Minutes;
+    int8_t Seconds;
 } RTC_TimeTypeDef;
 
 typedef struct {
-    uint8_t WeekDay;
-    uint8_t Month;
-    uint8_t Date;
-    uint16_t Year;
+    int8_t WeekDay;
+    int8_t Month;
+    int8_t Date;
+    int16_t Year;
 } RTC_DateTypeDef;
 
 class RTC {

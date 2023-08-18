@@ -1070,7 +1070,7 @@ byte MFRC522::MIFARE_Write(
     cmdBuffer[0] = PICC_CMD_MF_WRITE;
     cmdBuffer[1] = blockAddr;
     result       = PCD_MIFARE_Transceive(
-        cmdBuffer, 2);  // Adds CRC_A and checks that the response is MF_ACK.
+              cmdBuffer, 2);  // Adds CRC_A and checks that the response is MF_ACK.
     if (result != STATUS_OK) {
         return result;
     }
@@ -1186,7 +1186,7 @@ byte MFRC522::MIFARE_TwoStepHelper(
     cmdBuffer[0] = command;
     cmdBuffer[1] = blockAddr;
     result       = PCD_MIFARE_Transceive(
-        cmdBuffer, 2);  // Adds CRC_A and checks that the response is MF_ACK.
+              cmdBuffer, 2);  // Adds CRC_A and checks that the response is MF_ACK.
     if (result != STATUS_OK) {
         return result;
     }
@@ -1218,7 +1218,7 @@ byte MFRC522::MIFARE_Transfer(byte blockAddr  ///< The block (0-0xff) number.
     cmdBuffer[0] = PICC_CMD_MF_TRANSFER;
     cmdBuffer[1] = blockAddr;
     result       = PCD_MIFARE_Transceive(
-        cmdBuffer, 2);  // Adds CRC_A and checks that the response is MF_ACK.
+              cmdBuffer, 2);  // Adds CRC_A and checks that the response is MF_ACK.
     if (result != STATUS_OK) {
         return result;
     }
