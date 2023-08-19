@@ -6,7 +6,7 @@
 * Visit for more information: https://docs.m5stack.com/en/core/m5stickc
 * 获取更多资料请访问: https://docs.m5stack.com/zh_CN/core/m5stickc
 *
-* Describe:  Wake-On-Motion.  MPU6886运动唤醒
+* Describe: Wake-On-Motion.  MPU6886运动唤醒
 * Date: 2023/7/21
 *******************************************************************************
 The device automatically enters deep sleep mode after 5s of inactivity, and

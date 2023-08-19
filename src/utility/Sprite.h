@@ -7,6 +7,8 @@ functions
 the
 // graphics are written to the Sprite rather than the TFT.
 ***************************************************************************************/
+#ifndef _SPRITE_H_
+#define _SPRITE_H_
 #include "In_eSPI.h"
 
 class TFT_eSprite : public TFT_eSPI {
@@ -157,3 +159,4 @@ class TFT_eSprite : public TFT_eSPI {
     int32_t _bitwidth;  // Sprite image bit width for drawPixel (for <8bpp
                         // Sprites, not swapped)
 };
+#endif

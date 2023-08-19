@@ -1,12 +1,12 @@
 /*
 *******************************************************************************
-* Copyright (c) 2021 by M5Stack
+* Copyright (c) 2023 by M5Stack
 *                  Equipped with M5StickC sample source code
 *                          配套  M5StickC 示例源代码
 * Visit for more information: https://docs.m5stack.com/en/core/m5stickc
 * 获取更多资料请访问: https://docs.m5stack.com/zh_CN/core/m5stickc
 *
-* Describe:  WIFI Smart Config.  WIFI智能配网
+* Describe: WIFI Smart Config.  WIFI智能配网
 * Date: 2021/7/30
 *******************************************************************************
 *  Fill in WIFI configuration information through mobile APP to connect M5StickC
