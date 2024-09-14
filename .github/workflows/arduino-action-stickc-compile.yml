@@ -40,12 +40,12 @@ jobs:
         # You may add a suffix behind the fqbn with "|" to specify one board for e.g. different compile options like arduino:avr:uno|trace
         #############################################################################################################
         arduino-boards-fqbn:
-          - m5stack:esp32:stickc
+          - m5stack:esp32:m5stack_stickc
 
         # Specify parameters for each board.
         #############################################################################################################
         include:
-          - arduino-boards-fqbn: m5stack:esp32:stickc
+          - arduino-boards-fqbn: m5stack:esp32:m5stack_stickc
             platform-url: https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json
             sketches-exclude: WhistleSwitch,50Hz,SimpleFrequencyDetector
 
