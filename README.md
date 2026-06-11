@@ -8,6 +8,10 @@
   Unified base library for M5 devices (IO/peripherals, power management, audio, etc.).  
   <https://github.com/m5stack/M5Unified>
 
+- **M5UnitUnified**
+  M5UnitUnified is a library for unified handling of various M5 units products.
+  <https://github.com/m5stack/M5UnitUnified>
+
 # M5StickC Library
 
 [![Arduino Compile](https://github.com/m5stack/M5StickC/actions/workflows/arduino-action-stickc-compile.yml/badge.svg)](https://github.com/m5stack/M5StickC/actions/workflows/arduino-action-stickc-compile.yml)
